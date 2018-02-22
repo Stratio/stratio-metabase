@@ -174,8 +174,7 @@
     "precommit": "lint-staged",
     "preinstall": "echo $npm_execpath | grep -q yarn || echo '\\033[0;33mSorry, npm is not supported. Please use Yarn (https://yarnpkg.com/).\\033[0m'",
     "prettier": "prettier --tab-width 4 --write 'frontend/src/metabase/{qb,new_question}/**/*.js*' 'frontend/src/metabase-lib/**/*.js'",
-    "docs": "documentation build -f html -o frontend/docs frontend/src/metabase-lib/lib/**",
-    "yarn": "node node_modules/yarn/bin/yarn.js"
+    "docs": "documentation build -f html -o frontend/docs frontend/src/metabase-lib/lib/**"
   },
   "lint-staged": {
     "frontend/src/metabase/{qb,new_question}/**/*.js*": [
