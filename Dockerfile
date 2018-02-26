@@ -29,8 +29,31 @@ RUN chmod 744 /usr/local/bin/lein
 # add the application source to the image
 ADD . /app/source
 
+
+RUN mkdir /root/.crossdata/ && \
+    mkdir /root/defaultsecrets/ && \
+    mv /app/source/resources/security/* /root/defaultsecrets/.
+
+
+RUN mkdir /root/kms/ && \
+    mv  /app/source/resources/kms/* /root/kms/.
+
+
+ENV MAVEN_VERSION="3.2.5" \
+    M2_HOME=/usr/lib/mvn
+
+RUN apk add --update wget && \
+  cd /tmp && \
+  wget "http://ftp.unicamp.br/pub/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz" && \
+  tar -zxvf "apache-maven-$MAVEN_VERSION-bin.tar.gz" && \
+  mv "apache-maven-$MAVEN_VERSION" "$M2_HOME" && \
+  ln -s "$M2_HOME/bin/mvn" /usr/bin/mvn
+
+RUN mvn install:install-file -Dfile=/app/source/bin/lib/local-query-execution-factory-0.2.jar -DgroupId=com.stratio.metabase -DartifactId=local-query-execution-factory -Dversion=0.2 -Dpackaging=jar
+RUN mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.11.1.jar -DgroupId=com.stratio.crossdata -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.11.1 -Dpackaging=jar
 # build the app
 WORKDIR /app/source
+
 RUN bin/build
 
 # remove unnecessary packages & tidy up
@@ -39,6 +62,13 @@ RUN rm -rf /root/.lein /root/.m2 /root/.node-gyp /root/.npm /root/.yarn /root/.y
 
 # expose our default runtime port
 EXPOSE 3000
+
+RUN apk add --update openssl
+RUN apk add --update curl
+
+RUN apk add --update ca-certificates
+RUN mkdir -p /etc/pki/tls/certs && \
+    ln -s /etc/ssl/certs/ca-certificates.crt /etc/pki/tls/certs/ca-bundle.crt
 
 # build and then run it
 WORKDIR /app/source
