@@ -2,7 +2,8 @@
 # images hosted on Docker Hub https://hub.docker.com/r/metabase/metabase/ which use the
 # Dockerfile located at ./bin/docker/Dockerfile
 
-FROM java:openjdk-8-jre-alpine
+#FROM java:openjdk-8-jre-alpine
+FROM java:openjdk-8-jdk-alpine
 
 ARG VERSION
 
@@ -49,6 +50,8 @@ RUN apk add --update wget && \
   mv "apache-maven-$MAVEN_VERSION" "$M2_HOME" && \
   ln -s "$M2_HOME/bin/mvn" /usr/bin/mvn
 
+RUN mvn package -f /app/source/local-query-execution-factory/pom.xml
+RUN cp /app/source/local-query-execution-factory/target/local-query-execution-factory-0.2.jar /app/source/bin/lib/local-query-execution-factory-0.2.jar
 RUN mvn install:install-file -Dfile=/app/source/bin/lib/local-query-execution-factory-0.2.jar -DgroupId=com.stratio.metabase -DartifactId=local-query-execution-factory -Dversion=0.2 -Dpackaging=jar
 RUN mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.11.1.jar -DgroupId=com.stratio.crossdata -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.11.1 -Dpackaging=jar
 # build the app
