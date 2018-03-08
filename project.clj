@@ -109,7 +109,9 @@
                   :exclusions [honeysql]]
                  [com.stratio.metabase/local-query-execution-factory "0.2"]]
   :repositories [["bintray" "https://dl.bintray.com/crate/crate"]     ; Repo for Crate JDBC driver
-                 ["redshift" "https://s3.amazonaws.com/redshift-driver-downloads"]]
+                 ["redshift" "https://s3.amazonaws.com/redshift-driver-downloads"]
+                 ["stratio" "https://sodio.stratio.com/repository/public/"]
+                 ]
   :plugins [[lein-environ "1.1.0"]                                    ; easy access to environment variables
             [lein-ring "0.11.0"                                       ; start the HTTP server with 'lein ring server'
              :exclusions [org.clojure/clojure]]                       ; TODO - should this be a dev dependency ?
