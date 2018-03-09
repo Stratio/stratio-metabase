@@ -54,7 +54,9 @@ RUN mvn package -f /app/source/local-query-execution-factory/pom.xml
 RUN cp /app/source/local-query-execution-factory/target/local-query-execution-factory-0.2.jar /app/source/bin/lib/local-query-execution-factory-0.2.jar
 RUN mvn install:install-file -Dfile=/app/source/bin/lib/local-query-execution-factory-0.2.jar -DgroupId=com.stratio.metabase -DartifactId=local-query-execution-factory -Dversion=0.2 -Dpackaging=jar
 
+# Tu generate local docker, comment mvn dependency:get and cp. Download jar in ./bin/lib/
 # http://qa.stratio.com/repository/releases/com/stratio/jdbc/stratio-crossdata-jdbc4/2.11.1/stratio-crossdata-jdbc4-2.11.1.jar
+#
 RUN mvn dependency:get -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.11.1 -DremoteRepositories=http://sodio.stratio.com/repository/public/ -Dtransitive=false
 RUN cp /root/.m2/repository/com/stratio/jdbc/stratio-crossdata-jdbc4/2.11.1/stratio-crossdata-jdbc4-2.11.1.jar /app/source/bin/lib/
 RUN mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.11.1.jar -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.11.1 -Dpackaging=jar

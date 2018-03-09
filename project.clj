@@ -93,7 +93,7 @@
                  [org.yaml/snakeyaml "1.18"]                          ; YAML parser (required by liquibase)
                  [org.xerial/sqlite-jdbc "3.16.1"]                    ; SQLite driver
                  [postgresql "9.3-1102.jdbc41"]                       ; Postgres driver
-                 [com.stratio.crossdata/stratio-crossdata-jdbc4       "2.11.1"
+                 [com.stratio.jdbc/stratio-crossdata-jdbc4       "2.11.1"
                   :exclusions [org.bouncycastle/crypto,
                                org.bouncycastle.crypto.digests,
                                org.bouncycastle/bcpkix-jdk15on]]                       ; Crossdata driver
@@ -110,7 +110,6 @@
                  [com.stratio.metabase/local-query-execution-factory "0.2"]]
   :repositories [["bintray" "https://dl.bintray.com/crate/crate"]     ; Repo for Crate JDBC driver
                  ["redshift" "https://s3.amazonaws.com/redshift-driver-downloads"]
-                 ["stratio" "https://sodio.stratio.com/repository/public/"]
                  ]
   :plugins [[lein-environ "1.1.0"]                                    ; easy access to environment variables
             [lein-ring "0.11.0"                                       ; start the HTTP server with 'lein ring server'
