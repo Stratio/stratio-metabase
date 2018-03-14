@@ -73,19 +73,31 @@
         (when (pass/verify-password password (:password_salt user) (:password user))
               {:id (create-session! user)})))))
 
+
+(defn- get-existing-groups
+  "Return only existing groups of the list"
+  [group_list]
+  (println "Group list: " group_list)
+  (println "Group database: " (vec (db/select-field :name PermissionsGroup)))
+  (vec (clojure.set/intersection (set group_list) (db/select-field :name PermissionsGroup))))
+
 ;; TODO alfonsotratio:
 (defn- group-login
-  "Find a matching `User` if one exists and return a new Session for them, or `nil` if they couldn't be authenticated."
+  "Find a matching `Group` if one exists. Create user, assign goup and return a new Session for them, or `nil` if they couldn't be authenticated."
   [username password headers]
-  (let [group_login (get headers (public-settings/group-header))
+  (let [group_login (get-existing-groups
+                     (clojure.string/split
+                      (get headers (public-settings/group-header)) #",")) ;(public-settings/group-header-delimiter)))
         user_login (get headers (public-settings/user-header))]
-    (if (and group_login (group/exists-with-name? group_login) user_login)
-      (let [group
-            (db/select-one [PermissionsGroup :id :name], :name group_login)
+    (if (and group_login user_login)
+      (let [ ;group (db/select-one [PermissionsGroup :id :name], :name group_login)
             user (user/create-new-header-auth-user! user_login "" (str user_login "@example.com"))]
-        (db/insert! PermissionsGroupMembership
-                    :group_id (get group :id)
-                    :user_id  (get user :id))
+        (println "Lista de grupos antes de insets: " group_login)
+        (doseq [x group_login]
+          (try (db/insert! PermissionsGroupMembership
+              :group_id (get (db/select-one [PermissionsGroup :id], :name x) :id)
+              :user_id  (get user :id))
+            (catch Exception e (log/info "User-group tuple already exists. User: " user_login " Group: " x))))
         (log/info "Successfully user created with group-hearder. User: " user_login " For this group: " group_login)
         (email-login username password headers)))))
 

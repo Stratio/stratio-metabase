@@ -155,15 +155,33 @@
               :password   password
               :ldap_auth  true))
 
+(defn- reactivate-user! [existing-user first-name last-name]
+  (when-not (:is_active existing-user)
+            (db/update! User (u/get-id existing-user)
+                        :first_name    first-name
+                        :last_name     last-name
+                        :is_active     true
+                        :is_superuser  false
+                        ;; if the user orignally logged in via Google Auth and it's no longer enabled, convert them into a regular user
+                        ;; (see Issue #3323)
+                        :google_auth   false
+                        :ldap_auth     false))
+  ;; now return the existing user whether they were originally active or not
+  (User (u/get-id existing-user)))
+
 (defn create-new-header-auth-user!
   "Convenience for creating a new user via LDAP. This account is considered active immediately; thus all active admins
   will recieve an email right away."
   [first-name last-name email-address]
   {:pre [(string? first-name) (string? last-name) (u/is-email? email-address)]}
-  (db/insert! User :email      email-address
-              :first_name first-name
-              :last_name  last-name
-              :password   (str (UUID/randomUUID))))
+  (if-let [existing-user (db/select-one [User :id :is_active :google_auth], :email email-address)]
+    ;; this user already exists but is inactive, so simply reactivate the account
+    (reactivate-user! existing-user first-name last-name)
+    ;; new user account, so create it
+    (db/insert! User :email      email-address
+                :first_name first-name
+                :last_name  last-name
+                :password   (str (UUID/randomUUID)))))
 
 (defn set-password!
   "Updates the stored password for a specified `User` by hashing the password with a random salt."
