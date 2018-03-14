@@ -51,8 +51,8 @@ RUN apk add --update wget && \
   ln -s "$M2_HOME/bin/mvn" /usr/bin/mvn
 
 RUN mvn package -f /app/source/local-query-execution-factory/pom.xml
-RUN cp /app/source/local-query-execution-factory/target/local-query-execution-factory-0.2.jar /app/source/lib/local-query-execution-factory-0.2.jar
-RUN mvn install:install-file -Dfile=/app/source/lib/local-query-execution-factory-0.2.jar -DgroupId=com.stratio.metabase -DartifactId=local-query-execution-factory -Dversion=0.2 -Dpackaging=jar
+RUN cp /app/source/local-query-execution-factory/target/local-query-execution-factory-0.2.jar /app/source/bin/lib/local-query-execution-factory-0.2.jar
+RUN mvn install:install-file -Dfile=/app/source/bin/lib/local-query-execution-factory-0.2.jar -DgroupId=com.stratio.metabase -DartifactId=local-query-execution-factory -Dversion=0.2 -Dpackaging=jar
 
 # Tu generate local docker, comment mvn dependency:get and cp. Download jar in ./bin/lib/
 # http://qa.stratio.com/repository/releases/com/stratio/jdbc/stratio-crossdata-jdbc4/2.11.1/stratio-crossdata-jdbc4-2.11.1.jar
