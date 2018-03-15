@@ -10,7 +10,6 @@ export TENANT_NORM="${TENANT_UNDERSCORE^^}"
 export PATH=${PATH}:'/root/kms/bin/'
 
 log "INFO" ${TENANT_NORM}
-log "INFO" "Parametro Vault Toke: ################# "${VAULT_TOKEN}
 
 if [ -z "$VAULT_HOST" ];
 then
