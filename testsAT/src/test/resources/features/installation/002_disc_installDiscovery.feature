@@ -51,3 +51,8 @@ Feature: Install Discovery
     Then I run 'rm -rf /tmp/config_discovery_${DISC_VERSION:-0.28.9}.json' in the ssh connection
     And I run 'dcos marathon task list discovery | awk '{print $5}' | grep discovery' in the ssh connection and save the value in environment variable 'discoveryTaskId'
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos marathon task show !{discoveryTaskId} | grep TASK_RUNNING | wc -l' contains '1'
+
+  Scenario: [Basic Installation Discovery][04] Create database for Discovery
+    Given I connect with JDBC to database '${POSTGRES_FRAMEWORK_DEFAULT_DB:-postgres}' on host '!{postgresMD5_IP}' and port '!{postgresMD5_Port}' with user '${POSTGRES_FRAMEWORK_USER:-postgres}' and password '${POSTGRES_FRAMEWORK_PASSWORD:-stratio}'
+    When I execute query 'CREATE DATABASE ${DISCOVERY_NAME_DB:-discovery};'
+    Then I close database connection
