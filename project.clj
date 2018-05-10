@@ -86,13 +86,12 @@
                                it.unimi.dsi/fastutil]]
                  [org.clojars.pntblnk/clj-ldap "0.0.12"]              ; LDAP client
                  [org.liquibase/liquibase-core "3.5.3"]               ; migration management (Java lib)
-                 [org.postgresql/postgresql "42.1.4.jre7"]            ; Postgres driver
+                 [org.postgresql/postgresql "42.2.2.jre7"]            ; Postgres driver
                  [org.slf4j/slf4j-log4j12 "1.7.25"]                   ; abstraction for logging frameworks -- allows end user to plug in desired logging framework at deployment time
                  [org.tcrawley/dynapath "0.2.5"]                      ; Dynamically add Jars (e.g. Oracle or Vertica) to classpath
                  [org.xerial/sqlite-jdbc "3.21.0.1"]                  ; SQLite driver
                  [org.yaml/snakeyaml "1.18"]                          ; YAML parser (required by liquibase)
                  [org.xerial/sqlite-jdbc "3.16.1"]                    ; SQLite driver
-                 [postgresql "9.3-1102.jdbc41"]                       ; Postgres driver
                  [com.stratio.jdbc/stratio-crossdata-jdbc4       "2.11.1"
                   :exclusions [org.bouncycastle/crypto,
                                bouncycastle/bcprov-jdk14,
