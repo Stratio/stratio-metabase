@@ -119,7 +119,13 @@ JAVA_OPTS="$JAVA_OPTS -Djava.awt.headless=true"                   # don't try to
 JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8"                      # Use UTF-8
 JAVA_OPTS="$JAVA_OPTS --add-opens=java.base/java.net=ALL-UNNAMED" # Allow dynamically adding JARs to classpath (Java 9)
 JAVA_OPTS="$JAVA_OPTS --add-modules=java.xml.bind"                # Enable access to java.xml.bind module (Java 9)
-JAVA_OPTS="$JAVA_OPTS -XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"     # Add Java memory limits
+
+# Heap Size (defaults to 1g min, 95% of the given memory as max)
+CURRENT_MEMORY=$MARATHON_APP_RESOURCE_MEM
+PERCENTAGE=0.95
+MAX_HEAP=$(awk '{printf("%.0f\n", $1*$2)}' <<<"$PERCENTAGE $CURRENT_MEMORY")m
+JAVA_OPTS="$JAVA_OPTS -Xmx$MAX_HEAP" 
+JAVA_OPTS="$JAVA_OPTS -Xms1g"
 
 echo "Using these JAVA_OPTS: ${JAVA_OPTS}"
 
