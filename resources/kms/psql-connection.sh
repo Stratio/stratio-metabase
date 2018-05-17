@@ -32,12 +32,12 @@ if [ "$MB_DB_SSL" = "true" ]; then
     chown -R root:root $POSTGRESQL_SSL_CERT_LOCATION
     PG_URL="jdbc:postgresql://$PG_HOST:$PG_PORT/$PG_DATABASE?user=$PG_USER\\&ssl=true\\&sslmode=verify-full\\&sslcert=$SSL_PEM_CERT\\&sslkey=$SSL_KEY\\&sslrootcert=$SSL_ROOT_CERT"
 
-    if [[ -z "$MB_DB_CONNECTION_URI" ]]; then
-       export MB_DB_CONNECTION_URI="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&sslmode=verify-full&sslcert=$SSL_PEM_CERT&sslkey=$SSL_KEY&sslrootcert=$SSL_ROOT_CERT"
-    fi
+    CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&sslmode=verify-full&sslcert=$SSL_PEM_CERT&sslkey=$SSL_KEY&sslrootcert=$SSL_ROOT_CERT"
 else
-    CUSTOM_PARAMETERS=${CUSTOM_PARAMETERS:=""}
-    if [[ -z "$MB_DB_CONNECTION_URI" ]]; then
-       export MB_DB_CONNECTION_URI="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&$CUSTOM_PARAMETERS"
-    fi
+    JDBC_PARAMETERS=${JDBC_PARAMETERS:=""}
+    CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&$JDBC_PARAMETERS"
+fi
+
+if [[ -z "$MB_DB_CONNECTION_URI" ]]; then
+    export MB_DB_CONNECTION_URI=${CONNECTION_STRING}
 fi
