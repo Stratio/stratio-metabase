@@ -32,12 +32,12 @@ if [ "$MB_DB_SSL" = "true" ]; then
     chown -R root:root $POSTGRESQL_SSL_CERT_LOCATION
     PG_URL="jdbc:postgresql://$PG_HOST:$PG_PORT/$PG_DATABASE?user=$PG_USER\\&ssl=true\\&sslmode=verify-full\\&sslcert=$SSL_PEM_CERT\\&sslkey=$SSL_KEY\\&sslrootcert=$SSL_ROOT_CERT"
 
-    CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&sslmode=verify-full&sslcert=$SSL_PEM_CERT&sslkey=$SSL_KEY&sslrootcert=$SSL_ROOT_CERT"
+    CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&password=$MB_DB_PASS&sslmode=verify-full&sslcert=$SSL_PEM_CERT&sslkey=$SSL_KEY&sslrootcert=$SSL_ROOT_CERT"
 else
     log "INFO" "Connection with MD5 Postgres"
 
     JDBC_PARAMETERS=${JDBC_PARAMETERS:=""}
-    CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&$JDBC_PARAMETERS"
+    CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&password=$MB_DB_PASS&$JDBC_PARAMETERS"
 fi
 
 if [[ -z "$MB_DB_CONNECTION_URI" ]]; then
