@@ -1,8 +1,8 @@
 #!/bin/bash
 
+log "INFO" "$USER"
 if [ "$MB_DB_SSL" = "true" ]; then
     log "INFO" "Obtaining and setting TLS secrets for SSL secured Postgres"
-    log "INFO" "$USER"
 
     SSL_CLUSTER=${SSL_CLUSTER:="userland"}
     SSL_INSTANCE=${TENANT_NAME:="crossdata-1"}
@@ -34,6 +34,8 @@ if [ "$MB_DB_SSL" = "true" ]; then
 
     CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&sslmode=verify-full&sslcert=$SSL_PEM_CERT&sslkey=$SSL_KEY&sslrootcert=$SSL_ROOT_CERT"
 else
+    log "INFO" "Connection with MD5 Postgres"
+
     JDBC_PARAMETERS=${JDBC_PARAMETERS:=""}
     CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&$JDBC_PARAMETERS"
 fi
