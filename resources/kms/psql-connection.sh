@@ -34,9 +34,9 @@ if [ "$MB_DB_SSL" = "true" ]; then
 
     CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&password=$MB_DB_PASS&sslmode=verify-full&sslcert=$SSL_PEM_CERT&sslkey=$SSL_KEY&sslrootcert=$SSL_ROOT_CERT"
 else
-    log "INFO" "Connection with MD5 Postgres"
+    log "INFO" "Connection to PostgresSQL MD5"
 
-    CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&password=$MB_DB_PASS&$JDBC_PARAMETERS"
+    CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&password=$MB_DB_PASS"
 fi
 
 if [[ -z "$MB_DB_CONNECTION_URI" ]]; then
