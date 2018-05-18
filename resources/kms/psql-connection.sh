@@ -44,6 +44,9 @@ if [[ -z "$MB_DB_CONNECTION_URI" ]]; then
     if [[ -z "$JDBC_PARAMETERS" ]]; then
         export MB_DB_CONNECTION_URI=${CONNECTION_STRING}
     else
+        log "INFO" "Found additional JDBC parameters"
         export MB_DB_CONNECTION_URI="$CONNECTION_STRING&$JDBC_PARAMETERS"
     fi
 fi
+
+log "INFO" "MB_DB_CONNECTION_URI---> $MB_DB_CONNECTION_URI"
