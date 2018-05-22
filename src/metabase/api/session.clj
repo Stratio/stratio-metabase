@@ -79,7 +79,7 @@
   [group_list]
   (vec (clojure.set/intersection (set group_list) (db/select-field :name PermissionsGroup))))
 
-;; TODO alfonsotratio:
+;; TODO alfonsotratio, javierstratio:
 (defn- group-login
   "Find a matching `Group` if one exists. Create user, assign goup and return a new Session for them, or `nil` if they couldn't be authenticated."
   [username password headers]
@@ -89,15 +89,16 @@
                         (get headers (public-settings/group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter))))
           user_login (get headers (public-settings/user-header))]
       (if (and (not-empty group_login) user_login)
-        (let [user (user/create-new-header-auth-user! user_login "" (str user_login "@example.com"))]
-          (doseq [x group_login]
-            (try (db/insert! PermissionsGroupMembership
-                             :group_id (get (db/select-one [PermissionsGroup :id], :name x) :id)
-                             :user_id  (get user :id))
-              (catch Exception e (log/info "User-group tuple already exists. User: " user_login " Group: " x))))
-          (log/info "Successfully user created with group-hearder. User: " user_login " For this group: " group_login)
-          (email-login username password headers)))))
-  )
+        (let [admin_group_login (group_login (clojure.core/re-pattern (public-settings/admin-group-header)))]
+          (let [admin_group_found (not-empty admin_group_login)]
+            (let [user (user/create-new-header-auth-user! user_login "" (str user_login "@example.com") admin_group_found)]
+              (doseq [x group_login]
+                (try (db/insert! PermissionsGroupMembership
+                                 :group_id (get (db/select-one [PermissionsGroup :id], :name x) :id)
+                                 :user_id  (get user :id))
+                  (catch Exception e (log/info "User-group tuple already exists. User: " user_login " Group: " x))))
+              (log/info "Successfully user created with group-hearder. User: " user_login " For this group: " group_login)
+              (email-login username password headers))))))))
 
 ;; TODO romartin:
 (api/defendpoint POST "/"
