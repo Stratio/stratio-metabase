@@ -81,7 +81,7 @@
 
 ;; TODO alfonsotratio, javierstratio:
 (defn- group-login
-  "Find a matching `Group` if one exists. Create user, assign goup and return a new Session for them, or `nil` if they couldn't be authenticated."
+  "Find a matching `Group` if one exists. Create user, assign group and return a new Session for them, or `nil` if they couldn't be authenticated."
   [username password headers]
   (if (get headers (public-settings/group-header))
     (let [group_login (get-existing-groups
@@ -89,11 +89,17 @@
                         (get headers (public-settings/group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter))))
           user_login (get headers (public-settings/user-header))]
       (if (and (not-empty group_login) user_login)
+        (println "group_login NOT EMPTY")
         (let [admin_group_login (vec (clojure.set/intersection
-                                        (clojure.string/split (get headers (public-settings/admin-group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter)))
-                                        group_login))]
+                                      (set group_login)
+                                      (clojure.string/split (get headers (public-settings/admin-group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter)))))]
+          (println "admin_group_login CONTEXT")
           (let [admin_group_found (not-empty admin_group_login)]
+            (println "admin_group_found --> ")
+            (println admin_group_found)
             (let [user (user/create-new-header-auth-user! user_login "" (str user_login "@example.com") admin_group_found)]
+              (println "USER CONTEXT")
+
               (doseq [x group_login]
                 (try (db/insert! PermissionsGroupMembership
                                  :group_id (get (db/select-one [PermissionsGroup :id], :name x) :id)
