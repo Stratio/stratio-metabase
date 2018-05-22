@@ -88,11 +88,13 @@
                        (clojure.string/split
                         (get headers (public-settings/group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter))))
           user_login (get headers (public-settings/user-header))]
+
       (if (and (not-empty group_login) user_login)
         (println "group_login NOT EMPTY")
         (let [admin_group_login (vec (clojure.set/intersection
                                       (set group_login)
-                                      (clojure.string/split (get headers (public-settings/admin-group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter)))))]
+                                      (get-existing-groups
+                                       (clojure.string/split (get headers (public-settings/admin-group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter))))))]
           (println "admin_group_login CONTEXT")
           (let [admin_group_found (not-empty admin_group_login)]
             (println "admin_group_found --> ")
