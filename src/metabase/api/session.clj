@@ -89,7 +89,9 @@
                         (get headers (public-settings/group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter))))
           user_login (get headers (public-settings/user-header))]
       (if (and (not-empty group_login) user_login)
-        (let [admin_group_login (group_login (clojure.core/re-pattern (public-settings/admin-group-header)))]
+        (let [admin_group_login (vec (clojure.set/intersection
+                                        (clojure.string/split (get headers (public-settings/admin-group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter)))
+                                        group_login))]
           (let [admin_group_found (not-empty admin_group_login)]
             (let [user (user/create-new-header-auth-user! user_login "" (str user_login "@example.com") admin_group_found)]
               (doseq [x group_login]
