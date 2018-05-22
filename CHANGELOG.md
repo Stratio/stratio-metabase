@@ -10,5 +10,5 @@
 * [DGPB-868] Securize Stratio Discovery with Dynamic Authentication
 * [DGPB-867] Virtual networks with Calico
 * [DGPB-865] Integration with Jenkins
-* Armadillo integration for user login
 * [DGPB-864] Metabase version upgrade: 0.24.0 → 0.27.2
+* Armadillo integration for user login
