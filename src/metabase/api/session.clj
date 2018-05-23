@@ -99,7 +99,7 @@
           user_login (get headers (public-settings/user-header))]
 
       (if (and (not-empty group_login) user_login)
-        (println "group_login ->" group_login)
+        (println "group_login -> " group_login)
         (println "headers -> " headers)
 
         (let [admin_group_login  (get-admin-groups group_login headers)]
