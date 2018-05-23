@@ -81,13 +81,18 @@
 
   (vec (clojure.set/intersection (set group_list) (db/select-field :name PermissionsGroup))))
 
-(defn- get-admin-groups[group_list headers]
+(defn- get-admin-groups[group_list]
   (println "group_list -> " group_list)
-  (println "headers -> " headers)
   (println "INTERSECT -> " (vec (clojure.set/intersection (set group_list)
-                                                         (set (clojure.string/split (get headers (public-settings/admin-group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter)))))))
+                                                          (set (clojure.string/split
+                                                                (public-settings/admin-group-header)
+                                                                (clojure.core/re-pattern (public-settings/group-header-delimiter))
+                                                                )))))
   (vec (clojure.set/intersection (set group_list)
-                                 (set (clojure.string/split (get headers (public-settings/admin-group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter)))))))
+                                 (set (clojure.string/split
+                                       (public-settings/admin-group-header)
+                                       (clojure.core/re-pattern (public-settings/group-header-delimiter))
+                                       )))))
 
 
 ;; TODO alfonsotratio, javierstratio:
@@ -104,7 +109,7 @@
       (println "headers -> " headers)
 
       (if (and (not-empty group_login) user_login)
-        (let [admin_group_login (get-admin-groups group_login headers)
+        (let [admin_group_login (get-admin-groups group_login)
               admin_group_found (not-empty admin_group_login)]
           (println "admin_group_found --> " admin_group_login)
           (let [user (user/create-new-header-auth-user! user_login "" (str user_login "@example.com") admin_group_found)]
