@@ -79,9 +79,7 @@
   [group_list]
   (vec (clojure.set/intersection (set group_list) (db/select-field :name PermissionsGroup))))
 
-(defn- get-admin-groups
-  "Return only ADMIN groups from the list"
-  [group_list headers]
+(defn- get-admin-groups[group_list headers]
   (println "group_list -> " group_list)
   (println "headers -> " headers)
   (println "INTERSECT -> " (vec (clojure.set/intersection (set group_list)
@@ -101,10 +99,11 @@
           user_login (get headers (public-settings/user-header))]
 
       (if (and (not-empty group_login) user_login)
-        (println "group_login NOT EMPTY")
+        (println "group_login ->" group_login)
+        (println "headers -> " headers)
+
         (let [admin_group_login  (get-admin-groups group_login headers)]
-          (println "admin_group_found --> ")
-          (println (not-empty admin_group_login))
+          (println "admin_group_found --> " admin_group_login)
           (let [user (user/create-new-header-auth-user! user_login "" (str user_login "@example.com") (not-empty admin_group_login))]
             (println "USER CONTEXT")
             (doseq [x group_login]
