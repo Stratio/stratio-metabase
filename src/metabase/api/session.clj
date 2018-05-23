@@ -110,8 +110,10 @@
 
       (if (and (not-empty group_login) user_login)
         (let [admin_group_login (get-admin-groups group_login)
-              admin_group_found (not-empty admin_group_login)]
-          (println "admin_group_found --> " admin_group_login)
+              admin_group_found (if (seq admin_group_login) true false)]
+          (println "user_login --> " user_login)
+          (println "admin_group_found --> " admin_group_found)
+
           (let [user (user/create-new-header-auth-user! user_login "" (str user_login "@example.com") admin_group_found)]
             (println "USER CONTEXT")
             (doseq [x group_login]
@@ -123,7 +125,8 @@
             (email-login username password headers)))
         (println "*** NOPE"))
       )
-    (println "*** INITIAL NOPE")))
+    (println "*** INITIAL NOPE"))
+  )
 
 ;; TODO romartin:
 (api/defendpoint POST "/"
