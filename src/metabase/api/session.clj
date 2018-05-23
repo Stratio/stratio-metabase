@@ -77,22 +77,17 @@
 (defn- get-existing-groups
   "Return only existing groups from the list"
   [group_list]
-  (println "group_list_FIRST -> " group_list)
 
   (vec (clojure.set/intersection (set group_list) (db/select-field :name PermissionsGroup))))
 
-(defn- get-admin-groups[group_list]
-  (println "group_list -> " group_list)
-  (println "INTERSECT -> " (vec (clojure.set/intersection (set group_list)
-                                                          (set (clojure.string/split
-                                                                (public-settings/admin-group-header)
-                                                                (clojure.core/re-pattern (public-settings/group-header-delimiter))
-                                                                )))))
+(defn- get-admin-groups
+  "Return only admin groups from the list"
+  [group_list]
+
   (vec (clojure.set/intersection (set group_list)
                                  (set (clojure.string/split
                                        (public-settings/admin-group-header)
-                                       (clojure.core/re-pattern (public-settings/group-header-delimiter))
-                                       )))))
+                                       (clojure.core/re-pattern (public-settings/group-header-delimiter)))))))
 
 
 ;; TODO alfonsotratio, javierstratio:
@@ -105,17 +100,10 @@
                         (get headers (public-settings/group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter))))
           user_login (get headers (public-settings/user-header))]
 
-      (println "group_login -> " group_login)
-      (println "headers -> " headers)
-
       (if (and (not-empty group_login) user_login)
         (let [admin_group_login (get-admin-groups group_login)
               admin_group_found (if (seq admin_group_login) true false)]
-          (println "user_login --> " user_login)
-          (println "admin_group_found --> " admin_group_found)
-
           (let [user (user/create-new-header-auth-user! user_login "" (str user_login "@example.com") admin_group_found)]
-            (println "USER CONTEXT")
             (doseq [x group_login]
               (try (db/insert! PermissionsGroupMembership
                                :group_id (get (db/select-one [PermissionsGroup :id], :name x) :id)
@@ -123,9 +111,10 @@
                 (catch Exception e (log/info "User-group tuple already exists. User: " user_login " Group: " x))))
             (log/info "Successfully user created with group-hearder. User: " user_login " For this group: " group_login)
             (email-login username password headers)))
-        (println "*** NOPE"))
+
+        (log/error "The group set in the header it's not defined"))
       )
-    (println "*** INITIAL NOPE"))
+    (log/error "Impossible to find a valid group in the header"))
   )
 
 ;; TODO romartin:
