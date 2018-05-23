@@ -1,7 +1,7 @@
 @web @rest
 Feature: Configuración conexion Prosgress MD5 en Discovery
 
-  Scenario: [configbbdd] Configuracion de BBDD Postgress MD5 en Discovery
+  Scenario: [settings] Configuracion de BBDD Postgress MD5 en Discovery
   #Configuracion de BBDD Postgress en Discovery
 
     Given My app is running in '${MARATHON_LB_DNS}:443'
@@ -50,7 +50,7 @@ Feature: Configuración conexion Prosgress MD5 en Discovery
 
     And I wait '30' seconds
 
-  Scenario: [configbbdd] Configuracion de BBDD Postgress TLS en Discovery
+  Scenario: [settings] Configuracion de BBDD Postgress TLS en Discovery
   #Configuracion de BBDD Postgress en Discovery
 
     Given My app is running in '${MARATHON_LB_DNS}:443'
@@ -100,7 +100,7 @@ Feature: Configuración conexion Prosgress MD5 en Discovery
 
     And I wait '30' seconds
 
-  Scenario: [configbbdd] Configuracion de BBDD Crossdata en Discovery
+  Scenario: [settings] Configuracion de BBDD Crossdata en Discovery
   #Configuracion de BBDD Crossdata en Discovery
 
     Given My app is running in '${MARATHON_LB_DNS}:443'

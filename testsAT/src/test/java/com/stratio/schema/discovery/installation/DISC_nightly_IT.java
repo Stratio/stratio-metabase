@@ -15,7 +15,7 @@ import org.testng.annotations.Factory;
         //"src/test/resources/features/002_settings/005_disc_loginUser.feature",
         //"src/test/resources/features/002_settings/006_disc_gestionUser.feature",
         //"src/test/resources/features/002_settings/007_disc_gestionBBDD.feature",
-        "src/test/resources/features/002_settings/008_disc_gestionGroups.feature",
+        //"src/test/resources/features/002_settings/008_disc_gestionGroups.feature",
         //"src/test/resources/features/003_configbbdd/010_disc_configbbddPostgressMD5.feature",
         //"src/test/resources/features/003_configbbdd/011_disc_configbbddPostgressTLS.feature",
         //"src/test/resources/features/003_configbbdd/012_disc_configbbddCrossdata.feature",

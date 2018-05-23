@@ -1,7 +1,7 @@
 @web @rest
 Feature: Revocacion de permisos a un usuario
 
-  Scenario: [USERS] Revocacion de permisos de un usuario no Administrador
+  Scenario: [settings] Revocacion de permisos de un usuario no Administrador
   #Log into application with user demo@stratio.com
     Given My app is running in '${MARATHON_LB_DNS}:443'
     When I securely browse to '/services/metabase'
@@ -15,7 +15,7 @@ Feature: Revocacion de permisos a un usuario
     And I wait '5' seconds
 
 
-  Scenario: [USERS] Revocacion de permiso de un usuario un usuario Administrador
+  Scenario: [settings] Revocacion de permiso de un usuario un usuario Administrador
   #Log into application with user demo@stratio.com
     Given My app is running in '${MARATHON_LB_DNS}:443'
     When I securely browse to '/services/metabase'
