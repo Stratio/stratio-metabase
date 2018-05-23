@@ -112,9 +112,9 @@
             (log/info "Successfully user created with group-hearder. User: " user_login " For this group: " group_login)
             (email-login username password headers)))
 
-        (log/error "The group set in the header it's not defined"))
+        (log/error "This group doesn't exist in Discovery"))
       )
-    (log/error "Impossible to find a valid group in the header"))
+    (log/error "Couldn't find a valid group in the given header"))
   )
 
 ;; TODO romartin:
