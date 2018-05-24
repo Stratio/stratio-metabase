@@ -1,5 +1,5 @@
 @web @rest
-Feature: Gestion de Grupos en Discovery
+Feature: Gestion de Grupos en Discovery _
 
   Scenario: [settings] Creacion de un Grupo de Discovery
 

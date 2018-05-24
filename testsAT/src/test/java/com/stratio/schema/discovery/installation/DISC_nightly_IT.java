@@ -10,8 +10,8 @@ import org.testng.annotations.Factory;
 
 
 @CucumberOptions(features = {
-        //"src/test/resources/features/001_installation/001_disc_installPostgres.feature",
-        //"src/test/resources/features/001_installation/002_disc_installDiscovery.feature",
+        "src/test/resources/features/001_installation/001_disc_installPostgres.feature",
+        "src/test/resources/features/001_installation/002_disc_installDiscovery.feature",
         //"src/test/resources/features/002_settings/005_disc_loginUser.feature",
         //"src/test/resources/features/002_settings/006_disc_gestionUser.feature",
         //"src/test/resources/features/002_settings/007_disc_gestionBBDD.feature",

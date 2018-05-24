@@ -1,5 +1,5 @@
 @web @rest
-Feature: Gestion de usuarios en Discovery
+Feature: Gestion de usuarios en Discovery _
 
   Scenario: [settings] Añadir un usuario Administrador
   #Log into application with user demo@stratio.com

@@ -1,5 +1,5 @@
 @web @rest
-Feature: Revocacion de permisos a un usuario
+Feature: Revocacion de permisos a un usuario _
 
   Scenario: [settings] Revocacion de permisos de un usuario no Administrador
   #Log into application with user demo@stratio.com
