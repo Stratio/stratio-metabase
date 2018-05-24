@@ -47,7 +47,6 @@ hose {
 	    | -DMARATHON_LB_DNS=nightlypublic.labs.stratio.com
 	    | -Dquietasdefault=false
         | """.stripMargin().stripIndent()
-	| -DMARATHON_LB_DNS=nightlypublic.labs.stratio.com
 
     INSTALL = { config ->
         if (config.INSTALLPARAMETERS.contains('GROUPS_DISCOVERY')) {
@@ -58,3 +57,4 @@ hose {
         }
     }
 }
+
