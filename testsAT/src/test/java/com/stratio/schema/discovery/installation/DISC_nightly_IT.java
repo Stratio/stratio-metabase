@@ -19,8 +19,8 @@ import org.testng.annotations.Factory;
         //"src/test/resources/features/003_configbbdd/010_disc_configbbddPostgressMD5.feature",
         //"src/test/resources/features/003_configbbdd/011_disc_configbbddPostgressTLS.feature",
         //"src/test/resources/features/003_configbbdd/012_disc_configbbddCrossdata.feature",
-        //"src/test/resources/features/001_installation/003_disc_uninstallDiscovery.feature",
-        //"src/test/resources/features/001_installation/004_disc_uninstallPostgres.feature"
+        "src/test/resources/features/099_uninstall/003_disc_uninstallDiscovery.feature",
+        "src/test/resources/features/099_uninstall/004_disc_uninstallPostgres.feature"
 
 })
 public class DISC_nightly_IT extends BaseTest {
