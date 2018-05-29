@@ -8,6 +8,8 @@ hose {
     BUILDTOOL = 'make'
     DEVTIMEOUT = 30
     RELEASETIMEOUT = 30
+    BUILDTOOLVERSION = '3.5.0'
+    NEW_VERSIONING = 'true'
 
     ATTIMEOUT = 90
     INSTALLTIMEOUT = 90
@@ -47,7 +49,6 @@ hose {
 	    | -DMARATHON_LB_DNS=nightlypublic.labs.stratio.com
 	    | -Dquietasdefault=false
         | """.stripMargin().stripIndent()
-	| -DMARATHON_LB_DNS=nightlypublic.labs.stratio.com
 
     INSTALL = { config ->
         if (config.INSTALLPARAMETERS.contains('GROUPS_DISCOVERY')) {
@@ -58,3 +59,4 @@ hose {
         }
     }
 }
+

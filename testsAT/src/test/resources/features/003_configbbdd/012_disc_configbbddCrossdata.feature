@@ -1,5 +1,5 @@
 @web @rest
-Feature: Configuración conexion Crossdata en Discovery
+Feature: Configuración conexion Crossdata en Discovery _
 
     Scenario: [configbbdd] Configuracion de BBDD Crossdata en Discovery
     #Configuracion de BBDD Crossdata en Discovery

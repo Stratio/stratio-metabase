@@ -1,5 +1,5 @@
 @web @rest
-Feature: Configuración conexion Prosgress MD5 en Discovery
+Feature: Configuración conexion Prosgress MD5 en Discovery _
 
   Scenario: [configbbdd] Configuracion de BBDD Postgress MD5 en Discovery
   #Configuracion de BBDD Postgress en Discovery
