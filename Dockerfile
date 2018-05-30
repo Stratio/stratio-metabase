@@ -4,6 +4,7 @@
 
 FROM java:openjdk-8-jdk-alpine
 
+
 ARG VERSION
 
 ENV JAVA_HOME=/usr/lib/jvm/default-jvm
