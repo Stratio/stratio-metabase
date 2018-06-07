@@ -10,7 +10,6 @@
             [metabase.driver
              [generic-sql :as sql]
              [hive-like :as hive-like]]
-            [metabase.driver.generic-sql :as sql]
             [metabase.util :as u]
             [metabase.driver.generic-sql.query-processor :as qprocessor]
             [metabase.query-processor.util :as qputil]
@@ -260,17 +259,15 @@
 (def CrossdataISQLDriverMixin
   "Implementations of `ISQLDriver` methods for `CrossdataDriver`."
   (merge (sql/ISQLDriverDefaultsMixin)
-         {:apply-page                (u/drop-first-arg apply-page-using-row-number-for-offset)
-          :apply-source-table        (u/drop-first-arg apply-source-table)
-          :apply-join-tables         (u/drop-first-arg apply-join-tables)
-          :column->base-type         (u/drop-first-arg column->base-type)
+         {:column->base-type         (u/drop-first-arg column->base-type)
+          :column->special-type      (u/drop-first-arg column->special-type)
           :connection-details->spec  (u/drop-first-arg connection-details->spec)
-          :date                      (u/drop-first-arg hive-like/date)
-          :field->identifier         (u/drop-first-arg hive-like/field->identifier)
+          :date                      (u/drop-first-arg date)
           :quote-style               (constantly :mysql)
-          :current-datetime-fn       (u/drop-first-arg (constantly hive-like/now))
-          :string-length-fn          (u/drop-first-arg hive-like/string-length-fn)
-          :unix-timestamp->timestamp (u/drop-first-arg hive-like/unix-timestamp->timestamp)}))
+          :prepare-value             (u/drop-first-arg prepare-value)
+          :set-timezone-sql          (constantly "UPDATE pg_settings SET setting = ? WHERE name ILIKE 'timezone';")
+          :string-length-fn          (u/drop-first-arg string-length-fn)
+          :unix-timestamp->timestamp (u/drop-first-arg unix-timestamp->timestamp)}))
 
 (u/strict-extend CrossdataDriver
                  driver/IDriver
