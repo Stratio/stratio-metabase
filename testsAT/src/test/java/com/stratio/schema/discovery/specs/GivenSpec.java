@@ -20,29 +20,5 @@ public class GivenSpec extends BaseSpec {
         this.commonspec = spec;
         commonspecG = new GivenGSpec(this.commonspec);
     }
-
-    /*
-    * connects to database with parameters:
-    *
-    * @param database
-    * @param host
-    * @param port
-    * @param user
-    * @param password
-    *
-    * saves connection
-    *
-    */
-    @Given("^I( securely)? connect with JDBC to database '(.+?)' on host '(.+?)' and port '(.+?)' with user '(.+?)' and password '(.+?)'$")
-    public void connectDatabase(String isSecured, String database, String host, String port, String user, String password) throws Exception {
-        if (isSecured != null) {
-            commonspec.getLogger().debug("opening secure database");
-            this.commonspec.connectToDatabase(database, host, port, user, password, true);
-        }else {
-            commonspec.getLogger().debug("opening database");
-            this.commonspec.connectToDatabase(database, host, port, user, password, false);
-        }
-    }
-
 }
 
