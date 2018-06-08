@@ -259,10 +259,13 @@
 (def CrossdataISQLDriverMixin
   "Implementations of `ISQLDriver` methods for `CrossdataDriver`."
   (merge (sql/ISQLDriverDefaultsMixin)
-         {:column->base-type         (u/drop-first-arg column->base-type)
+         {:apply-source-table        (u/drop-first-arg apply-source-table)
+          :apply-join-tables         (u/drop-first-arg apply-join-tables)
+          :column->base-type         (u/drop-first-arg column->base-type)
           :column->special-type      (u/drop-first-arg column->special-type)
           :connection-details->spec  (u/drop-first-arg connection-details->spec)
           :date                      (u/drop-first-arg date)
+          :field->identifier         (u/drop-first-arg hive-like/field->identifier)
           :quote-style               (constantly :mysql)
           :set-timezone-sql          (constantly "UPDATE pg_settings SET setting = ? WHERE name ILIKE 'timezone';")
           :string-length-fn          (u/drop-first-arg string-length-fn)
