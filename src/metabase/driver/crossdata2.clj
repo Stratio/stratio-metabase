@@ -267,7 +267,7 @@
           :date                      (u/drop-first-arg date)
           ;;:field->identifier         (u/drop-first-arg hive-like/field->identifier)
           :excluded-schemas     (constantly nil)
-          :field->identifier    (u/drop-first-arg (comp (partial apply hsql/qualify) field/qualified-name-components))
+          :field->identifier    (u/drop-first-arg (comp (partial apply hsql/qualify) fieldd/qualified-name-components))
           :quote-style               (constantly :mysql)
           :set-timezone-sql          (constantly "UPDATE pg_settings SET setting = ? WHERE name ILIKE 'timezone';")
           :string-length-fn          (u/drop-first-arg string-length-fn)
