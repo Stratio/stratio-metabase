@@ -135,7 +135,12 @@ export default class Navbar extends Component {
               data-metabase-event={"Navbar;Logo"}
               className="NavItem cursor-pointer flex align-center"
             >
-              <LogoIcon className="text-brand my2" />
+              <RetinaImage
+                                                  className="mx1"
+                                                  src="app/img/stratio-logo.png"
+                                                  width={79}
+                                                  forceOriginalDimensions={false /* broken in React v0.13 */}
+                                              />
             </Link>
           </li>
         </ul>
@@ -154,7 +159,12 @@ export default class Navbar extends Component {
               className="LogoNavItem NavItem cursor-pointer text-white flex align-center transition-background justify-center"
               activeClassName="NavItem--selected"
             >
-              <LogoIcon dark={true} />
+              <RetinaImage
+                                              className="mx1"
+                                              src="app/img/stratio-logo.png"
+                                              width={79}
+                                              forceOriginalDimensions={false /* broken in React v0.13 */}
+                                          />
             </Link>
           </li>
           <li className="md-pl3 hide xs-show">
