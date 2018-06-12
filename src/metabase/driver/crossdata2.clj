@@ -19,14 +19,15 @@
                       [helpers :as h]
                       types)
             [metabase.driver.generic-sql.util.unprepare :as unprepare]
-            [metabase.util.honeysql-extensions :as hx])
+            [metabase.util.honeysql-extensions :as hx]
+            [toucan.db :as db])
   (:import java.util.UUID
            (java.util Collections Date)
            (metabase.query_processor.interface DateTimeValue Value)
            (metabase.query_processor.interface DateTimeValue)
            metabase.query_processor.interface.Field))
 
-(defrecord Crossdata2Driver []
+(defrecord CrossdataDriver []
   clojure.lang.Named
   (getName [_] "Crossdata2"))
 
@@ -44,7 +45,7 @@
    :SQL_LONGVARCHAR         :type/Text
    :SQL_CHAR                :type/Text
    :TIMESTAMP               :type/DateTime
-   :DATE                    :type/DateTime
+   :DATE                    :type/Date
    :SQL_BOOLEAN             :type/Boolean
    (keyword "bit varying")                :type/*
    (keyword "character varying")          :type/Text
@@ -73,10 +74,10 @@
   "Params to include in the JDBC connection spec to disable SSL."
   {:sslmode "disable"})
 
+
 (defn execute-query
   "Process and run a native (raw SQL) QUERY."
   [driver {:keys [database settings ], query :native, {sql :query, params :params} :native, :as outer-query}]
-
   (let [sql (str
               (if (seq params)
                 (unprepare/unprepare (cons sql params))
@@ -189,6 +190,22 @@
 (defn- string-length-fn [field-key]
   (hsql/call :length (hx/cast :STRING field-key)))
 
+;; ignore the schema when producing the identifier
+(defn qualified-name-components
+  "Return the pieces that represent a path to FIELD, of the form `[table-name parent-fields-name* field-name]`.
+   This function should be used by databases where schemas do not make much sense."
+  [{field-name :name, table-id :table_id, parent-id :parent_id}]
+  (conj (vec (if-let [parent (metabase.models.field/Field parent-id)]
+               (qualified-name-components parent)
+               (let [{table-name :name} (db/select-one ['Table :name], :id table-id)]
+                 [table-name])))
+        field-name))
+
+(defn field->identifier
+  "Returns an identifier for the given field"
+  [field]
+  (apply hsql/qualify (qualified-name-components field)))
+
 ;;; ------------------------------------------ Custom HoneySQL Clause Impls ------------------------------------------
 
 (def ^:private source-table-alias "t1")
@@ -208,10 +225,10 @@
             (assoc :table-name (:join-alias matching-join-table)))
         field))))
 
-(defmethod  qprocessor/->honeysql [Crossdata2Driver Field]
+(defmethod  qprocessor/->honeysql [CrossdataDriver Field]
   [driver field-before-aliasing]
-  (let [{:keys [schema-name table-name special-type field-name]} (resolve-table-alias field-before-aliasing)
-        field (keyword (hx/qualify-and-escape-dots schema-name table-name field-name))]
+  (let [{:keys [table-name special-type field-name]} (resolve-table-alias field-before-aliasing)
+        field (keyword (hx/qualify-and-escape-dots table-name field-name))]
     (cond
       (isa? special-type :type/UNIXTimestampSeconds)      (sql/unix-timestamp->timestamp driver field :seconds)
       (isa? special-type :type/UNIXTimestampMilliseconds) (sql/unix-timestamp->timestamp driver field :milliseconds)
@@ -250,8 +267,6 @@
   {:pre [table-name]}
   (h/from honeysql-form [(hx/qualify-and-escape-dots schema table-name) source-table-alias]))
 
-
-
 (defrecord CrossdataDriver []
   clojure.lang.Named
   (getName [_] "Crossdata2"))
@@ -265,9 +280,7 @@
           :column->special-type      (u/drop-first-arg column->special-type)
           :connection-details->spec  (u/drop-first-arg connection-details->spec)
           :date                      (u/drop-first-arg date)
-          ;;:field->identifier         (u/drop-first-arg hive-like/field->identifier)
-          :excluded-schemas     (constantly nil)
-          :field->identifier    (u/drop-first-arg (comp (partial apply hsql/qualify) fieldd/qualified-name-components))
+          :field->identifier         (u/drop-first-arg field->identifier)
           :quote-style               (constantly :mysql)
           :set-timezone-sql          (constantly "UPDATE pg_settings SET setting = ? WHERE name ILIKE 'timezone';")
           :string-length-fn          (u/drop-first-arg string-length-fn)
