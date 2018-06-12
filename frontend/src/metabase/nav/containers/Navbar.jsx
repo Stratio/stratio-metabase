@@ -15,6 +15,8 @@ import ProfileLink from "metabase/nav/components/ProfileLink.jsx";
 
 import { getPath, getContext, getUser } from "../selectors";
 
+import RetinaImage from "react-retina-image";
+
 const mapStateToProps = (state, props) => ({
   path: getPath(state, props),
   context: getContext(state, props),
