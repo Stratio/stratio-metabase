@@ -15,5 +15,5 @@ Feature: Uninstall Discovery _
 
   @runOnEnv(DISC_VERSION=0.29.0-SNAPSHOT||DISC_VERSION=0.29.0-d524010)
   Scenario: [Uninstallation Discovery][01] Uninstall Discovery
-    Given I run 'dcos marathon app remove /${DISCOVERY_SERVICE_NAME:-discovery}/${DISCOVERY_SERVICE_NAME:-discovery}' in the ssh connection
+    Given I run 'dcos marathon app remove /${DISCOVERY_SERVICE_FOLDER:-discovery}/${DISCOVERY_SERVICE_NAME:-discovery}' in the ssh connection
     Then in less than '300' seconds, checking each '10' seconds, the command output 'dcos task | grep ${DISCOVERY_SERVICE_NAME:-discovery} | wc -l' contains '0'
