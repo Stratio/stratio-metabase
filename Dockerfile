@@ -16,6 +16,8 @@ ENV LC_CTYPE en_US.UTF-8
 # install core build tools
 # fix broken cacerts
 # install lein
+# add the application source to the image
+ADD . /app/source
 ADD https://raw.github.com/technomancy/leiningen/stable/bin/lein /usr/local/bin/lein
 RUN apk add --update nodejs git wget bash python make g++ java-cacerts ttf-dejavu fontconfig && \
     npm install -g yarn && \
@@ -30,8 +32,6 @@ RUN apk add --update nodejs git wget bash python make g++ java-cacerts ttf-dejav
     mkdir /root/kms/ && \
     mv  /app/source/resources/kms/* /root/kms/.
 
-# add the application source to the image
-ADD . /app/source
 
 ENV MAVEN_VERSION="3.2.5" \
     M2_HOME=/usr/lib/mvn
