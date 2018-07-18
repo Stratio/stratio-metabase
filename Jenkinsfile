@@ -22,7 +22,6 @@ hose {
 
     INSTALLSERVICES = [
             ['DCOSCLI':   ['image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
-                           'volumes': ['stratio/paasintegrationpem:0.1.0'],
                            'env':     ['DCOS_IP=10.200.0.205',
                                       'SSL=true',
                                       'SSH=true',
