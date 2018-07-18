@@ -22,15 +22,15 @@ hose {
 
     INSTALLSERVICES = [
             ['DCOSCLI':   ['image': 'stratio/dcos-cli:0.4.15-SNAPSHOT',
-                           'volumes': ['stratio/paasintegrationpem:0.1.0'],
                            'env':     ['DCOS_IP=10.200.0.205',
                                       'SSL=true',
                                       'SSH=true',
                                       'TOKEN_AUTHENTICATION=true',
                                       'DCOS_USER=admin@demo.stratio.com',
                                       'DCOS_PASSWORD=1234',
-                                      'BOOTSTRAP_USER=root',
-                                      'REMOTE_PASSWORD=stratio'],
+                                      'CLI_BOOTSTRAP_USER=root',
+                                      'CLI_BOOTSTRAP_PASSWORD=stratio'
+                                      ],
                            'sleep':  120,
                            'healthcheck': 5000]]
         ]
