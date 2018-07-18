@@ -25,5 +25,7 @@ Feature: Uninstall Postgres instances
     And I save element in position '0' in '$.status[?(@.role == "master")].ports[0]' in environment variable 'pgPortCalico'
     Given I open a ssh connection to '!{pgIP}' with user '${CLI_USER:-root}' and password '${CLI_PASSWORD:-stratio}'
     When I run 'docker ps -q | xargs -n 1 docker inspect --format '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}} {{ .Name }}' | sed 's/ \// /'| grep !{pgIPCalico} | awk '{print $2}'' in the ssh connection and save the value in environment variable 'postgresDocker'
+#    When I run 'docker exec -t !{postgresDocker} psql -p !{pgPortCalico} -U postgres -c "DROP DATABASE ${DISCOVERY_DATASTORE_DB:-discovery}"' in the ssh connection
+    When I run 'docker exec -t !{postgresDocker} psql -p !{pgPortCalico} -U postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = '${DISCOVERY_DATASTORE_DB:-discovery}'"' in the ssh connection
     When I run 'docker exec -t !{postgresDocker} psql -p !{pgPortCalico} -U postgres -c "DROP DATABASE ${DISCOVERY_DATASTORE_DB:-discovery}"' in the ssh connection
     Then the command output contains 'DROP DATABASE'

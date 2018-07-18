@@ -9,7 +9,7 @@ Feature: Create Policy for user crossdata-1 in Gosec
     And I securely send requests to '${DCOS_IP}:443'
 
   @runOnEnv(DISC_VERSION=0.30.0,REGISTERSERVICEOLD=false)
-  Scenario: [Create Policy for user crossdata-1 in Gosec][01] Creation policy user crossdata-1
+  Scenario: [Delete policy for user crossdata-1 in Gosec][01] Deletion policy user crossdata-1
     Given I set sso token using host '${CLUSTER_SSO:-nightly.labs.stratio.com}' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
     And I securely send requests to '${CLUSTER_SSO:-nightly.labs.stratio.com}:443'
     When I send a 'DELETE' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/policy/${DISCOVERY_POLICY_ID:-discovery}'
