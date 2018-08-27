@@ -27,7 +27,6 @@
               [metabase.public-settings :as public-settings]
               [toucan.db :as db])
     (:import java.util.UUID))
-(:import java.util.UUID))
 
 (defn- create-session!
   "Generate a new `Session` for a given `User`. Returns the newly generated session ID."
