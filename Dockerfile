@@ -60,7 +60,7 @@ RUN lein deps
 
 # frontend dependencies
 ADD yarn.lock package.json ./
-RUN yarn
+RUN yarn --ignore-engines
 
 # add the rest of the source
 ADD . .
