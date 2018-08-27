@@ -17,27 +17,6 @@ ENV LC_CTYPE en_US.UTF-8
 # gettext: translations
 RUN apk add --update bash nodejs git wget make gettext
 
-# yarn:    frontend dependencies
-RUN npm install -g yarn
-
-# lein:    backend dependencies and building
-ADD https://raw.github.com/technomancy/leiningen/stable/bin/lein /usr/local/bin/lein
-RUN chmod 744 /usr/local/bin/lein
-RUN lein upgrade
-
-# install dependencies before adding the rest of the source to maximize caching
-
-# backend dependencies
-ADD project.clj .
-RUN lein deps
-
-# frontend dependencies
-ADD yarn.lock package.json ./
-RUN yarn
-
-# add the rest of the source
-ADD . .
-
 # import Crossdata and defaultSecrets
 RUN mkdir /root/.crossdata/ && \
     mkdir /root/defaultsecrets/ && \
@@ -62,6 +41,27 @@ RUN apk add --update wget && \
     mvn dependency:get -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.13.0-5000715 -DremoteRepositories=http://sodio.stratio.com/repository/public/ -Dtransitive=false && \
     mv /root/.m2/repository/com/stratio/jdbc/stratio-crossdata-jdbc4/2.13.0-5000715/stratio-crossdata-jdbc4-2.13.0-5000715.jar /app/source/bin/lib/stratio-crossdata-jdbc4-2.13.0-5000715.jar && \
     mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.13.0-5000715.jar -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.13.0-5000715 -Dpackaging=jar
+
+# yarn:    frontend dependencies
+RUN npm install -g yarn
+
+# lein:    backend dependencies and building
+ADD https://raw.github.com/technomancy/leiningen/stable/bin/lein /usr/local/bin/lein
+RUN chmod 744 /usr/local/bin/lein
+RUN lein upgrade
+
+# install dependencies before adding the rest of the source to maximize caching
+
+# backend dependencies
+ADD project.clj .
+RUN lein deps
+
+# frontend dependencies
+ADD yarn.lock package.json ./
+RUN yarn
+
+# add the rest of the source
+ADD . .
 
 # build the app
 RUN bin/build
