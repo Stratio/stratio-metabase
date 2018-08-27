@@ -17,6 +17,8 @@ ENV LC_CTYPE en_US.UTF-8
 # gettext: translations
 RUN apk add --update bash nodejs git wget make gettext
 
+ADD . /app/source
+
 # import Crossdata and defaultSecrets
 RUN mkdir /root/.crossdata/ && \
     mkdir /root/defaultsecrets/ && \
