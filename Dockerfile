@@ -38,19 +38,6 @@ RUN yarn
 # add the rest of the source
 ADD . .
 
-# build the app
-RUN bin/build
-
-# install updated cacerts to /etc/ssl/certs/java/cacerts
-RUN apk add --update java-cacerts
-
-# import AWS RDS cert into /etc/ssl/certs/java/cacerts
-ADD https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem .
-RUN keytool -noprompt -import -trustcacerts -alias aws-rds \
-  -file rds-combined-ca-bundle.pem \
-  -keystore /etc/ssl/certs/java/cacerts \
-  -keypass changeit -storepass changeit
-
 # import Crossdata and defaultSecrets
 RUN mkdir /root/.crossdata/ && \
     mkdir /root/defaultsecrets/ && \
@@ -75,6 +62,19 @@ RUN apk add --update wget && \
     mvn dependency:get -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.13.0-5000715 -DremoteRepositories=http://sodio.stratio.com/repository/public/ -Dtransitive=false && \
     mv /root/.m2/repository/com/stratio/jdbc/stratio-crossdata-jdbc4/2.13.0-5000715/stratio-crossdata-jdbc4-2.13.0-5000715.jar /app/source/bin/lib/stratio-crossdata-jdbc4-2.13.0-5000715.jar && \
     mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.13.0-5000715.jar -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.13.0-5000715 -Dpackaging=jar
+
+# build the app
+RUN bin/build
+
+# install updated cacerts to /etc/ssl/certs/java/cacerts
+RUN apk add --update java-cacerts
+
+# import AWS RDS cert into /etc/ssl/certs/java/cacerts
+ADD https://s3.amazonaws.com/rds-downloads/rds-combined-ca-bundle.pem .
+RUN keytool -noprompt -import -trustcacerts -alias aws-rds \
+  -file rds-combined-ca-bundle.pem \
+  -keystore /etc/ssl/certs/java/cacerts \
+  -keypass changeit -storepass changeit
 
 
 # ###################
