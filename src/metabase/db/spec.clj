@@ -14,6 +14,7 @@
           :subname     db}
          (dissoc opts :db)))
 
+
 (defn postgres
   "Create a database specification for a postgres database. Opts should include
   keys for :db, :user, and :password. You can also optionally set host and
@@ -25,7 +26,6 @@
           :subprotocol "postgresql"
           :subname     (str "//" host ":" port "/" db "?OpenSourceSubProtocolOverride=true")}
          (dissoc opts :host :port :db)))
-
 
 
 (defn crossdata
@@ -46,6 +46,7 @@
             :subprotocol "crossdata"
             :subname (str "//Server=" host ":" port ";UID=" user ";LogLevel=3;LogPath=/tmp/crossdata-jdbc-logs")}
            (dissoc opts :host :port :db))))
+
 
 (defn crossdata2
   "Create a database specification for a postgres database. Opts should include
