@@ -33,7 +33,7 @@
     (merge {:classname "org.postgresql.Driver" ; must be in classpath
            :subprotocol "postgresql"
            :subname (str "//" host ":" port "/" db "?OpenSourceSubProtocolOverride=true")}
-          (dissoc opts :host :port :db)))
+          (dissoc opts :host :port :db))))
 
 
 (defn crossdata
