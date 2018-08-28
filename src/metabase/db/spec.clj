@@ -20,12 +20,20 @@
   keys for :db, :user, and :password. You can also optionally set host and
   port."
   [{:keys [host port db]
-    :or   {host "localhost", port 5432, db ""}
-    :as   opts}]
-  (merge {:classname   "org.postgresql.Driver"
-          :subprotocol "postgresql"
-          :subname     (str "//" host ":" port "/" db "?OpenSourceSubProtocolOverride=true")}
-         (dissoc opts :host :port :db)))
+    :or {host "localhost", port 5432, db ""}
+    :as opts}]
+  (if (get opts :sslcert)
+    (merge {:classname "org.postgresql.Driver" ; must be in classpath
+            :subprotocol "postgresql"
+            :subname (str "//" host ":" port "/" db "?OpenSourceSubProtocolOverride=true&user=" (get opts :user) "&ssl=true&sslmode=verify-full&sslcert=" (get opts :sslcert) "&sslkey=" (get opts :sslkey) "&sslrootcert="(get opts :sslrootcert))
+            :sslmode "verify-full"
+            :ssl "true"}
+           (dissoc opts :host :port :db)
+           )
+    (merge {:classname "org.postgresql.Driver" ; must be in classpath
+           :subprotocol "postgresql"
+           :subname (str "//" host ":" port "/" db "?OpenSourceSubProtocolOverride=true")}
+          (dissoc opts :host :port :db)))
 
 
 (defn crossdata

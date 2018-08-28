@@ -92,9 +92,10 @@ ENV LC_CTYPE en_US.UTF-8
 
 # dependencies
 RUN apk add --update bash ttf-dejavu fontconfig && \
-    apk add --no-cache curl && \
+    apk add --update curl && \
     apk add --update jq && \
-    apk add --update openssl
+    apk add --update openssl && \
+    rm -rf /var/cache/apk/*
 
 # add fixed cacerts
 COPY --from=builder /etc/ssl/certs/java/cacerts /usr/lib/jvm/default-jvm/jre/lib/security/cacerts
