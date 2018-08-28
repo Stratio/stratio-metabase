@@ -505,6 +505,16 @@
        {:rows    (or rows [])
         :columns columns}))
 
+(defn run-query-with-out-remark
+  "Run the query itself."
+  [{sql :query, params :params, remark :remark} connection]
+  (let [sql (str (hx/unescape-dots sql))
+        ;;(let [sql (hx/unescape-dots sql)
+        statement (into [sql] params)
+        [columns & rows] (jdbc/query connection statement {:identifiers identity, :as-arrays? true})]
+    {:rows    (or rows [])
+     :columns columns}))
+
 (defn- exception->nice-error-message ^String [^SQLException e]
   (or (->> (.getMessage e)     ; error message comes back like 'Column "ZID" not found; SQL statement: ... [error-code]' sometimes
            (re-find #"^(.*);") ; the user already knows the SQL, and error code is meaningless
@@ -535,7 +545,7 @@
   (try (f)
        (finally (.rollback (jdbc/get-connection conn)))))
 
-(defn do-in-transaction [connection f]
+(defn- do-in-transaction [connection f]
   (jdbc/with-db-transaction [transaction-connection connection]
     (do-with-auto-commit-disabled transaction-connection (partial f transaction-connection))))
 
