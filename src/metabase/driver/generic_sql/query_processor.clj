@@ -545,7 +545,7 @@
   (try (f)
        (finally (.rollback (jdbc/get-connection conn)))))
 
-(defn- do-in-transaction [connection f]
+(defn do-in-transaction [connection f]
   (jdbc/with-db-transaction [transaction-connection connection]
     (do-with-auto-commit-disabled transaction-connection (partial f transaction-connection))))
 
