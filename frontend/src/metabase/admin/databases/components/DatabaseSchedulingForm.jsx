@@ -7,6 +7,7 @@ import { t } from "c-3po";
 import FormMessage from "metabase/components/form/FormMessage";
 import SchedulePicker from "metabase/components/SchedulePicker";
 import LoadingAndErrorWrapper from "metabase/components/LoadingAndErrorWrapper";
+import RetinaImage from "react-retina-image";
 
 import MetabaseAnalytics from "metabase/lib/analytics";
 import colors from "metabase/lib/colors";
