@@ -26,6 +26,47 @@
           :subname     (str "//" host ":" port "/" db "?OpenSourceSubProtocolOverride=true")}
          (dissoc opts :host :port :db)))
 
+
+
+(defn crossdata
+  "Create a database specification for a postgres database. Opts should include
+  keys for :db, :user, and :password. You can also optionally set host and
+  port."
+  [{:keys [host port db user]
+    :or {host "localhost", port 13422, db ""}
+    :as opts}]
+
+
+  (if db
+    (merge {:classname "com.stratio.jdbc.core.jdbc4.StratioDriver" ; must be in classpath
+            :subprotocol "crossdata"
+            :subname (str "//Server=" host ":" port ";UID=" user ";SSL=true;LogLevel=3;LogPath=/tmp/crossdata-jdbc-logs")}
+           (dissoc opts :host :port :db))
+    (merge {:classname "com.stratio.jdbc.core.jdbc4.StratioDriver" ; must be in classpath
+            :subprotocol "crossdata"
+            :subname (str "//Server=" host ":" port ";UID=" user ";LogLevel=3;LogPath=/tmp/crossdata-jdbc-logs")}
+           (dissoc opts :host :port :db))))
+
+(defn crossdata2
+  "Create a database specification for a postgres database. Opts should include
+  keys for :db, :user, and :password. You can also optionally set host and
+  port."
+  [{:keys [host port db user]
+    :or {host "localhost", port 13422, db ""}
+    :as opts}]
+
+
+  (if db
+    (merge {:classname "com.stratio.jdbc.core.jdbc4.StratioDriver" ; must be in classpath
+            :subprotocol "crossdata"
+            :subname (str "//Server=" host ":" port ";UID=" user ";SSL=true;LogLevel=3;LogPath=/tmp/crossdata-jdbc-logs")}
+           (dissoc opts :host :port :db))
+    (merge {:classname "com.stratio.jdbc.core.jdbc4.StratioDriver" ; must be in classpath
+            :subprotocol "crossdata"
+            :subname (str "//Server=" host ":" port ";UID=" user ";LogLevel=3;LogPath=/tmp/crossdata-jdbc-logs")}
+           (dissoc opts :host :port :db))))
+
+
 (defn mysql
   "Create a database specification for a mysql database. Opts should include keys
   for :db, :user, and :password. You can also optionally set host and port.
