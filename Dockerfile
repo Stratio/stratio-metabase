@@ -97,10 +97,10 @@ RUN apk add --update bash ttf-dejavu fontconfig
 COPY --from=builder /etc/ssl/certs/java/cacerts /usr/lib/jvm/default-jvm/jre/lib/security/cacerts
 
 # add Metabase script and uberjar
-RUN mkdir -p bin target/uberjar
+RUN mkdir -p bin target/uberjar && \
+    mkdir -p bin /root/.crossdata/
 COPY --from=builder /app/source/target/uberjar/metabase.jar /app/target/uberjar/
 COPY --from=builder /app/source/bin/start /app/bin/
-COPY --from=builder /root/.crossdata/* /root/.crossdata/
 COPY --from=builder /root/defaultsecrets/* /root/defaultsecrets/
 COPY --from=builder /root/kms/* /root/kms/
 
