@@ -242,12 +242,12 @@ export default class Navbar extends Component {
               data-metabase-event={"Navbar;Logo"}
               className="NavItem cursor-pointer flex align-center"
             >
-              <RetinaImage
-                                                  className="mx1"
-                                                  src="app/img/stratio-logo.png"
-                                                  width={79}
-                                                  forceOriginalDimensions={false /* broken in React v0.13 */}
-                                              />
+            <RetinaImage
+              className="mx1"
+              src="app/img/stratio-logo.png"
+              width={79}
+              forceOriginalDimensions={false /* broken in React v0.13 */}
+            />
             </Link>
           </li>
         </ul>
