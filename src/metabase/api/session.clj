@@ -70,6 +70,7 @@
          (u/format-color 'red
              (trs "Problem connecting to LDAP server, will fallback to local authentication {0}" (.getMessage e))))))))
 
+;; TODO romartin:
 (defn- email-login
   "Find a matching `User` if one exists and return a new Session for them, or `nil` if they couldn't be authenticated."
   [username password headers]
