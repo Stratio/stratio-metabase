@@ -15,9 +15,9 @@
   (:import [java.util TimeZone UUID]))
 
 (defsetting check-for-updates
-  (tru "Identify when new versions of Metabase are available.")
+  (tru "Identify when new versions of Metabase are available.\n IMPORTAT: It's preferable to wait for Discovery upgrades to get new updates.")
   :type    :boolean
-  :default true)
+  :default false)
 
 (defsetting version-info
   (tru "Information about available versions of Metabase.")
