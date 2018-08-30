@@ -85,7 +85,6 @@ fi
 # directory rather than a specific file, then we are safe to set permissions on
 # that directory so there is no need to move anything.
 
-# an example file would look like /tmp/metabase.db/metabase.db.mv.db
 new_db_dir=$(dirname $db_file)/$(basename $db_file)
 
 if [[ $db_exists = "true" && ! $db_directory = "true" ]]; then

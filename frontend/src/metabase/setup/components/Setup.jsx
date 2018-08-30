@@ -92,7 +92,7 @@ export default class Setup extends Component {
               <h1
                 style={{ fontSize: "2.2rem" }}
                 className="text-brand"
-              >{t`Welcome to Metabase`}</h1>
+              >{t`Welcome to Discovery`}</h1>
               <p className="text-body">{t`Looks like everything is working. Now let’s get to know you, connect to your data, and start finding you some answers!`}</p>
               <button
                 className="Button Button--primary mt4"
@@ -153,7 +153,7 @@ export default class Setup extends Component {
                       to="/"
                       className="Button Button--primary"
                       onClick={this.completeSetup.bind(this)}
-                    >{t`Take me to Metabase`}</Link>
+                    >{t`Take me to Discovery`}</Link>
                   </div>
                 </section>
               ) : null}

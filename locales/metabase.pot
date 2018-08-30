@@ -1,6 +1,6 @@
 # #-#-#-#-#  metabase-backend.pot (metabase)  #-#-#-#-#
 # SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Metabase <docs@metabase.com>
+# Copyright (C) YEAR Discovery <docs@metabase.com>
 # This file is distributed under the same license as the metabase package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -62,7 +62,7 @@ msgstr ""
 
 #: frontend/src/metabase/admin/databases/components/DatabaseSchedulingForm.jsx:122
 msgid ""
-"To do some of its magic, Metabase needs to scan your database. We will also "
+"To do some of its magic, Discovery needs to scan your database. We will also "
 "rescan it periodically to keep the metadata up-to-date. You can control when "
 "the periodic rescans happen below."
 msgstr ""
@@ -90,7 +90,7 @@ msgstr ""
 
 #: frontend/src/metabase/admin/databases/components/DatabaseSchedulingForm.jsx:153
 msgid ""
-"Metabase can scan the values present in each\n"
+"Discovery can scan the values present in each\n"
 "field in this database to enable checkbox filters in dashboards and "
 "questions. This\n"
 "can be a somewhat resource-intensive process, particularly if you have a "
@@ -99,7 +99,7 @@ msgid ""
 msgstr ""
 
 #: frontend/src/metabase/admin/databases/components/DatabaseSchedulingForm.jsx:159
-msgid "When should Metabase automatically scan and cache field values?"
+msgid "When should Discovery automatically scan and cache field values?"
 msgstr ""
 
 #: frontend/src/metabase/admin/databases/components/DatabaseSchedulingForm.jsx:164
@@ -112,7 +112,7 @@ msgstr ""
 
 #: frontend/src/metabase/admin/databases/components/DatabaseSchedulingForm.jsx:199
 msgid ""
-"When a user adds a new filter to a dashboard or a SQL question, Metabase "
+"When a user adds a new filter to a dashboard or a SQL question, Discovery "
 "will\n"
 "scan the field(s) mapped to that filter in order to show the list of "
 "selectable values."
@@ -626,7 +626,7 @@ msgid "{0} – Field Settings"
 msgstr ""
 
 #: frontend/src/metabase/admin/datamodel/containers/FieldApp.jsx:204
-msgid "Where this field will appear throughout Metabase"
+msgid "Where this field will appear throughout Discovery"
 msgstr ""
 
 #: frontend/src/metabase/admin/datamodel/containers/FieldApp.jsx:226
@@ -716,7 +716,7 @@ msgstr ""
 
 #: frontend/src/metabase/admin/datamodel/containers/FieldApp.jsx:782
 msgid ""
-"Metabase can scan the values for this field to enable checkbox filters in "
+"Discovery can scan the values for this field to enable checkbox filters in "
 "dashboards and questions."
 msgstr ""
 
@@ -891,7 +891,7 @@ msgstr ""
 
 #: frontend/src/metabase/admin/datamodel/containers/TableSettingsApp.jsx:106
 msgid ""
-"Metabase can scan the values in this table to enable checkbox filters in "
+"Discovery can scan the values in this table to enable checkbox filters in "
 "dashboards and questions."
 msgstr ""
 
@@ -946,12 +946,12 @@ msgstr ""
 msgid ""
 "All users belong to the {0} group and can't be removed from it. Setting "
 "permissions for this group is a great way to\n"
-"make sure you know what new Metabase users will be able to see."
+"make sure you know what new Discovery users will be able to see."
 msgstr ""
 
 #: frontend/src/metabase/admin/people/components/GroupDetail.jsx:41
 msgid ""
-"This is a special group whose members can see everything in the Metabase "
+"This is a special group whose members can see everything in the Discovery "
 "instance, and who can access and make changes to the\n"
 "settings in the Admin Panel, including changing permissions! So, add people "
 "to this group with care."
@@ -959,7 +959,7 @@ msgstr ""
 
 #: frontend/src/metabase/admin/people/components/GroupDetail.jsx:45
 msgid ""
-"To make sure you don't get locked out of Metabase, there always has to be at "
+"To make sure you don't get locked out of Discovery, there always has to be at "
 "least one user in this group."
 msgstr ""
 
@@ -1334,19 +1334,19 @@ msgstr ""
 #: frontend/src/metabase/admin/permissions/selectors.js:59
 msgid ""
 "Administrators always have the highest level of access to everything in "
-"Metabase."
+"Discovery."
 msgstr ""
 
 #: frontend/src/metabase/admin/permissions/selectors.js:61
 msgid ""
-"Every Metabase user belongs to the All Users group. If you want to limit or "
+"Every Discovery user belongs to the All Users group. If you want to limit or "
 "restrict a group's access to something, make sure the All Users group has an "
 "equal or lower level of access."
 msgstr ""
 
 #: frontend/src/metabase/admin/permissions/selectors.js:63
 msgid ""
-"MetaBot is Metabase's Slack bot. You can choose what it has access to here."
+"MetaBot is Discovery's Slack bot. You can choose what it has access to here."
 msgstr ""
 
 #: frontend/src/metabase/admin/permissions/selectors.js:115
@@ -1516,8 +1516,8 @@ msgstr ""
 #: frontend/src/metabase/admin/settings/components/SettingsAuthenticationOptions.jsx:13
 #: frontend/src/metabase/admin/settings/components/SettingsSingleSignOnForm.jsx:120
 msgid ""
-"Allows users with existing Metabase accounts to login with a Google account "
-"that matches their email address in addition to their Metabase username and "
+"Allows users with existing Discovery accounts to login with a Google account "
+"that matches their email address in addition to their Discovery username and "
 "password."
 msgstr ""
 
@@ -1535,8 +1535,8 @@ msgstr ""
 
 #: frontend/src/metabase/admin/settings/components/SettingsAuthenticationOptions.jsx:25
 msgid ""
-"Allows users within your LDAP directory to log in to Metabase with their "
-"LDAP credentials, and allows automatic mapping of LDAP groups to Metabase "
+"Allows users within your LDAP directory to log in to Discovery with their "
+"LDAP credentials, and allows automatic mapping of LDAP groups to Discovery "
 "groups."
 msgstr ""
 
@@ -1609,7 +1609,7 @@ msgid "Getting set up"
 msgstr ""
 
 #: frontend/src/metabase/admin/settings/components/SettingsSetupList.jsx:106
-msgid "A few things you can do to get the most out of Metabase."
+msgid "A few things you can do to get the most out of Discovery."
 msgstr ""
 
 #: frontend/src/metabase/admin/settings/components/SettingsSetupList.jsx:115
@@ -1622,7 +1622,7 @@ msgstr ""
 
 #: frontend/src/metabase/admin/settings/components/SettingsSingleSignOnForm.jsx:123
 msgid ""
-"To allow users to sign in with Google you'll need to give Metabase a Google "
+"To allow users to sign in with Google you'll need to give Discovery a Google "
 "Developers console application client ID. It only takes a few steps and "
 "instructions on how to create a key can be found {0}"
 msgstr ""
@@ -1649,15 +1649,15 @@ msgstr ""
 msgid ""
 "Once you're there, give it a name and click {0}. Then copy and paste the Bot "
 "API Token into the field below. Once you are done, create a \"metabase_files"
-"\" channel in Slack. Metabase needs this to upload graphs."
+"\" channel in Slack. Discovery needs this to upload graphs."
 msgstr ""
 
 #: frontend/src/metabase/admin/settings/components/SettingsUpdatesForm.jsx:90
-msgid "You're running Metabase {0} which is the latest and greatest!"
+msgid "You're running Discovery {0} which is the latest and greatest!"
 msgstr ""
 
 #: frontend/src/metabase/admin/settings/components/SettingsUpdatesForm.jsx:99
-msgid "Metabase {0} is available.  You're running {1}"
+msgid "Discovery {0} is available.  You're running {1}"
 msgstr ""
 
 #: frontend/src/metabase/admin/settings/components/SettingsUpdatesForm.jsx:112
@@ -1767,10 +1767,10 @@ msgstr ""
 
 #: frontend/src/metabase/admin/settings/components/widgets/EmbeddingLegalese.jsx:19
 msgid ""
-"In plain English, when you embed charts or dashboards from Metabase in your "
+"In plain English, when you embed charts or dashboards from Discovery in your "
 "own application, that application isn't subject to the Affero General Public "
-"License that covers the rest of Metabase, provided you keep the Metabase "
-"logo and the \"Powered by Metabase\" visible on those embeds. You should, "
+"License that covers the rest of Discovery, provided you keep the Discovery "
+"logo and the \"Powered by Discovery\" visible on those embeds. You should, "
 "however, read the license text linked above as that is the actual license "
 "that you will be agreeing to by enabling this feature."
 msgstr ""
@@ -1784,12 +1784,12 @@ msgid "Premium embedding enabled"
 msgstr ""
 
 #: frontend/src/metabase/admin/settings/components/widgets/EmbeddingLevel.jsx:26
-msgid "Enter the token you bought from the Metabase Store"
+msgid "Enter the token you bought from the Discovery Store"
 msgstr ""
 
 #: frontend/src/metabase/admin/settings/components/widgets/EmbeddingLevel.jsx:53
 msgid ""
-"Premium embedding lets you disable \"Powered by Metabase\" on your embedded "
+"Premium embedding lets you disable \"Powered by Discovery\" on your embedded "
 "dashboards and questions."
 msgstr ""
 
@@ -1815,7 +1815,7 @@ msgstr ""
 
 #: frontend/src/metabase/admin/settings/components/widgets/LdapGroupMappingsWidget.jsx:149
 msgid ""
-"Mappings allow Metabase to automatically add and remove users from groups "
+"Mappings allow Discovery to automatically add and remove users from groups "
 "based on the membership information provided by the\n"
 "directory server. Membership to the Admin group can be granted through "
 "mappings, but will not be automatically removed as a\n"
@@ -2087,7 +2087,7 @@ msgid "Map tile server URL"
 msgstr ""
 
 #: frontend/src/metabase/admin/settings/selectors.js:300
-msgid "Metabase uses OpenStreetMaps by default."
+msgid "Discovery uses OpenStreetMaps by default."
 msgstr ""
 
 #: frontend/src/metabase/admin/settings/selectors.js:305
@@ -2120,7 +2120,7 @@ msgid "Embedding in other Applications"
 msgstr ""
 
 #: frontend/src/metabase/admin/settings/selectors.js:363
-msgid "Enable Embedding Metabase in other Applications"
+msgid "Enable Embedding Discovery in other Applications"
 msgstr ""
 
 #: frontend/src/metabase/admin/settings/selectors.js:373
@@ -2182,12 +2182,12 @@ msgid "Back to login"
 msgstr ""
 
 #: frontend/src/metabase/auth/components/GoogleNoAccount.jsx:15
-msgid "No Metabase account exists for this Google account."
+msgid "No Discovery account exists for this Google account."
 msgstr ""
 
 #: frontend/src/metabase/auth/components/GoogleNoAccount.jsx:17
 msgid ""
-"You'll need an administrator to create a Metabase account before you can use "
+"You'll need an administrator to create a Discovery account before you can use "
 "Google to log in."
 msgstr ""
 
@@ -2204,7 +2204,7 @@ msgid "Forgot password"
 msgstr ""
 
 #: frontend/src/metabase/auth/containers/ForgotPasswordApp.jsx:84
-msgid "The email you use for your Metabase account"
+msgid "The email you use for your Discovery account"
 msgstr ""
 
 #: frontend/src/metabase/auth/containers/ForgotPasswordApp.jsx:99
@@ -2216,7 +2216,7 @@ msgid "Check your email for instructions on how to reset your password."
 msgstr ""
 
 #: frontend/src/metabase/auth/containers/LoginApp.jsx:128
-msgid "Sign in to Metabase"
+msgid "Sign in to Discovery"
 msgstr ""
 
 #: frontend/src/metabase/auth/containers/LoginApp.jsx:138
@@ -2528,12 +2528,12 @@ msgstr ""
 
 #: frontend/src/metabase/components/DatabaseDetailsForm.jsx:247
 msgid ""
-"This is a large database, so let me choose when Metabase syncs and scans"
+"This is a large database, so let me choose when Discovery syncs and scans"
 msgstr ""
 
 #: frontend/src/metabase/components/DatabaseDetailsForm.jsx:249
 msgid ""
-"By default, Metabase does a lightweight hourly sync and an intensive daily "
+"By default, Discovery does a lightweight hourly sync and an intensive daily "
 "scan of field values.\n"
 "If you have a large database, we recommend turning this on and reviewing "
 "when and how often the field value scans happen."
@@ -2563,7 +2563,7 @@ msgstr ""
 
 #: frontend/src/metabase/components/DatabaseDetailsForm.jsx:324
 msgid ""
-"To use Metabase with this data you must enable API access in the Google "
+"To use Discovery with this data you must enable API access in the Google "
 "Developers Console."
 msgstr ""
 
@@ -2826,7 +2826,7 @@ msgid "Loading..."
 msgstr ""
 
 #: frontend/src/metabase/components/NewsletterForm.jsx:71
-msgid "Metabase Newsletter"
+msgid "Discovery Newsletter"
 msgstr ""
 
 #: frontend/src/metabase/components/NewsletterForm.jsx:81
@@ -2838,7 +2838,7 @@ msgid "Subscribe"
 msgstr ""
 
 #: frontend/src/metabase/components/NewsletterForm.jsx:106
-msgid "You're subscribed. Thanks for using Metabase!"
+msgid "You're subscribed. Thanks for using Discovery!"
 msgstr ""
 
 #: frontend/src/metabase/components/PasswordReveal.jsx:27
@@ -2918,7 +2918,7 @@ msgid "Calendar Day"
 msgstr ""
 
 #: frontend/src/metabase/components/SchedulePicker.jsx:210
-msgid "your Metabase timezone"
+msgid "your Discovery timezone"
 msgstr ""
 
 #: frontend/src/metabase/components/SearchHeader.jsx:21
@@ -3419,7 +3419,7 @@ msgid "Hello World!"
 msgstr ""
 
 #: frontend/src/metabase/home/components/Activity.jsx:252
-msgid "Metabase is up and running."
+msgid "Discovery is up and running."
 msgstr ""
 
 #: frontend/src/metabase/home/components/Activity.jsx:258
@@ -3558,7 +3558,7 @@ msgid "No results"
 msgstr ""
 
 #: frontend/src/metabase/home/containers/SearchApp.jsx:51
-msgid "Metabase couldn't find any results for your search."
+msgid "Discovery couldn't find any results for your search."
 msgstr ""
 
 #: frontend/src/metabase/home/containers/SearchApp.jsx:142
@@ -3816,7 +3816,7 @@ msgstr ""
 
 #: frontend/src/metabase/lib/core.js:255
 msgid ""
-"Metabase will never retrieve this field. Use this for sensitive or "
+"Discovery will never retrieve this field. Use this for sensitive or "
 "irrelevant information."
 msgstr ""
 
@@ -4374,7 +4374,7 @@ msgid "Help"
 msgstr ""
 
 #: frontend/src/metabase/nav/components/ProfileLink.jsx:76
-msgid "About Metabase"
+msgid "About Discovery"
 msgstr ""
 
 #: frontend/src/metabase/nav/components/ProfileLink.jsx:82
@@ -4407,7 +4407,7 @@ msgid "Search"
 msgstr ""
 
 #: frontend/src/metabase/nav/containers/Navbar.jsx:195
-msgid "Metabase Admin"
+msgid "Discovery Admin"
 msgstr ""
 
 #: frontend/src/metabase/nav/containers/Navbar.jsx:296
@@ -4715,7 +4715,7 @@ msgstr ""
 
 #: frontend/src/metabase/public/components/widgets/SharingPane.jsx:118
 msgid ""
-"Share this {0} with people who don't have a Metabase account using the URL "
+"Share this {0} with people who don't have a Discovery account using the URL "
 "below:"
 msgstr ""
 
@@ -4931,7 +4931,7 @@ msgstr ""
 
 #: frontend/src/metabase/pulse/components/WhatsAPulse.jsx:30
 msgid ""
-"Pulses let you send data from Metabase to email or Slack on the schedule of "
+"Pulses let you send data from Discovery to email or Slack on the schedule of "
 "your choice."
 msgstr ""
 
@@ -6159,7 +6159,7 @@ msgid "X-ray this field"
 msgstr ""
 
 #: frontend/src/metabase/reference/databases/NoDatabasesEmptyState.jsx:8
-msgid "Metabase is no fun without any data"
+msgid "Discovery is no fun without any data"
 msgstr ""
 
 #: frontend/src/metabase/reference/databases/NoDatabasesEmptyState.jsx:9
@@ -6306,7 +6306,7 @@ msgid "Contact {0}"
 msgstr ""
 
 #: frontend/src/metabase/reference/guide/GettingStartedGuideEditForm.jsx:248
-msgid "Help new Metabase users find their way around."
+msgid "Help new Discovery users find their way around."
 msgstr ""
 
 #: frontend/src/metabase/reference/guide/GettingStartedGuideEditForm.jsx:251
@@ -6524,7 +6524,7 @@ msgstr ""
 #: frontend/src/metabase/setup/components/DatabaseConnectionStep.jsx:165
 msgid ""
 "You’ll need some info about your database, like the username and password. "
-"If you don’t have that right now, Metabase also comes with a sample dataset "
+"If you don’t have that right now, Discovery also comes with a sample dataset "
 "you can get started with."
 msgstr ""
 
@@ -6550,7 +6550,7 @@ msgstr ""
 
 #: frontend/src/metabase/setup/components/PreferencesStep.jsx:76
 msgid ""
-"In order to help us improve Metabase, we'd like to collect certain data "
+"In order to help us improve Discovery, we'd like to collect certain data "
 "about usage through Google Analytics."
 msgstr ""
 
@@ -6559,11 +6559,11 @@ msgid "Here's a full list of everything we track and why."
 msgstr ""
 
 #: frontend/src/metabase/setup/components/PreferencesStep.jsx:98
-msgid "Allow Metabase to anonymously collect usage events"
+msgid "Allow Discovery to anonymously collect usage events"
 msgstr ""
 
 #: frontend/src/metabase/setup/components/PreferencesStep.jsx:105
-msgid "Metabase {0} collects anything about your data or question results."
+msgid "Discovery {0} collects anything about your data or question results."
 msgstr ""
 
 #: frontend/src/metabase/setup/components/PreferencesStep.jsx:106
@@ -6591,7 +6591,7 @@ msgid "is just a click away."
 msgstr ""
 
 #: frontend/src/metabase/setup/components/Setup.jsx:95
-msgid "Welcome to Metabase"
+msgid "Welcome to Discovery"
 msgstr ""
 
 #: frontend/src/metabase/setup/components/Setup.jsx:96
@@ -6609,7 +6609,7 @@ msgid "You're all set up!"
 msgstr ""
 
 #: frontend/src/metabase/setup/components/Setup.jsx:156
-msgid "Take me to Metabase"
+msgid "Take me to Discovery"
 msgstr ""
 
 #: frontend/src/metabase/setup/components/UserStep.jsx:155
@@ -6682,7 +6682,7 @@ msgstr ""
 #: frontend/src/metabase/setup/containers/PostSetupApp.jsx:72
 msgid ""
 "This seems to be taking a while. In the meantime, you can check out one of "
-"these example explorations to see what Metabase can do for you."
+"these example explorations to see what Discovery can do for you."
 msgstr ""
 
 #: frontend/src/metabase/setup/containers/PostSetupApp.jsx:85
@@ -7828,7 +7828,7 @@ msgstr ""
 
 #: src/metabase/api/session.clj
 msgid ""
-"You''ll need an administrator to create a Metabase account before you can "
+"You''ll need an administrator to create a Discovery account before you can "
 "use Google to log in."
 msgstr ""
 
@@ -7899,7 +7899,7 @@ msgid ""
 msgstr ""
 
 #: src/metabase/api/setup.clj
-msgid "Metabase"
+msgid "Discovery"
 msgstr ""
 
 #: src/metabase/api/setup.clj
@@ -8267,19 +8267,19 @@ msgid "FAIL [[[{0}]]]"
 msgstr ""
 
 #: src/metabase/core.clj
-msgid "Please use the following URL to setup your Metabase installation:"
+msgid "Please use the following URL to setup your Discovery installation:"
 msgstr ""
 
 #: src/metabase/core.clj
-msgid "Metabase Shutting Down ..."
+msgid "Discovery Shutting Down ..."
 msgstr ""
 
 #: src/metabase/core.clj
-msgid "Metabase Shutdown COMPLETE"
+msgid "Discovery Shutdown COMPLETE"
 msgstr ""
 
 #: src/metabase/core.clj
-msgid "Starting Metabase version {0} ..."
+msgid "Starting Discovery version {0} ..."
 msgstr ""
 
 #: src/metabase/core.clj
@@ -8289,7 +8289,7 @@ msgstr ""
 #. startup database.  validates connection & runs any necessary migrations
 #: src/metabase/core.clj
 msgid ""
-"Setting up and migrating Metabase DB. Please sit tight, this may take a "
+"Setting up and migrating Discovery DB. Please sit tight, this may take a "
 "minute..."
 msgstr ""
 
@@ -8298,7 +8298,7 @@ msgid "Looks like this is a new installation ... preparing setup wizard"
 msgstr ""
 
 #: src/metabase/core.clj
-msgid "Metabase Initialization COMPLETE"
+msgid "Discovery Initialization COMPLETE"
 msgstr ""
 
 #: src/metabase/core.clj
@@ -8310,11 +8310,11 @@ msgid "Shutting Down Embedded Jetty Webserver"
 msgstr ""
 
 #: src/metabase/core.clj
-msgid "Starting Metabase in STANDALONE mode"
+msgid "Starting Discovery in STANDALONE mode"
 msgstr ""
 
 #: src/metabase/core.clj
-msgid "Metabase Initialization FAILED"
+msgid "Discovery Initialization FAILED"
 msgstr ""
 
 #: src/metabase/db.clj
@@ -8669,7 +8669,7 @@ msgstr ""
 #. CONFIG
 #. TODO - smtp-port should be switched to type :integer
 #: src/metabase/email.clj
-msgid "Email address you want to use as the sender of Metabase."
+msgid "Email address you want to use as the sender of Discovery."
 msgstr ""
 
 #: src/metabase/email.clj
@@ -8770,7 +8770,7 @@ msgstr ""
 
 #. Should be in the form: {"cn=Some Group,dc=...": [1, 2, 3]} where keys are LDAP groups and values are lists of MB groups IDs
 #: src/metabase/integrations/ldap.clj
-msgid "JSON containing LDAP to Metabase group mappings."
+msgid "JSON containing LDAP to Discovery group mappings."
 msgstr ""
 
 #. Define a setting which captures our Slack api token
@@ -8998,7 +8998,7 @@ msgstr ""
 
 #: src/metabase/models/humanization.clj
 msgid ""
-"Metabase can attempt to transform your table and field names into more "
+"Discovery can attempt to transform your table and field names into more "
 "sensible, human-readable versions, e.g. \"somehorriblename\" becomes \"Some "
 "Horrible Name\"."
 msgstr ""
@@ -9160,13 +9160,13 @@ msgstr ""
 
 #: src/metabase/plugins.clj
 msgid ""
-"It looks like you have some external dependencies in your Metabase plugins "
+"It looks like you have some external dependencies in your Discovery plugins "
 "directory."
 msgstr ""
 
 #: src/metabase/plugins.clj
 msgid ""
-"With Java 9 or higher, Metabase cannot automatically add them to your "
+"With Java 9 or higher, Discovery cannot automatically add them to your "
 "classpath."
 msgstr ""
 
@@ -9183,29 +9183,29 @@ msgstr ""
 
 #: src/metabase/plugins.clj
 msgid ""
-"(If you're already running Metabase this way, you can ignore this message.)"
+"(If you're already running Discovery this way, you can ignore this message.)"
 msgstr ""
 
 #: src/metabase/public_settings.clj
-msgid "Identify when new versions of Metabase are available."
+msgid "Identify when new versions of Discovery are available."
 msgstr ""
 
 #: src/metabase/public_settings.clj
-msgid "Information about available versions of Metabase."
+msgid "Information about available versions of Discovery."
 msgstr ""
 
 #: src/metabase/public_settings.clj
-msgid "The name used for this instance of Metabase."
+msgid "The name used for this instance of Discovery."
 msgstr ""
 
 #: src/metabase/public_settings.clj
 msgid ""
-"The base URL of this Metabase instance, e.g. \"http://metabase.my-company.com"
+"The base URL of this Discovery instance, e.g. \"http://metabase.my-company.com"
 "\"."
 msgstr ""
 
 #: src/metabase/public_settings.clj
-msgid "The default language for this Metabase instance."
+msgid "The default language for this Discovery instance."
 msgstr ""
 
 #: src/metabase/public_settings.clj
@@ -9221,7 +9221,7 @@ msgstr ""
 
 #: src/metabase/public_settings.clj
 msgid ""
-"Enable the collection of anonymous usage data in order to help Metabase "
+"Enable the collection of anonymous usage data in order to help Discovery "
 "improve."
 msgstr ""
 
@@ -9263,7 +9263,7 @@ msgstr ""
 
 #: src/metabase/public_settings.clj
 msgid ""
-"Metabase will cache all saved questions with an average query execution time "
+"Discovery will cache all saved questions with an average query execution time "
 "longer than this many seconds:"
 msgstr ""
 
@@ -9486,9 +9486,9 @@ msgstr ""
 
 #. This is the very first log message that will get printed.  It's here because this is one of the very first
 #. namespaces that gets loaded, and the first that has access to the logger It shows up a solid 10-15 seconds before
-#. the "Starting Metabase in STANDALONE mode" message because so many other namespaces need to get loaded
+#. the "Starting Discovery in STANDALONE mode" message because so many other namespaces need to get loaded
 #: src/metabase/util.clj
-msgid "Loading Metabase..."
+msgid "Loading Discovery..."
 msgstr ""
 
 #: src/metabase/util/date.clj
@@ -9514,11 +9514,11 @@ msgid "MB_ENCRYPTION_SECRET_KEY must be at least 16 characters."
 msgstr ""
 
 #: src/metabase/util/encryption.clj
-msgid "Saved credentials encryption is ENABLED for this Metabase instance."
+msgid "Saved credentials encryption is ENABLED for this Discovery instance."
 msgstr ""
 
 #: src/metabase/util/encryption.clj
-msgid "Saved credentials encryption is DISABLED for this Metabase instance."
+msgid "Saved credentials encryption is DISABLED for this Discovery instance."
 msgstr ""
 
 #: src/metabase/util/encryption.clj
