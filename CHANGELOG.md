@@ -1,7 +1,7 @@
 # Changelog
 
 ## 0.30.1 (upcoming)
-* [DGPB-1396] Downgrade to Crossdata 2.11.2
+* [DGPB-1396] Downgrade Crossdata driver to 2.11.2
 
 ## 0.30.0 (June 27, 2018)
 
