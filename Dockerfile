@@ -55,11 +55,11 @@ RUN mv /app/source/local-query-execution-factory/target/local-query-execution-fa
 RUN mvn install:install-file -Dfile=/app/source/bin/lib/local-query-execution-factory-0.2.jar -DgroupId=com.stratio.metabase -DartifactId=local-query-execution-factory -Dversion=0.2 -Dpackaging=jar
 
 # Tu generate local docker, comment mvn dependency:get and mv. Download jar in ./bin/lib/
-# http://qa.stratio.com/repository/releases/com/stratio/jdbc/stratio-crossdata-jdbc4/2.12.2/stratio-crossdata-jdbc4-2.12.2.jar
+# http://qa.stratio.com/repository/releases/com/stratio/jdbc/stratio-crossdata-jdbc4/2.11.2-12aa007/stratio-crossdata-jdbc4-2.11.2-12aa007.jar
 #
-RUN mvn dependency:get -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.11.2 -DremoteRepositories=http://sodio.stratio.com/repository/public/ -Dtransitive=false
-RUN mv /root/.m2/repository/com/stratio/jdbc/stratio-crossdata-jdbc4/2.12.2/stratio-crossdata-jdbc4-2.12.2.jar /app/source/bin/lib/stratio-crossdata-jdbc4-2.12.2.jar
-RUN mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.12.2.jar -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.12.2 -Dpackaging=jar
+RUN mvn dependency:get -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.11.2-12aa007 -DremoteRepositories=http://sodio.stratio.com/repository/public/ -Dtransitive=false
+RUN mv /root/.m2/repository/com/stratio/jdbc/stratio-crossdata-jdbc4/2.11.2-12aa007/stratio-crossdata-jdbc4-2.11.2-12aa007.jar /app/source/bin/lib/stratio-crossdata-jdbc4-2.11.2-12aa007.jar
+RUN mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.11.2-12aa007.jar -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.11.2-12aa007 -Dpackaging=jar
 
 # build the app
 WORKDIR /app/source
