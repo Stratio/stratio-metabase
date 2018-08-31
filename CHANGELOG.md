@@ -1,5 +1,8 @@
 # Changelog
 
+## 0.30.1 (upcoming)
+* [DGPB-1396] Downgrade to Crossdata 2.11.2
+
 ## 0.30.0 (June 27, 2018)
 
 * [DGPB-1119] Upgrade to metabase 0.29.4
