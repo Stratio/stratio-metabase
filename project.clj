@@ -101,7 +101,8 @@
                                bouncycastle/bcprov-jdk14,
                                org.bouncycastle.crypto.digests,
                                org.bouncycastle.crypto/digests,
-                               org.bouncycastle/bcpkix-jdk15on]]    ; Crossdata driver
+                               org.bouncycastle/bcpkix-jdk15on,
+                               org.bouncycastle.crypto.digests.Blake2bDigest]]    ; Crossdata driver
                  [io.crate/crate-jdbc "2.1.6"]                        ; Crate JDBC driver
                  [prismatic/schema "1.1.5"]                           ; Data schema declaration and validation library
                  [puppetlabs/i18n "0.8.0"]                            ; Internationalization library
