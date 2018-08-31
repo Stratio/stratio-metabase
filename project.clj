@@ -97,9 +97,11 @@
                  [org.yaml/snakeyaml "1.18"]                          ; YAML parser (required by liquibase)
                  [org.xerial/sqlite-jdbc "3.16.1"]                    ; SQLite driver
                  [com.stratio.jdbc/stratio-crossdata-jdbc4       "2.11.2-12aa007"
-                  :exclusions [org.clojure/clojure
-                               org.bouncycastle/bcpkix-jdk15on
-                               org.bouncycastle/bcprov-jdk15on]]    ; Crossdata driver
+                  :exclusions [org.bouncycastle/crypto,
+                               bouncycastle/bcprov-jdk14,
+                               org.bouncycastle.crypto.digests,
+                               org.bouncycastle.crypto/digests,
+                               org.bouncycastle/bcpkix-jdk15on]]    ; Crossdata driver
                  [io.crate/crate-jdbc "2.1.6"]                        ; Crate JDBC driver
                  [prismatic/schema "1.1.5"]                           ; Data schema declaration and validation library
                  [puppetlabs/i18n "0.8.0"]                            ; Internationalization library
