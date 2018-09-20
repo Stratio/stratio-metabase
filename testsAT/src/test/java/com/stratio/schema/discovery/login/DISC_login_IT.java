@@ -9,7 +9,9 @@ import org.testng.annotations.Test;
 
 @CucumberOptions(features = {
         "src/test/resources/features/003_login/001_disc_loginUserPassword.feature",
-        "src/test/resources/features/003_login/002_disc_loginWithHeaders.feature"
+        "src/test/resources/features/003_login/002_disc_createGroups.feature",
+        "src/test/resources/features/003_login/003_disc_updateEnvDiscovery.feature",
+        "src/test/resources/features/003_login/004_disc_loginWithHeaders.feature"
 })
 public class DISC_login_IT extends BaseTest{
 
