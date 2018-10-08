@@ -1,11 +1,8 @@
 # Changelog
 
-## 0.32.0 (upcoming)
+## 0.31.0 (upcoming)
 
-* Pending changelog
-
-## 0.31.0-cf9e4d4 (Built: August 30, 2018 | Pre-release)
-
+* [DGPB-1426] Error de agregacion de fechas
 * [DGPB-1357] Upgrade to metabase 0.30.1
 * [DGPB-1345] Add more metadata refresh options
 
