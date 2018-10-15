@@ -5,6 +5,7 @@
                      [string :as s])
             [clojure.tools.logging :as log]
             [honeysql.core :as hsql]
+            [metabase.api.common :as api]
             [metabase.db.spec :as dbspec]
             [metabase.driver :as driver]
             [metabase.driver
@@ -102,6 +103,8 @@
 (defn execute-query
   "Process and run a native (raw SQL) QUERY."
   [driver {:keys [database settings ], query :native, {sql :query, params :params} :native, :as outer-query}]
+  (println "Execute-query:::: database params --> " database)
+  (println "Execute-query:::: setting params --> " settings)
   (let [sql (str
               (if (seq params)
                 (unprepare/unprepare (cons sql params))
@@ -109,7 +112,10 @@
     (let [query (assoc query :remark  "", :query  sql, :params  nil)]
       (qprocessor/do-with-try-catch
         (fn []
-          (let [db-connection (sql/db->jdbc-connection-spec database)]
+          (let [db-connection
+                (if :impersonate
+                  (sql/db->jdbc-connection-spec database)
+                  (sql/db->jdbc-connection-spec database))]
             (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query))))))))
 
 (defn apply-order-by
@@ -330,6 +336,10 @@
                                                            :display-name "Database username"
                                                            :placeholder  "What username do you use to login to the database?"
                                                            :required     true}
+                                                          {:name         "impersonate"
+                                                           :display-name "Impersonate user?"
+                                                           :default      false
+                                                           :type         :boolean}
                                                           {:name         "ssl"
                                                            :display-name "Use a secure connection (SSL)?"
                                                            :type         :boolean
