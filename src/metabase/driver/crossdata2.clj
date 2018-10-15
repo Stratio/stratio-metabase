@@ -6,6 +6,7 @@
             [clojure.tools.logging :as log]
             [honeysql.core :as hsql]
             [metabase.api.common :as api]
+            [metabase.models.user :as user :refer [User]]
             [metabase.db.spec :as dbspec]
             [metabase.driver :as driver]
             [metabase.driver
@@ -104,8 +105,11 @@
   "Process and run a native (raw SQL) QUERY."
   [driver {:keys [database settings ], query :native, {sql :query, params :params} :native, :as outer-query}]
   (println "Execute-query:::: database params --> " database)
-  (println "Execute-query:::: database params --> " [database :details {:user api/*current-user-id* } ])
-  (println "Execute-query:::: database params --> " [database :details (:user api/*current-user-id*)])
+  (println "Execute-query:::: database params --> " (assoc-in database [:details :user] api/*current-user-id* ))
+  (println "Execute-query:::: database params --> " (db/select-one [User :first_name], :id api/*current-user-id* , :is_active true))
+  (println "Execute-query:::: database params --> " (assoc-in database [:details :user] (db/select-one [User :first_name], :id api/*current-user-id* , :is_active true)))
+  (if :impersonate
+    (assoc-in database [:details :user] (db/select-one [User :first_name], :id api/*current-user-id* , :is_active true)))
   (let [sql (str
               (if (seq params)
                 (unprepare/unprepare (cons sql params))
@@ -113,10 +117,7 @@
     (let [query (assoc query :remark  "", :query  sql, :params  nil)]
       (qprocessor/do-with-try-catch
         (fn []
-          (let [db-connection
-                (if :impersonate
-                  (sql/db->jdbc-connection-spec  [database :details (:user api/*current-user-id*)] )
-                  (sql/db->jdbc-connection-spec database))]
+          (let [db-connection (sql/db->jdbc-connection-spec database)]
             (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query))))))))
 
 (defn apply-order-by
