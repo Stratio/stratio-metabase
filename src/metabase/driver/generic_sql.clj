@@ -162,7 +162,8 @@
   "Return a JDBC connection spec that includes a cp30 `ComboPooledDataSource`.
    Theses connection pools are cached so we don't create multiple ones to the same DB."
   [{:keys [id], :as database}]
-  (if (and (equals (get database :engine) "crossdata2") (true? (get-in database [:details :impersonate])))
+  ;;In case is crossdata and impersonate, there's need to recreate connection with the metabase user
+  (if (and (= (get database :engine) "crossdata2") (true? (get-in database [:details :impersonate])))
     (u/prog1 (create-connection-pool database)
              (swap! database-id->connection-pool assoc id <>))
     (if (contains? @database-id->connection-pool id)
