@@ -162,12 +162,16 @@
   "Return a JDBC connection spec that includes a cp30 `ComboPooledDataSource`.
    Theses connection pools are cached so we don't create multiple ones to the same DB."
   [{:keys [id], :as database}]
-  (if (contains? @database-id->connection-pool id)
-    ;; we have an existing pool for this database, so use it
-    (get @database-id->connection-pool id)
-    ;; create a new pool and add it to our cache, then return it
+  (if (and (equals (get database :engine) "crossdata2") (true? (get-in database [:details :impersonate])))
     (u/prog1 (create-connection-pool database)
-      (swap! database-id->connection-pool assoc id <>))))
+             (swap! database-id->connection-pool assoc id <>))
+    (if (contains? @database-id->connection-pool id)
+      ;; we have an existing pool for this database, so use it
+      (get @database-id->connection-pool id)
+      ;; create a new pool and add it to our cache, then return it
+      (u/prog1 (create-connection-pool database)
+               (swap! database-id->connection-pool assoc id <>)))
+    ))
 
 (defn db->jdbc-connection-spec
   "Return a JDBC connection spec for DATABASE. This will have a C3P0 pool as its datasource."
