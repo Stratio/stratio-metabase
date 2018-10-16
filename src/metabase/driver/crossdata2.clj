@@ -105,8 +105,6 @@
   "Process and run a native (raw SQL) QUERY."
   [driver {:keys [database settings ], query :native, {sql :query, params :params} :native, :as outer-query}]
   (println "Execute-query:::: database params --> " database)
-  (println "Execute-query:::: database params --> " (assoc-in database [:details :user] api/*current-user-id* ))
-  (println "Execute-query:::: database params --> " ((db/select-one [User :first_name], :id api/*current-user-id* , :is_active true) :first_name))
   (println "Execute-query:::: database params --> " (assoc-in database [:details :user] ((db/select-one [User :first_name], :id api/*current-user-id* , :is_active true) :first_name)))
   (let [sql (str
               (if (seq params)
@@ -116,7 +114,7 @@
       (qprocessor/do-with-try-catch
         (fn []
           (let [db-connection (sql/db->jdbc-connection-spec
-                                (if :impersonate
+                                (if (true? :impersonate)
                                   (assoc-in database [:details :user] ((db/select-one [User :first_name], :id api/*current-user-id* , :is_active true) :first_name))
                                    database)) ]
             (println "Db-conection:::::" db-connection)
