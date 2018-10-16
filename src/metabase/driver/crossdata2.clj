@@ -119,6 +119,7 @@
                                 (if :impersonate
                                   (assoc-in database [:details :user] ((db/select-one [User :first_name], :id api/*current-user-id* , :is_active true) :first_name))
                                    database)) ]
+            (println "Db-conection:::::" db-connection)
             (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query))))))))
 
 (defn apply-order-by
@@ -312,7 +313,7 @@
           :column->base-type         (u/drop-first-arg column->base-type)
           :column->special-type      (u/drop-first-arg column->special-type)
           :connection-details->spec  (u/drop-first-arg connection-details->spec)
-          :date                      (u/drop-first-arg date)
+          :date                      (u/drop-first-arg hive-like/date)
           :field->identifier         (u/drop-first-arg field->identifier)
           :quote-style               (constantly :mysql)
           :set-timezone-sql          (constantly "UPDATE pg_settings SET setting = ? WHERE name ILIKE 'timezone';")
