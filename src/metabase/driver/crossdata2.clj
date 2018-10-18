@@ -118,7 +118,8 @@
                                   (assoc-in database [:details :user] ((db/select-one [User :first_name], :id api/*current-user-id* , :is_active true) :first_name))
                                    database)) ]
             (println "Db-conection:::::" db-connection)
-            (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query))))))))
+            (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query))
+            ))))))
 
 (defn apply-order-by
   "Apply `order-by` clause to HONEYSQL-FORM. Default implementation of `apply-order-by` for SQL drivers."
