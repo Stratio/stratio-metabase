@@ -106,8 +106,8 @@
   [driver {:keys [database settings ], query :native, {sql :query, params :params} :native, :as outer-query}]
   (println "Execute-query:::: database params --> " database)
   (println "Execute-query:::: database params --> " (assoc-in database [:details :user] ((db/select-one [User :first_name], :id api/*current-user-id* , :is_active true) :first_name)))
-  (println "Execute-query:::: if true --> "  (true? :impersonate))
-  (println "Execute-query:::: if true database --> "  (if (true? :impersonate)
+  (println "Execute-query:::: if true --> "  (true? (get-in database [:details :impersonate] ))
+  (println "Execute-query:::: if true database --> "  (if (true? (get-in database [:details :impersonate] ))
                                                        (assoc-in database [:details :user] ((db/select-one [User :first_name], :id api/*current-user-id* , :is_active true) :first_name))
                                                        database))
   (let [sql (str
@@ -118,7 +118,7 @@
       (qprocessor/do-with-try-catch
         (fn []
           (let [db-connection (sql/db->jdbc-connection-spec
-                                (if (true? :impersonate)
+                                (if (true? (get-in database [:details :impersonate] ))
                                   (assoc-in database [:details :user] ((db/select-one [User :first_name], :id api/*current-user-id* , :is_active true) :first_name))
                                    database)) ]
             (println "Db-conection:::::" db-connection)
