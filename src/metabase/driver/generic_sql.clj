@@ -166,7 +166,7 @@
   (println "db->pooled-connection-spec:::: database params --> " database)
   (println "db->pooled-connection-spec:::: if true impersonate? --> " (true? (get-in database [:details :impersonate] )))
   (if (true? (get-in database [:details :impersonate] ))
-    (notify-database-updated database))
+    notify-database-updated)
   (if (contains? @database-id->connection-pool id)
     ;; we have an existing pool for this database, so use it
     (get @database-id->connection-pool id)
