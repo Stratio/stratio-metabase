@@ -19,6 +19,7 @@ then
 else
 	INFO "using VAULT to download the secrets"
 	# Try logging in using dynamic authentication if vault token not defined.
+        IFS=',' read -ra VAULT_HOSTS <<< "$VAULT_HOST"
     if [ -z "$VAULT_TOKEN" ];
     then
         INFO "login using dynamic authentication with role_id: ${VAULT_ROLE_ID}"
