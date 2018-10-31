@@ -23,8 +23,9 @@ else
     then
         INFO "login using dynamic authentication with role_id: ${VAULT_ROLE_ID}"
         login
+        INFO "login OK!"
         source /root/kms/tls-config.sh
-	    source /root/kms/truststore-config.sh
+	source /root/kms/truststore-config.sh
         source /root/kms/psql-connection.sh
 	    cp /root/kms/secrets/* /root/.crossdata/
         if [ $? != 0 ]; then
@@ -34,7 +35,7 @@ else
     else
         INFO "login using VAULT TOKEN"
         source /root/kms/tls-config.sh
-	    source /root/kms/truststore-config.sh
+	source /root/kms/truststore-config.sh
         source /root/kms/psql-connection.sh
 	    cp /root/kms/secrets/* /root/.crossdata/
         if [ $? != 0 ]; then
