@@ -165,6 +165,7 @@
   [{:keys [id], :as database}]
   (println "db->pooled-connection-spec:::: database params --> " database)
   (println "db->pooled-connection-spec:::: if true impersonate? --> " (true? (get-in database [:details :impersonate] )))
+  (println "db->pooled-connection-spec:::: @database-id->connection-pool --> " @database-id->connection-pool)
   (if (true? (get-in database [:details :impersonate] ))
     (notify-database-updated (get database :engine) database))
   (if (contains? @database-id->connection-pool id)
