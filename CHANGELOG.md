@@ -1,9 +1,5 @@
 # Changelog
 
-## 0.32.0 (upcoming)
-
-* Pending changelog
-
 ## 0.31.1 (upcoming)
 
 * [DGPB-1583] Fix init login function
