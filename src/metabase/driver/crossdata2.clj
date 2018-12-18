@@ -334,8 +334,8 @@
                                                            :placeholder  "What username do you use to login to the database?"
                                                            :required     true}
                                                           {:name         "impersonate"
-                                                           :display-name "Impersonate user?"
-                                                           :default      true
+                                                           :display-name "Connect with Discovery login user?"
+                                                           :default      false
                                                            :type         :boolean}
                                                           {:name         "ssl"
                                                            :display-name "Use a secure connection (SSL)?"
