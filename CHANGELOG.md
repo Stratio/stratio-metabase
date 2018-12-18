@@ -2,7 +2,7 @@
 
 ## 0.32.0 (upcoming)
 
-* Pending changelog
+* [DGPB-1653] Crossdata queries impersonation
 
 ## 0.31.1 (November 13, 2018)
 
