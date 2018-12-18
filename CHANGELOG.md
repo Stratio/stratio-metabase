@@ -3,6 +3,7 @@
 ## 0.32.0 (upcoming)
 
 * [DGPB-1653] Crossdata queries impersonation
+* [DGPB-1617] Upgrade XD library to 2.13.4
 
 ## 0.31.1 (November 13, 2018)
 
