@@ -111,6 +111,12 @@
   (with-api-error-message (s/constrained s/Str (complement str/blank?) "Non-blank string")
     (tru "value must be a non-blank string.")))
 
+(def IntGreaterThanOrEqualToZero
+  "Schema representing an integer than must also be greater than or equal to zero."
+  (with-api-error-message
+   (s/constrained s/Int (partial <= 0) (tru "Integer greater than or equal to zero"))
+   (tru "value must be an integer greater than or equal to zero.")))
+
 ;; TODO - rename this to `PositiveInt`?
 (def IntGreaterThanZero
   "Schema representing an integer than must also be greater than zero."
