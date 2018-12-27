@@ -18,6 +18,7 @@ These tests will be executed as part of the continuous integration flow as follo
 
 mvn verify [-D\<ENV_VAR>=\<VALUE>] [-Dit.test=\<TEST_TO_EXECUTE>|-Dgroups=\<GROUP_TO_EXECUTE>]
 
+ls
 Example:
 
 ### Create policies in Gosec
@@ -28,6 +29,24 @@ mvn clean verify -Dgroups=config_postgres -DBOOTSTRAP_IP=10.200.0.155 -DDCOS_IP=
 
 ### Install Discovery
 mvn clean verify -Dgroups=install_discovery -DBOOTSTRAP_IP=10.200.0.155 -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli-nightly.demo.stratio.com -DDISC_VERSION=0.31.0 -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com -DlogLevel=DEBUG
+
+### Install Discovery Command Center
+-DFLAVOUR (mandatory): descriptor name value (Ex: discovery-orion)
+-DADVANCED_INSTALL (optional):
+    Without parameter: will be executed Basic install
+        mvn clean verify -Dgroups=install_discovery_cc -DBOOTSTRAP_IP=10.10.4.2 -DDCOS_IP=10.10.4.61 -DDCOS_CLI_HOST=172.17.0.4 -DCLUSTER_DOMAIN=huawei.stratio.com -DDISC_VERSION=0.31.1 -DDISCOVERY_SERVICE_VHOST=public-1.labs.stratio.com -DlogLevel=DEBUG -DFLAVOUR=discovery-orion -DCLUSTER_ID=bootstrap -DDISCOVERY_METADATA_DB_HOST=pg-0001.postgreseos.mesos -DDISCOVERY_TENANT_NAME=discovery
+    With parameter: will be executed Advance install
+        mvn clean verify -Dgroups=install_discovery_cc -DADVANCED_INSTALL -DBOOTSTRAP_IP=10.10.4.2 -DDCOS_IP=10.10.4.61 -DDCOS_CLI_HOST=172.17.0.4 -DCLUSTER_DOMAIN=huawei.stratio.com -DDISC_VERSION=0.31.1 -DDISCOVERY_SERVICE_VHOST=public-1.labs.stratio.com -DlogLevel=DEBUG -DFLAVOUR=discovery-orion -DCLUSTER_ID=bootstrap -DDISCOVERY_METADATA_DB_HOST=pg-0001.postgreseos.mesos -DDISCOVERY_TENANT_NAME=discovery
+
+### Purge Discovery Command Center
+-DFLAVOUR (mandatory): descriptor name value (Ex: discovery-orion)
+-DSERVICE_ID (optional). By default: /discovery/discovery
+-DSERVICE (optional): "service value" located in .../deploy-api/deploy/status/all when the service has been deployed. By default: discovery
+    - intbootstrap
+    mvn clean verify -Dgroups=purge_discovery_cc -DBOOTSTRAP_IP=10.200.1.52 -DDCOS_IP=10.200.0.242 -DDCOS_CLI_HOST=172.17.0.2 -DDISC_VERSION=0.31.1 -DDISCOVERY_SERVICE_VHOST=intpublic01.labs.stratio.com -DlogLevel=DEBUG -DFLAVOUR=discovery-orion -DCLUSTER_ID=intbootstrap
+    - huawei
+    mvn clean verify -Dgroups=purge_discovery_cc -DBOOTSTRAP_IP=10.10.4.2 -DDCOS_IP=10.10.4.61 -DDCOS_CLI_HOST=172.17.0.4 -DDISC_VERSION=0.31.1 -DDISCOVERY_SERVICE_VHOST=public-1.labs.stratio.com -DlogLevel=DEBUG -DFLAVOUR=discovery-orion -DCLUSTER_ID=bootstrap -DCLUSTER_DOMAIN=huawei.stratio.com
+
 
 ### Register Postgres database
 mvn clean verify -Dgroups=connection_PG -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli-nightly -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com -DDISC_VERSION=0.31.0 -DlogLevel=DEBUG -DSELENIUM_GRID=sl.demo.stratio.com:4444 -DFORCE_BROWSER=chrome_64datagov
