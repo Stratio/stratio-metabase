@@ -148,10 +148,8 @@ if [ "$JMX" ]; then
     JAVA_OPTS="$JAVA_OPTS $JMX"
 fi
 
-infoLogging "su-exec $USER:1000 $JAVA_HOME/bin/java $JAVA_OPTS -jar /opt/sds/$MODULE/$JAR"
-
 INFO "Using these JAVA_OPTS: ${JAVA_OPTS}"
 
-infoLogging "su-exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar"
+INFO "su-exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar"
 
 exec su-exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar
