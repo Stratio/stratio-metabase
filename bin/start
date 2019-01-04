@@ -11,6 +11,10 @@ if [ "$PORT" ]; then
     export MB_JETTY_PORT="$PORT"
 fi
 
+source /root/kms/kms_utils.sh
+source /root/kms/b-log.sh
+
+
 source /root/kms/secrets.sh
 
 
