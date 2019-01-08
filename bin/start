@@ -150,6 +150,6 @@ fi
 
 INFO "Using these JAVA_OPTS: ${JAVA_OPTS}"
 
-INFO "exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar"
+INFO "exec java $JAVA_OPTS -Dlog4j.configurationFile=./bin/log4j.properties -jar ./target/uberjar/metabase.jar"
 
-exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar -Dlog4j.configurationFile=/app/source/resources/log4j.properties
+exec java $JAVA_OPTS -Dlog4j.configurationFile=./bin/log4j.properties -jar ./target/uberjar/metabase.jar
