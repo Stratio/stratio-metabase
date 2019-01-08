@@ -150,6 +150,6 @@ fi
 
 INFO "Using these JAVA_OPTS: ${JAVA_OPTS}"
 
-INFO "su-exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar"
+INFO "exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar"
 
-exec su-exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar
+exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar
