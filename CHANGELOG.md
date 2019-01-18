@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.31.2 (upcoming)
+
+ * Set Java Xmx variable dynamic
+
 ## 0.31.1 (November 13, 2018)
 
 * [DGPB-1583] Fix init login function
