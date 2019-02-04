@@ -80,6 +80,24 @@ mvn clean verify -Dgroups=nightly -DBOOTSTRAP_IP=10.200.0.155 -DDCOS_IP=10.200.0
 ## For launch this group it's necessary having deployed next component:
 - docker run -d --name sl selenium/hub:3.9.1 && docker run -d -v /dev/shm:/dev/shm --name docker-selenium-chrome -e HUB_HOST=sl.demo.stratio.com -e HUB_PORT=4444 -e SE_OPTS="-browser browserName=chrome,version=64datagov " selenium/node-chrome-debug:3.9.1
 
+
+## Tests Command Center
+
+### installation:
+mvn clean verify -Dgroups=install_discovery_cc -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli.demo.labs.stratio.com -DCLUSTER_ID=nightly -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISC_FLAVOUR=hydra -DGOSECMANAGEMENT_HOST=nightly.labs.stratio.com -DSELENIUM_GRID=sl.demo.labs.stratio.com:4444 -DFORCE_BROWSER=chrome_64aalfonso -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com
+
+### uninstall:
+mvn clean verify -Dgroups=purge_discovery_cc -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli.demo.labs.stratio.com -DCLUSTER_ID=nightly -DGOSECMANAGEMENT_HOST=nightly.labs.stratio.com
+
+### connection Postgres:
+mvn clean verify -Dgroups=connection_PG_CCT -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli.demo.labs.stratio.com -DCLUSTER_ID=nightly -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com -DSELENIUM_GRID=sl.demo.labs.stratio.com:4444 -DFORCE_BROWSER=chrome_64aalfonso
+
+### connection Crossdata:
+mvn clean verify -Dgroups=connection_XD_CCT -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli.demo.labs.stratio.com -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com -DSELENIUM_GRID=sl.demo.labs.stratio.com:4444 -DFORCE_BROWSER=chrome_64aalfonso
+
+### nightly:
+mvn clean verify -Dgroups=CCTnightly -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli.demo.labs.stratio.com -DCLUSTER_ID=nightly -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISC_FLAVOUR=hydra -DGOSECMANAGEMENT_HOST=nightly.labs.stratio.com -DSELENIUM_GRID=sl.demo.labs.stratio.com:4444 -DFORCE_BROWSER=chrome_64aalfonso -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com
+
 By default, in jenkins we will execute the group basic, which should contain a subset of tests, that are key to the functioning of the module and the ones generated for the new feature.
 
 All tests, that are not fully implemented, should belong to the group manual and be tagged with '@ignore @manual'

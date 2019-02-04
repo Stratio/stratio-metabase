@@ -41,15 +41,16 @@ hose {
 
     INSTALLPARAMETERS = """
         | -DDCOS_CLI_HOST=%%DCOSCLI#0
-        | -DDCOS_CLI_USER=root
-        | -DDCOS_CLI_PASSWORD=stratio
-        | -DCLUSTER_SSO=nightly.labs.stratio.com
+        | -DCLUSTER_ID=nightly
         | -DDCOS_IP=10.200.0.156
         | -DBOOTSTRAP_IP=10.200.0.155
         | -DSELENIUM_GRID=selenium391.cd:4444
         | -DFORCE_BROWSER=chrome_64%%JUID
         | -DREMOTE_USER=operador
-        | -DDISC_VERSION=0.31.0-SNAPSHOT
+	| -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls
+	| -DDISC_FLAVOUR=hydra
+	| -DGOSECMANAGEMENT_HOST=nightly.labs.stratio.com
+	| -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com
         | -Dquietasdefault=false
         | """.stripMargin().stripIndent()
 
@@ -58,7 +59,7 @@ hose {
             config.INSTALLPARAMETERS = "${config.INSTALLPARAMETERS}".replaceAll('-DGROUPS_DISCOVERY', '-Dgroups')
             doAT(conf: config)
         } else {
-            doAT(conf: config, groups: ['nightly'])
+            doAT(conf: config, groups: ['CCTnightly'])
         }
     }
 }

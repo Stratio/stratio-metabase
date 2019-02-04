@@ -17,7 +17,7 @@ Feature: Connection on Postgres
   @web
   @runOnEnv(DISC_VERSION>0.29.0)
   Scenario: [Connection Postgres][02] Register postgres database
-    Given My app is running in '${DISCOVERY_SERVICE_VHOST:-nightlypublic.labs.stratio.com}:443'
+    Given My app is running in '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
     When I securely browse to '${DISCOVERY_DISCOVERY_PATH:-/discovery}'
     And I wait '3' seconds
     And '1' elements exists with 'xpath://input[@name="username"]'
@@ -28,7 +28,7 @@ Feature: Connection on Postgres
     And I click on the element on index '0'
     And I wait '1' seconds
     Then I save selenium cookies in context
-    When I securely send requests to '${DISCOVERY_SERVICE_VHOST:-nightlypublic.labs.stratio.com}:443'
+    When I securely send requests to '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
     Then I send a 'POST' request to '${DISCOVERY_DISCOVERY_PATH:-/discovery}${DISCOVERY_DATABASES:-/api/database}' based on 'schemas/registerdatabase.json' as 'json' with:
       | $.engine                                        | UPDATE  | ${DISCOVERY_ENGINE_PG:-postgres}                                                                                                                                                        | string |
       | $.name                                          | UPDATE  | ${DISCOVERY_DATABASE_PG_CONNECTION_NAME:-discovery}                                                                                                                                     | string |
@@ -44,7 +44,7 @@ Feature: Connection on Postgres
   @web
   @runOnEnv(DISC_VERSION>0.29.0)
   Scenario: [Connection Postgres][03] Get postgres database id
-    Given My app is running in '${DISCOVERY_SERVICE_VHOST:-nightlypublic.labs.stratio.com}:443'
+    Given My app is running in '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
     When I securely browse to '${DISCOVERY_DISCOVERY_PATH:-/discovery}'
     And I wait '3' seconds
     And '1' elements exists with 'xpath://input[@name="username"]'
@@ -67,7 +67,7 @@ Feature: Connection on Postgres
   @web
   @runOnEnv(DISC_VERSION>0.29.0)
   Scenario: [Connection Postgres][04] Check query postgres database
-    Given My app is running in '${DISCOVERY_SERVICE_VHOST:-nightlypublic.labs.stratio.com}:443'
+    Given My app is running in '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
     When I securely browse to '${DISCOVERY_DISCOVERY_PATH:-/discovery}'
     And I wait '3' seconds
     And '1' elements exists with 'xpath://input[@name="username"]'
@@ -79,7 +79,7 @@ Feature: Connection on Postgres
     And I wait '4' seconds
     Then I save selenium cookies in context
     And I wait '2' seconds
-    When I securely send requests to '${DISCOVERY_SERVICE_VHOST:-nightlypublic.labs.stratio.com}:443'
+    When I securely send requests to '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
     Then I send a 'POST' request to '${DISCOVERY_DISCOVERY_PATH:-/discovery}${DISCOVERY_DATASET:-/api/dataset}' based on 'schemas/dataset.json' as 'json' with:
       | $.database                 | REPLACE | !{pgdatabaseId}                         | number |
       | $.type                     | UPDATE  | ${DISCOVERY_TYPE_DATASET:-query}        | string |
