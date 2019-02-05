@@ -35,7 +35,6 @@ Feature: Connection on XData
     Then I save selenium cookies in context
     When I securely send requests to '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
     Then in less than '5' seconds, checking each '1' seconds, I send a 'POST' request to '${DISCOVERY_DISCOVERY_PATH:-/discovery}${DISCOVERY_DATABASES:-/api/database}' so that the response contains '"name":"${DISCOVERY_DATABASE_CONNECTION_NAME:-crossdata}",' based on 'schemas/registerdatabase.json' as 'json' with:
-    Then I send a 'POST' request to '${DISCOVERY_DISCOVERY_PATH:-/discovery}${DISCOVERY_DATABASES:-/api/database}' based on 'schemas/registerdatabase.json' as 'json' with:
       | $.engine                                        | UPDATE  | ${DISCOVERY_ENGINE_XD:-crossdata2}                  | string |
       | $.name                                          | UPDATE  | ${DISCOVERY_DATABASE_XD_CONNECTION_NAME:-crossdata} | string |
       | $.details.host                                  | UPDATE  | ${DISCOVERY_XD_HOST:-crossdata-1.marathon.mesos}    | string |
