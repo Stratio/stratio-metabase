@@ -57,7 +57,7 @@ Feature: Connection on Postgres
     And I wait '1' seconds
     Then I save selenium cookies in context
     When I securely send requests to '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
-    Then I send a 'POST' request to '${DISCOVERY_DISCOVERY_PATH:-/discovery}${DISCOVERY_DATABASES:-/api/database}' based on 'schemas/registerdatabase.json' as 'json' with:
+    Then in less than '5' seconds, checking each '1' seconds, I send a 'POST' request to '${DISCOVERY_DISCOVERY_PATH:-/discovery}${DISCOVERY_DATABASES:-/api/database}' so that the response contains '"name":"${DISCOVERY_DATABASE_PG_CONNECTION_NAME:-discovery}",' based on 'schemas/registerdatabase.json' as 'json' with:
       | $.engine                                        | UPDATE  | ${DISCOVERY_ENGINE_PG:-postgres}                                                                                                                                                        | string |
       | $.name                                          | UPDATE  | ${DISCOVERY_DATABASE_PG_CONNECTION_NAME:-discovery}                                                                                                                                     | string |
       | $.details.host                                  | UPDATE  | !{postgresTLS_Host}                                                                                                                                                                     | string |
@@ -65,8 +65,6 @@ Feature: Connection on Postgres
       | $.details.dbname                                | UPDATE  | ${DISCOVERY_DATA_DB:-pruebadiscovery}                                                                                                                                                   | string |
       | $.details.user                                  | UPDATE  | ${DISCOVERY_TENANT_NAME:-crossdata-1}                                                                                                                                                   | string |
       | $.details.additional-options                    | UPDATE  | ssl=true&sslmode=verify-full&sslcert=/root/kms/${DISCOVERY_TENANT_NAME:-crossdata-1}.pem&sslkey=/root/kms/${DISCOVERY_TENANT_NAME:-crossdata-1}.pk8&sslrootcert=/root/kms/root.pem      | string |
-    Then the service response status must be '200'
-    And the service response must contain the text '"name":"${DISCOVERY_DATABASE_PG_CONNECTION_NAME:-discovery}",'
 
     # Get postgres database id
     When I securely send requests to '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
@@ -84,11 +82,11 @@ Feature: Connection on Postgres
 
     # Check query postgres database
     When I securely send requests to '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
-    Then I send a 'POST' request to '${DISCOVERY_DISCOVERY_PATH:-/discovery}${DISCOVERY_DATASET:-/api/dataset}' based on 'schemas/dataset.json' as 'json' with:
+    Then in less than '5' seconds, checking each '1' seconds, I send a 'POST' request to '${DISCOVERY_DISCOVERY_PATH:-/discovery}${DISCOVERY_DATASET:-/api/dataset}' so that the response contains '200' based on 'schemas/dataset.json' as 'json' with:
       | $.database                 | REPLACE | !{pgdatabaseId}                         | number |
       | $.type                     | UPDATE  | ${DISCOVERY_TYPE_DATASET:-query}        | string |
       | $.query.source_table       | REPLACE | !{pgtableId}                            | number |
-    Then the service response status must be '200'
+    And I wait '3' seconds
     And the service response must contain the text '"row_count":254,'
 
   Scenario: [QATM-1866][Uninstallation Discovery Command Center] Delete database for Discovery on Postgrestls
