@@ -19,20 +19,9 @@ Feature: Connection on XData
     And I run 'sudo docker cp /tmp/queries.txt !{xdDocker}:/tmp/' in the ssh connection
     And I run 'sudo docker exec -it !{xdDocker} sh -c "cd /opt/sds/crossdata/bin && ./crossdata-shell --user ${XD_USER:-crossdata-1} --queries-file /tmp/queries.txt"' in the ssh connection
 
-  @web
   Scenario: [Connection XData] Check Crossdata connection
     # Register Crossdata database
-    Given My app is running in '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
-    When I securely browse to '${DISCOVERY_DISCOVERY_PATH:-/discovery}'
-    And I wait '3' seconds
-    And '1' elements exists with 'xpath://input[@name="username"]'
-    And I type '${USER:-demo@stratio.com}' on the element on index '0'
-    And '1' elements exists with 'xpath://input[@name="password"]'
-    And I type '${PASSWORD:-123456}' on the element on index '0'
-    And '1' elements exists with 'xpath://*[@id="root"]/div/div/div/div[2]/form/div[4]/button'
-    And I click on the element on index '0'
-    And I wait '1' seconds
-    Then I save metabase selenium cookies in context
+    Given I obtain metabase id for user '${USER:-demo@stratio.com}' and password '${PASSWORD:-123456}' in endpoint 'https://${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}${DISCOVERY_DISCOVERY_PATH:-/discovery}${DISCOVERY_SESSION:-/api/session}' and save in context cookies
     When I securely send requests to '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
     Then in less than '5' seconds, checking each '1' seconds, I send a 'POST' request to '${DISCOVERY_DISCOVERY_PATH:-/discovery}${DISCOVERY_DATABASES:-/api/database}' so that the response contains '"name":"${DISCOVERY_DATABASE_CONNECTION_NAME:-crossdata}",' based on 'schemas/registerdatabase.json' as 'json' with:
       | $.engine                                        | UPDATE  | ${DISCOVERY_ENGINE_XD:-crossdata2}                  | string |

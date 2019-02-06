@@ -90,10 +90,10 @@ mvn clean verify -Dgroups=install_discovery_cc -DDCOS_IP=10.200.0.156 -DDCOS_CLI
 mvn clean verify -Dgroups=purge_discovery_cc -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli.demo.labs.stratio.com -DCLUSTER_ID=nightly -DGOSECMANAGEMENT_HOST=nightly.labs.stratio.com
 
 ### connection Postgres:
-mvn clean verify -Dgroups=connection_PG_CCT -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli.demo.labs.stratio.com -DCLUSTER_ID=nightly -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com -DSELENIUM_GRID=sl.demo.labs.stratio.com:4444 -DFORCE_BROWSER=chrome_64aalfonso
+mvn clean verify -Dgroups=connection_PG_CCT -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli.demo.labs.stratio.com -DCLUSTER_ID=nightly -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com
 
 ### connection Crossdata:
-mvn clean verify -Dgroups=connection_XD_CCT -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli.demo.labs.stratio.com -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com -DSELENIUM_GRID=sl.demo.labs.stratio.com:4444 -DFORCE_BROWSER=chrome_64aalfonso
+mvn clean verify -Dgroups=connection_XD_CCT -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli.demo.labs.stratio.com -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com
 
 ### nightly:
 mvn clean verify -Dgroups=CCTnightly -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli.demo.labs.stratio.com -DCLUSTER_ID=nightly -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISC_FLAVOUR=hydra -DGOSECMANAGEMENT_HOST=nightly.labs.stratio.com -DSELENIUM_GRID=sl.demo.labs.stratio.com:4444 -DFORCE_BROWSER=chrome_64aalfonso -DDISCOVERY_SERVICE_VHOST=nightlypublic.labs.stratio.com
