@@ -9,15 +9,10 @@
  */
 package com.stratio.schema.discovery.specs;
 
-import com.stratio.qa.specs.GivenGSpec;
-
 public class GivenSpec extends BaseSpec {
-
-    GivenGSpec commonspecG;
 
     public GivenSpec(Common spec) {
         this.commonspec = spec;
-        commonspecG = new GivenGSpec(this.commonspec);
     }
 
 }
