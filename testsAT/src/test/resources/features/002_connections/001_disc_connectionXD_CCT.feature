@@ -9,7 +9,7 @@ Feature: Connection on XData
   Scenario: [Connection XData] Create table in Crossdata using shell
     # Obtain agent where crossdata is running
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${CLI_USER:-root}' and password '${CLI_PASSWORD:-stratio}'
-    Then I run 'dcos task | grep ${XD_ID:-crossdata-1} | grep -v CrossdataServer | awk '{print $2}'' in the ssh connection and save the value in environment variable 'xdHost'
+    Then I run 'dcos task | grep ${XD_ID:-crossdata-1} | grep root | awk '{print $2}'' in the ssh connection and save the value in environment variable 'xdHost'
     # Obtain docker where crossdata is running
     Given I open a ssh connection to '!{xdHost}' with user '${REMOTE_USER:-operador}' using pem file 'src/test/resources/credentials/${PEM_FILE:-key.pem}'
     Then I run 'sudo docker ps | grep crossdata-scala | awk '{print $1}'' in the ssh connection and save the value in environment variable 'xdDocker'
@@ -62,7 +62,7 @@ Feature: Connection on XData
   Scenario: [Connection XData] Drop table in Crossdata using shell
     # Obtain agent where crossdata is running
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${CLI_USER:-root}' and password '${CLI_PASSWORD:-stratio}'
-    Then I run 'dcos task | grep ${XD_ID:-crossdata-1} | grep -v CrossdataServer | awk '{print $2}'' in the ssh connection and save the value in environment variable 'xdHost'
+    Then I run 'dcos task | grep ${XD_ID:-crossdata-1} | grep root | awk '{print $2}'' in the ssh connection and save the value in environment variable 'xdHost'
     # Obtain docker where crossdata is running
     Given I open a ssh connection to '!{xdHost}' with user '${REMOTE_USER:-operador}' using pem file 'src/test/resources/credentials/${PEM_FILE:-key.pem}'
     Then I run 'sudo docker ps | grep crossdata-scala | awk '{print $1}'' in the ssh connection and save the value in environment variable 'xdDocker'
