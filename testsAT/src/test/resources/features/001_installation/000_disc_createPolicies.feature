@@ -13,12 +13,12 @@ Feature: Create Policy for user crossdata-1 in Gosec
   Scenario: [Create Policy for user crossdata-1 in Gosec][01] Creation policy user crossdata-1
     Given I set sso token using host '${CLUSTER_ID:-nightly}.labs.stratio.com' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
     And I securely send requests to '${CLUSTER_ID:-nightly}.labs.stratio.com:443'
-    When I send a 'POST' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/policy' based on 'schemas/objectPolicy.conf' as 'json' with:
-      | $.id                                            | UPDATE  | ${DISCOVERY_POLICY_ID:-discovery}         | string |
-      | $.name                                          | UPDATE  | ${DISCOVERY_POLICY_NAME:-discovery}       | string |
+    When I send a 'POST' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/policy' based on 'schemas/pg_policy.conf' as 'json' with:
+      | $.id                                            | UPDATE  | ${DISCOVERY_PG_POLICY_ID:-discovery_pg}   | string |
+      | $.name                                          | UPDATE  | ${DISCOVERY_PG_POLICY_NAME:-discovery_pg} | string |
       | $.users                                         | REPLACE | [crossdata-1]                             | array  |
       | $.services[0].instancesAcl[0].instances[0].name | UPDATE  | ${POSTGRES_FRAMEWORK_ID_TLS:-postgrestls} | string |
       | $.services[0].version                           | UPDATE  | ${POSTGRES_VERSION}                       | string |
     Then the service response status must be '201'
-    And the service response must contain the text '"id":"discovery"'
+    And the service response must contain the text '"id":"discovery_pg"'
     And I wait '120' seconds

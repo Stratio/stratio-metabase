@@ -1,7 +1,7 @@
 @rest
 Feature: [QATM-1866][Uninstallation Discovery Command Center] Discovery uninstall with command center
 
-  Scenario: [QATM-1866][Uninstallation Discovery Command Center] Uninstall Discovery
+  Scenario:[QATM-1866][01] Uninstall Discovery
     Given I authenticate to DCOS cluster '${DCOS_IP}' using email '${DCOS_USER:-admin}' with user '${REMOTE_USER:-operador}' and pem file '${BOOTSTRAP_PEM:-src/test/resources/credentials/key.pem}'
     And I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
     And I open a ssh connection to '${DCOS_CLI_HOST}' with user 'root' and password 'stratio'
@@ -14,7 +14,7 @@ Feature: [QATM-1866][Uninstallation Discovery Command Center] Discovery uninstal
     And in less than '200' seconds, checking each '10' seconds, I send a 'GET' request to '/service/deploy-api/deploy/status/all' so that the response does not contains '!{serviceName}'
 
   @skipOnEnv(SKIP_DATABASE_DELETION)
-  Scenario: [QATM-1866][Uninstallation Discovery Command Center] Delete database for Discovery on Postgrestls
+  Scenario:[QATM-1866][02] Delete database for Discovery on Postgrestls
     Given I set sso token using host '${CLUSTER_ID:-nightly}.labs.stratio.com' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
     And I securely send requests to '${CLUSTER_ID:-nightly}.labs.stratio.com:443'
     When in less than '300' seconds, checking each '20' seconds, I send a 'GET' request to '/exhibitor/exhibitor/v1/explorer/node-data?key=%2Fdatastore%2Fcommunity%2F${POSTGRES_FRAMEWORK_ID_TLS:-postgrestls}%2Fplan-v2-json&_=' so that the response contains 'str'
@@ -35,27 +35,30 @@ Feature: [QATM-1866][Uninstallation Discovery Command Center] Discovery uninstal
     Then the command output contains 'DROP DATABASE'
 
   @skipOnEnv(SKIP_POLICY)
-  Scenario: [QATM-1866][Uninstallation Discovery Command Center] Deletion policy user crossdata-1
+  Scenario:[QATM-1866][03] Delete policy user crossdata-1 in PG
     # Generate token to connect to gosec
     Given I set sso token using host '${GOSECMANAGEMENT_HOST}' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
     And I securely send requests to '${GOSECMANAGEMENT_HOST}:443'
-
     # Obtain postgres plugin version
     When I send a 'GET' request to '/service/gosecmanagement/api/service'
     Then the service response status must be '200'
     And I save element '$.[?(@.type == "communitypostgres")].pluginList[*]' in environment variable 'POSTGRES_PLUGINS'
     And I run 'echo '!{POSTGRES_PLUGINS}' | jq '.[] | select (.instanceList[].name == "${POSTGRES_FRAMEWORK_ID_TLS:-postgrestls}").version'' locally and save the value in environment variable 'POSTGRES_PLUGIN_VERSION'
-
     # Update policy with no users, to avoid orphan reosurces
-    When I send a 'PUT' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/policy/discovery' based on 'schemas/objectPolicy.conf' as 'json' with:
-      | $.id                                            | UPDATE  | ${DISCOVERY_POLICY_ID:-discovery}         | string |
-      | $.name                                          | UPDATE  | ${DISCOVERY_POLICY_NAME:-discovery}       | string |
-      | $.users                                         | REPLACE | []                                        | array  |
-      | $.services[0].instancesAcl[0].instances[0].name | UPDATE  | ${POSTGRES_FRAMEWORK_ID_TLS:-postgrestls} | string |
-      | $.services[0].version                           | UPDATE  | !{POSTGRES_PLUGIN_VERSION}                       | string |
+    When I send a 'PUT' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/policy/${DISCOVERY_PG_POLICY_ID:-discovery_pg}' based on 'schemas/pg_policy.conf' as 'json' with:
+      | $.id                                            | UPDATE  | ${DISCOVERY_PG_POLICY_ID:-discovery_pg}      | string |
+      | $.name                                          | UPDATE  | ${DISCOVERY_PG_POLICY_NAME:-discovery_pg}    | string |
+      | $.users                                         | REPLACE | []                                           | array  |
+      | $.services[0].instancesAcl[0].instances[0].name | UPDATE  | ${POSTGRES_FRAMEWORK_ID_TLS:-postgrestls}    | string |
+      | $.services[0].version                           | UPDATE  | !{POSTGRES_PLUGIN_VERSION}                   | string |
     Then the service response status must be '200'
     And I wait '120' seconds
-
     # Send request
-    When I send a 'DELETE' request to '/service/gosecmanagement/api/policy/${DISCOVERY_POLICY_ID:-discovery}'
+    When I send a 'DELETE' request to '/service/gosecmanagement/api/policy/${DISCOVERY_PG_POLICY_ID:-discovery_pg}'
+    Then the service response status must be '200'
+
+  Scenario:[QATM-2100][04] Delete policy for user Crossdata-1 in XD
+    Given I set sso token using host '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
+    And I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
+    When I send a 'DELETE' request to '/service/gosecmanagement/api/policy/${DISCOVERY_XD_POLICY_ID:-discovery_xd}'
     Then the service response status must be '200'

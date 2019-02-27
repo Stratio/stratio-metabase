@@ -6,7 +6,7 @@ Feature: Connection on XData
     And I open a ssh connection to '${DCOS_CLI_HOST}' with user '${CLI_USER:-root}' and password '${CLI_PASSWORD:-stratio}'
     And I securely send requests to '${DCOS_IP}:443'
 
-  Scenario: [Connection XData] Create table in Crossdata using shell
+  Scenario:[01] Create table in Crossdata using shell
     # Obtain agent where crossdata is running
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${CLI_USER:-root}' and password '${CLI_PASSWORD:-stratio}'
     Then I run 'dcos task | grep ${XD_ID:-crossdata-1} | grep root | awk '{print $2}'' in the ssh connection and save the value in environment variable 'xdHost'
@@ -19,7 +19,7 @@ Feature: Connection on XData
     And I run 'sudo docker cp /tmp/queries.txt !{xdDocker}:/tmp/' in the ssh connection
     And I run 'sudo docker exec -it !{xdDocker} sh -c "cd /opt/sds/crossdata/bin && ./crossdata-shell --user ${XD_USER:-crossdata-1} --queries-file /tmp/queries.txt"' in the ssh connection
 
-  Scenario: [Connection XData] Check Crossdata connection
+  Scenario:[02] Check Crossdata connection
     # Register Crossdata database
     Given I obtain metabase id for user '${USER:-demo@stratio.com}' and password '${PASSWORD:-123456}' in endpoint 'https://${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}${DISCOVERY_DISCOVERY_PATH:-/discovery}${DISCOVERY_SESSION:-/api/session}' and save in context cookies
     When I securely send requests to '${DISCOVERY_SERVICE_VHOST:-discovery.labs.stratio.com}:443'
@@ -59,7 +59,7 @@ Feature: Connection on XData
     And the service response must contain the text '"row_count":0,'
 #    And the service response must contain the text '"row_count":2,'
 
-  Scenario: [Connection XData] Drop table in Crossdata using shell
+  Scenario:[03] Drop table in Crossdata using shell
     # Obtain agent where crossdata is running
     Given I open a ssh connection to '${DCOS_CLI_HOST}' with user '${CLI_USER:-root}' and password '${CLI_PASSWORD:-stratio}'
     Then I run 'dcos task | grep ${XD_ID:-crossdata-1} | grep root | awk '{print $2}'' in the ssh connection and save the value in environment variable 'xdHost'
@@ -69,4 +69,5 @@ Feature: Connection on XData
     And I run 'echo "DROP TABLE testxd;" > /tmp/queries.txt' in the ssh connection
     And I run 'sudo docker cp /tmp/queries.txt !{xdDocker}:/tmp/' in the ssh connection
     And I run 'sudo docker exec -it !{xdDocker} sh -c "cd /opt/sds/crossdata/bin && ./crossdata-shell --user ${XD_USER:-crossdata-1} --queries-file /tmp/queries.txt"' in the ssh connection
+
 

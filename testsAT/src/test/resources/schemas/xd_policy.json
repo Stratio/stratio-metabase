@@ -1,0 +1,73 @@
+{
+  "id":"xdpolicy",
+  "name":"xdpolicy",
+  "users": [
+    "crossdata-1"
+  ],
+  "groups":[
+
+  ],
+  "services":[
+    {
+      "type":"crossdata2",
+      "instancesAcl":[
+        {
+          "instances":[
+            {
+              "name":"crossdata-1"
+            }
+          ],
+          "acls":[
+            {
+              "resourceType":"table",
+              "name":"*",
+              "recursive":true,
+              "actions":[
+                "Read",
+                "Write",
+                "Other",
+                "Manage",
+                "Audit",
+                "ViewPolicies"
+              ],
+              "allActions":[
+
+              ]
+            },
+            {
+              "resourceType":"database",
+              "name":"*",
+              "recursive":true,
+              "actions":[
+                "Read",
+                "Write",
+                "Manage",
+                "Audit",
+                "ViewPolicies",
+                "Create",
+                "Delete"
+              ],
+              "allActions":[
+
+              ]
+            },
+            {
+              "resourceType":"datastore",
+              "name":"*",
+              "recursive":true,
+              "actions":[
+                "Write",
+                "Manage",
+                "Audit",
+                "ViewPolicies"
+              ],
+              "allActions":[
+
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
