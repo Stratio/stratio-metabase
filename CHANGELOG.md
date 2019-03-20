@@ -2,7 +2,7 @@
 
 ## 0.33.0 (upcoming)
 
-* Pending changelog
+* Upgrade XD library to 2.14.3
 
 ## 0.32.0-c757db3 (Built: January 14, 2019 | Released: January 16, 2019)
 
