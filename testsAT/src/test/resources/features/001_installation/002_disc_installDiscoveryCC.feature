@@ -80,7 +80,6 @@ Feature: [QATM-1866][Installation Discovery Command Center] Discovery install wi
     Then the service response status must be '201' and its response must contain the text '"id":"${DISCOVERY_PG_POLICY_ID:-discovery_pg}"'
     And I wait '70' seconds
 
-  @skipOnEnv(DISC_ADVANCED_INSTALL)
   Scenario:[QATM-1866][06] Basic install
     Given I authenticate to DCOS cluster '${DCOS_IP}' using email '${DCOS_USER:-admin}' with user '${REMOTE_USER:-operador}' and pem file '${BOOTSTRAP_PEM:-src/test/resources/credentials/key.pem}'
     And I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
@@ -104,13 +103,13 @@ Feature: [QATM-1866][Installation Discovery Command Center] Discovery install wi
       | $.general.resources.instances               | REPLACE | ${DISCOVERY_SERVICE_INSTANCES:-1}                           | number |
       | $.general.resources.cpus                    | REPLACE | ${DISCOVERY_SERVICE_CPUS:-1}                                | number |
       | $.general.resources.mem                     | REPLACE | ${DISCOVERY_SERVICE_MEM:-2048}                              | number |
-      | $.general.indentity.approlename             | REPLACE | ${APPROLENAME:-open}                                        | string |
+      | $.general.identity.approlename              | REPLACE | ${APPROLENAME:-open}                                        | string |
 # Comentamos variables ya que no disponemos de valores válidos
 #       | $.settings.Login                            | ADD     | {}                                            | object  |
 #       | $.settings.Login.mb-user-header             | ADD     | ${MB_USER_HEADER:- "fdsa"}                    | string  |
 #       | $.settings.Login.mb-admin-group-header      | ADD     | ${MB_ADMIN_GROUP_HEADER:-"4e32" }             | string  |
 #       | $.settings.Login.mb-group-header            | ADD     | ${MB_GROUP_HEADER:-"433" }                    | string  |
-#       | $.general.indentity.approlename             | UPDATE  | ${DISCOVERY_SECURITY_INSTANCE_APP_ROLE:-open} | n/a     |
+#       | $.general.identity.approlename              | UPDATE  | ${DISCOVERY_SECURITY_INSTANCE_APP_ROLE:-open} | n/a     |
     Then the service response status must be '202'
     And I run 'rm -f target/test-classes/schemas/discovery-basic.json' locally
 
