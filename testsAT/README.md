@@ -31,13 +31,8 @@ mvn clean verify -Dgroups=install_discovery -DBOOTSTRAP_IP=10.200.0.155 -DDCOS_I
 
 ### Install Discovery Command Center
 -DDISC_FLAVOUR (mandatory): descriptor name value (Ex: hydra)
--DDISC_ADVANCED_INSTALL (optional):
-    Without parameter: will be executed the Basic install
-        - intbootstrap: mvn clean verify -Dgroups=install_discovery_cc -DBOOTSTRAP_IP=10.200.1.52 -DDCOS_IP=10.200.0.242 -DDCOS_CLI_HOST=172.17.0.3 -DCLUSTER_ID=intbootstrap -DlogLevel=DEBUG -DDISC_VERSION=0.31.1 -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISC_FLAVOUR=hydra
-        - nightly:      mvn clean verify -Dgroups=install_discovery_cc -DBOOTSTRAP_IP=10.200.0.155 -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli-nightly.demo.stratio.com -DCLUSTER_ID=nightly -DlogLevel=DEBUG -DDISC_VERSION=0.31.1 -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISC_FLAVOUR=hydra
-    With parameter: will be executed the Advance install
-        - intbootstrap: mvn clean verify -Dgroups=install_discovery_cc -DBOOTSTRAP_IP=10.200.1.52 -DDCOS_IP=10.200.0.242 -DDCOS_CLI_HOST=172.17.0.3 -DCLUSTER_ID=intbootstrap -DlogLevel=DEBUG -DDISC_VERSION=0.31.1 -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISC_FLAVOUR=hydra -DDISC_ADVANCED_INSTALL
-        - nightly:      mvn clean verify -Dgroups=install_discovery_cc -DBOOTSTRAP_IP=10.200.0.155 -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli-nightly.demo.stratio.com -DCLUSTER_ID=nightly -DlogLevel=DEBUG -DDISC_VERSION=0.31.1 -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISC_FLAVOUR=hydra -DDISC_ADVANCED_INSTALL
+    - intbootstrap: mvn clean verify -Dgroups=install_discovery_cc -DBOOTSTRAP_IP=10.200.1.52 -DDCOS_IP=10.200.0.242 -DDCOS_CLI_HOST=172.17.0.3 -DCLUSTER_ID=intbootstrap -DlogLevel=DEBUG -DDISC_VERSION=0.31.1 -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISC_FLAVOUR=hydra
+    - nightly:      mvn clean verify -Dgroups=install_discovery_cc -DBOOTSTRAP_IP=10.200.0.155 -DDCOS_IP=10.200.0.156 -DDCOS_CLI_HOST=dcos-cli-nightly.demo.stratio.com -DCLUSTER_ID=nightly -DlogLevel=DEBUG -DDISC_VERSION=0.31.1 -DDISC_POSTGRES_FRAMEWORK_ID_TLS=postgrestls -DDISC_FLAVOUR=hydra
 
 ### Purge Discovery Command Center
 -DDISC_FLAVOUR (mandatory): descriptor name value (Ex: hydra)
