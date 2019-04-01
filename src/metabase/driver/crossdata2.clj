@@ -106,6 +106,11 @@
   "Process and run a native (raw SQL) QUERY."
   [driver {:keys [database settings], query :native, :as outer-query}]
 
+
+  (println database)
+  (println query)
+  (println outer-query)
+
   (let [db-connection (sql/db->jdbc-connection-spec
                        (if (true? (get-in database [:details :impersonate] ))
                          (assoc-in database [:details :user] (get @api/*current-user* :first_name)) database))]
