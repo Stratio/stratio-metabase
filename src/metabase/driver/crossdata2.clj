@@ -107,17 +107,39 @@
   [driver {:keys [database settings], query :native, :as outer-query}]
 
 
-  (println database)
-  (println query)
-  (println outer-query)
+  (println "database: " database)
+  (println "query: " query)
+  (println "outer-query: " outer-query)
 
-  (let [db-connection (sql/db->jdbc-connection-spec
-                       (if (true? (get-in database [:details :impersonate] ))
-                         (assoc-in database [:details :user] (get @api/*current-user* :first_name)) database))]
+
+
+
+
+  (assoc query :query (str "execute as " (get @api/*current-user* :first_name) " " :query))
+
+  (println "concatenando: " (str "execute as " (get @api/*current-user* :first_name) " " (get query :query) ) )
+
+  (println "query modificada con usuario: " query)
+
+
+  (let [db-connection (sql/db->jdbc-connection-spec database)]
     (let [query (assoc query :remark (qputil/query->remark outer-query))]
       (qprocessor/do-with-try-catch
        (fn []
-         (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query)))))))
+         (if (true? (get-in database [:details :impersonate]))
+           (do (println "entrado en impersonate true y añadido el usuario a la query")
+             (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark (str "execute as " (get @api/*current-user* :first_name) " " (get query :query) ))))
+           (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query))))))))
+
+
+;  (let [db-connection (sql/db->jdbc-connection-spec
+;                       (if (true? (get-in database [:details :impersonate] ))
+;                         (assoc-in database [:details :user] (get @api/*current-user* :first_name)) database))]
+;    (let [query (assoc query :remark (qputil/query->remark outer-query))]
+;      (qprocessor/do-with-try-catch
+;       (fn []
+;         (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query)))))))
+
 
 
 (defn apply-order-by
