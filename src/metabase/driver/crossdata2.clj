@@ -112,14 +112,9 @@
   (println "outer-query: " outer-query)
 
 
-
-
-
-  (assoc query :query (str "execute as " (get @api/*current-user* :first_name) " " :query))
-
-  (println "concatenando: " (str "execute as " (get @api/*current-user* :first_name) " " (get query :query) ) )
-
-  (println "query modificada con usuario: " query)
+  (def query_with_nominal_user
+    (assoc query :query (str "execute as " (get @api/*current-user* :first_name) " " (get query :query))))
+  (println "query modificada con usuario: " query_with_nominal_user)
 
 
   (let [db-connection (sql/db->jdbc-connection-spec database)]
@@ -128,7 +123,7 @@
        (fn []
          (if (true? (get-in database [:details :impersonate]))
            (do (println "entrado en impersonate true y añadido el usuario a la query")
-             (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark (str "execute as " (get @api/*current-user* :first_name) " " (get query :query) ))))
+             (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query_with_nominal_user)))
            (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query))))))))
 
 
