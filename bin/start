@@ -28,6 +28,10 @@ export MB_JETTY_SSL_Keystore_Password="$VAR_SSL_Keystore_Password"
 export MB_JETTY_SSL_Truststore="/root/.crossdata/trustStore.jks"
 export MB_JETTY_SSL_Truststore_Password="$VAR_SSL_Truststore_Password"
 
+;;;Stratio
+export MB_EMOJI_IN_LOGS="false"
+;;;;;
+
 export HTTP_CLIENT="curl --insecure -f -L -o"
 
 # Heroku Postgres
