@@ -333,6 +333,7 @@
                  (.setIdleConnectionTestPeriod     idle-connection-test-period)
                  (.setTestConnectionOnCheckin      false)
                  (.setTestConnectionOnCheckout     false)
+                 (.setPreparedThreshold            0)
                  (.setPreferredTestQuery           nil)
                  (.setProperties                   (u/prog1 (Properties.)
                                                      (doseq [[k v] (dissoc spec :classname :subprotocol :subname
