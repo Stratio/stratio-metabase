@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.33.1 (coming)
+
+* [ROCK-37] Fix prepareThreshold=0 directly in code spec.clj
+
 ## 0.33.0 (April 10, 2019)
 
 * [ROCK-32] Upgrade XD library to 2.14.3
