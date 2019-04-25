@@ -25,14 +25,14 @@
   (if (get opts :sslcert)
     (merge {:classname "org.postgresql.Driver" ; must be in classpath
             :subprotocol "postgresql"
-            :subname (str "//" host ":" port "/" db "?OpenSourceSubProtocolOverride=true&user=" (get opts :user) "&ssl=true&sslmode=verify-full&sslcert=" (get opts :sslcert) "&sslkey=" (get opts :sslkey) "&sslrootcert="(get opts :sslrootcert))
+            :subname (str "//" host ":" port "/" db "?OpenSourceSubProtocolOverride=true&user=" (get opts :user) "&ssl=true&sslmode=verify-full&sslcert=" (get opts :sslcert) "&sslkey=" (get opts :sslkey) "&sslrootcert="(get opts :sslrootcert) "&prepareThreshold=0")
             :sslmode "verify-full"
             :ssl "true"}
            (dissoc opts :host :port :db)
            )
     (merge {:classname "org.postgresql.Driver" ; must be in classpath
            :subprotocol "postgresql"
-           :subname (str "//" host ":" port "/" db "?OpenSourceSubProtocolOverride=true")}
+           :subname (str "//" host ":" port "/" db "?OpenSourceSubProtocolOverride=true&prepareThreshold=0")}
           (dissoc opts :host :port :db))))
 
 
