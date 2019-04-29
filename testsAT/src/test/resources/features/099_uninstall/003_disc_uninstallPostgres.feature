@@ -10,8 +10,8 @@ Feature: Uninstall Postgres instances
 
   @runOnEnv(DISC_VERSION>0.29.0)
   Scenario: [Uninstallation Postgres][01] Delete database for Discovery on Postgrestls
-    Given I set sso token using host '${CLUSTER_ID:-nightly}.labs.stratio.com' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
-    And I securely send requests to '${CLUSTER_ID:-nightly}.labs.stratio.com:443'
+    Given I set sso token using host '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
+    And I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
     When in less than '300' seconds, checking each '20' seconds, I send a 'GET' request to '/exhibitor/exhibitor/v1/explorer/node-data?key=%2Fdatastore%2Fcommunity%2F${POSTGRES_FRAMEWORK_ID_TLS:-postgrestls}%2Fplan-v2-json&_=' so that the response contains 'str'
     And the service response status must be '200'
     And I save element '$.str' in environment variable 'exhibitor_answer'

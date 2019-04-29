@@ -28,14 +28,14 @@ Feature: [QATM-1866][Installation Discovery Command Center] Discovery install wi
   Scenario:[QATM-2100][03][Setup] Create policy for user Crossdata-1 in XD
     Given I set sso token using host '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
     And I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
-    When I send a 'POST' request to '/service/gosecmanagement/api/policy' based on 'xd_xd.json' as 'json' with:
+    When I send a 'POST' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/policy' based on 'xd_xd.json' as 'json' with:
       | $.id       | UPDATE | ${DISCOVERY_XD_POLICY_ID:-discovery_xd}         | n/a |
       | $.name     | UPDATE | ${DISCOVERY_XD_POLICY_NAME:-discovery_xd}       | n/a |
       | $.users[0] | UPDATE | ${DISCOVERY_XD_POLICY_USER:-crossdata-1}        | n/a |
     Then the service response status must be '201'
     And the service response must contain the text '"id":"${DISCOVERY_XD_POLICY_ID:-discovery_xd}"'
     Then I wait '5' seconds
-    When I send a 'GET' request to '/service/gosecmanagement/api/policy/${DISCOVERY_XD_POLICY_ID:-discovery_xd}'
+    When I send a 'GET' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/policy/${DISCOVERY_XD_POLICY_ID:-discovery_xd}'
     Then the service response status must be '200'
     And I wait '70' seconds
 
@@ -66,12 +66,12 @@ Feature: [QATM-1866][Installation Discovery Command Center] Discovery install wi
     Given I set sso token using host '${GOSECMANAGEMENT_HOST}' with user 'admin' and password '1234' and tenant 'NONE'
     And I securely send requests to '${GOSECMANAGEMENT_HOST}:443'
     # Obtain postgres plugin version
-    When I send a 'GET' request to '/service/gosecmanagement/api/service'
+    When I send a 'GET' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/service'
     Then the service response status must be '200'
     And I save element '$.[?(@.type == "communitypostgres")].pluginList[*]' in environment variable 'POSTGRES_PLUGINS'
     And I run 'echo '!{POSTGRES_PLUGINS}' | jq '.[] | select (.instanceList[].name == "${POSTGRES_FRAMEWORK_ID_TLS:-postgrestls}").version'' locally and save the value in environment variable 'POSTGRES_PLUGIN_VERSION'
     # Create policy
-    When I send a 'POST' request to '/service/gosecmanagement/api/policy' based on 'schemas/pg_policy.conf' as 'json' with:
+    When I send a 'POST' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/policy' based on 'schemas/pg_policy.conf' as 'json' with:
       | $.id                                            | UPDATE  | ${DISCOVERY_PG_POLICY_ID:-discovery_pg}         | string |
       | $.name                                          | UPDATE  | ${DISCOVERY_PG_POLICY_NAME:-discovery_pg}       | string |
       | $.users                                         | REPLACE | [crossdata-1]                                   | array  |
