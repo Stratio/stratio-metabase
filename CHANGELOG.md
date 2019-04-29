@@ -2,9 +2,10 @@
 
 ## 0.33.1 (coming)
 
+* Upgrade XD jdbc from 2.14.3 to 2.14.4
 * [ROCK-37] Fix prepareThreshold=0 directly in code spec.clj
 
-## 0.33.0 (April 10, 2019)
+## 0.33.0-510a4de (Built: April 10, 2019 | Released: April 12, 2019)
 
 * [ROCK-32] Upgrade XD library to 2.14.3
 * [ROCK-30] Impersonation refactor
