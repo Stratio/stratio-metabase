@@ -15,8 +15,8 @@ Feature: [QATM-1866][Uninstallation Discovery Command Center] Discovery uninstal
 
   @skipOnEnv(SKIP_DATABASE_DELETION)
   Scenario:[QATM-1866][02] Delete database for Discovery on Postgrestls
-    Given I set sso token using host '${CLUSTER_ID:-nightly}.labs.stratio.com' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
-    And I securely send requests to '${CLUSTER_ID:-nightly}.labs.stratio.com:443'
+    Given I set sso token using host '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
+    And I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
     When in less than '300' seconds, checking each '20' seconds, I send a 'GET' request to '/exhibitor/exhibitor/v1/explorer/node-data?key=%2Fdatastore%2Fcommunity%2F${POSTGRES_FRAMEWORK_ID_TLS:-postgrestls}%2Fplan-v2-json&_=' so that the response contains 'str'
     And the service response status must be '200'
     And I save element '$.str' in environment variable 'exhibitor_answer'
@@ -37,10 +37,10 @@ Feature: [QATM-1866][Uninstallation Discovery Command Center] Discovery uninstal
   @skipOnEnv(SKIP_POLICY)
   Scenario:[QATM-1866][03] Delete policy user crossdata-1 in PG
     # Generate token to connect to gosec
-    Given I set sso token using host '${GOSECMANAGEMENT_HOST}' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
-    And I securely send requests to '${GOSECMANAGEMENT_HOST}:443'
+    Given I set sso token using host '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
+    And I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
     # Obtain postgres plugin version
-    When I send a 'GET' request to '/service/gosecmanagement/api/service'
+    When I send a 'GET' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/service'
     Then the service response status must be '200'
     And I save element '$.[?(@.type == "communitypostgres")].pluginList[*]' in environment variable 'POSTGRES_PLUGINS'
     And I run 'echo '!{POSTGRES_PLUGINS}' | jq '.[] | select (.instanceList[].name == "${POSTGRES_FRAMEWORK_ID_TLS:-postgrestls}").version'' locally and save the value in environment variable 'POSTGRES_PLUGIN_VERSION'
@@ -54,11 +54,11 @@ Feature: [QATM-1866][Uninstallation Discovery Command Center] Discovery uninstal
     Then the service response status must be '200'
     And I wait '120' seconds
     # Send request
-    When I send a 'DELETE' request to '/service/gosecmanagement/api/policy/${DISCOVERY_PG_POLICY_ID:-discovery_pg}'
+    When I send a 'DELETE' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/policy/${DISCOVERY_PG_POLICY_ID:-discovery_pg}'
     Then the service response status must be '200'
 
   Scenario:[QATM-2100][04] Delete policy for user Crossdata-1 in XD
     Given I set sso token using host '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}' with user '${DCOS_USER:-admin}' and password '${DCOS_PASSWORD:-1234}' and tenant 'NONE'
     And I securely send requests to '${CLUSTER_ID}.${CLUSTER_DOMAIN:-labs.stratio.com}:443'
-    When I send a 'DELETE' request to '/service/gosecmanagement/api/policy/${DISCOVERY_XD_POLICY_ID:-discovery_xd}'
+    When I send a 'DELETE' request to '${BASE_END_POINT:-/service/gosecmanagement}/api/policy/${DISCOVERY_XD_POLICY_ID:-discovery_xd}'
     Then the service response status must be '200'
