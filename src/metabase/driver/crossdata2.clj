@@ -106,11 +106,6 @@
   "Process and run a native (raw SQL) QUERY."
   [driver {:keys [database settings ], query :native, {sql :query, params :params} :native, :as outer-query}]
 
-  (def query_with_nominal_user
-    (assoc query :query (str "execute as " (get @api/*current-user* :first_name) " " (get query :query))))
-  (println "query modificada con usuario: " query_with_nominal_user)
-
-
   (let [sql (str
              (if (seq params)
                (unprepare/unprepare (cons sql params))
@@ -120,7 +115,7 @@
         (qprocessor/do-with-try-catch
          (fn []
            (if (true? (get-in database [:details :impersonate]))
-             (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query_with_nominal_user))
+             (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark (assoc query :query (str "execute as " (get @api/*current-user* :first_name) " " (get query :query)))))
              (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query)))))))))
 
 (defn apply-order-by
