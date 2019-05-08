@@ -1,9 +1,7 @@
 # Changelog
 
-## 0.33.2 (upcoming)
+## 0.34.0 (upcoming)
 * [SS-5301] Personalize queries with filter returned error. Fixed in the Crossdata2 driver.
-
-## 0.33.1 (upcoming)
 
 * Upgrade XD jdbc from 2.14.3 to 2.14.4
 * [ROCK-37] Fix prepareThreshold=0 directly in code spec.clj
