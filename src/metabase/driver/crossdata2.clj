@@ -38,24 +38,24 @@
   "Map of Crossdata2 column types -> Field base types.
    Add more mappings here as you come across them."
   {
-   :SQL_DECIMAL                           :type/Float
-   :SQL_DOUBLE                            :type/Decimal
-   :SQL_FLOAT                             :type/Float
-   :SQL_INTEGER                           :type/Integer
-   :SQL_REAL                              :type/Decimal
-   :SQL_VARCHAR                           :type/Text
-   :SQL_LONGVARCHAR                       :type/Text
-   :SQL_CHAR                              :type/Text
-   :TIMESTAMP                             :type/DateTime
-   :DATE                                  :type/Date
-   :SQL_BOOLEAN                           :type/Boolean
-   (keyword "bit varying")                :type/*
-   (keyword "character varying")          :type/Text
-   (keyword "double precision")           :type/Float
-   (keyword "time with time zone")        :type/Time
-   (keyword "time without time zone")     :type/Time
-   (keyword "timestamp with timezone")    :type/DateTime
-   (keyword "timestamp without timezone") :type/DateTime})
+    :SQL_DECIMAL                           :type/Float
+    :SQL_DOUBLE                            :type/Decimal
+    :SQL_FLOAT                             :type/Float
+    :SQL_INTEGER                           :type/Integer
+    :SQL_REAL                              :type/Decimal
+    :SQL_VARCHAR                           :type/Text
+    :SQL_LONGVARCHAR                       :type/Text
+    :SQL_CHAR                              :type/Text
+    :TIMESTAMP                             :type/DateTime
+    :DATE                                  :type/Date
+    :SQL_BOOLEAN                           :type/Boolean
+    (keyword "bit varying")                :type/*
+    (keyword "character varying")          :type/Text
+    (keyword "double precision")           :type/Float
+    (keyword "time with time zone")        :type/Time
+    (keyword "time without time zone")     :type/Time
+    (keyword "timestamp with timezone")    :type/DateTime
+    (keyword "timestamp without timezone") :type/DateTime})
 
 (defn- column->special-type
   "Attempt to determine the special-type of a Field given its name and Crossdata2 column type."
@@ -104,21 +104,27 @@
 
 (defn execute-query
   "Process and run a native (raw SQL) QUERY."
-  [driver {:keys [database settings], query :native, :as outer-query}]
-
+  [driver {:keys [database settings ], query :native, {sql :query, params :params} :native, :as outer-query}]
 
   (def query_with_nominal_user
     (assoc query :query (str "execute as " (get @api/*current-user* :first_name) " " (get query :query))))
   (println "query modificada con usuario: " query_with_nominal_user)
 
 
-  (let [db-connection (sql/db->jdbc-connection-spec database)]
-    (let [query (assoc query :remark (qputil/query->remark outer-query))]
-      (qprocessor/do-with-try-catch
-       (fn []
-         (if (true? (get-in database [:details :impersonate]))
-           (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query_with_nominal_user))
-           (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query))))))))
+  (let [sql (str
+             (if (seq params)
+               (unprepare/unprepare (cons sql params))
+               sql))]
+    (let [db-connection (sql/db->jdbc-connection-spec database)]
+      (let [query (assoc query :remark  "", :query  sql, :params  nil)]
+        (qprocessor/do-with-try-catch
+         (fn []
+           (if (true? (get-in database [:details :impersonate]))
+             (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query_with_nominal_user))
+             (qprocessor/do-in-transaction db-connection (partial qprocessor/run-query-with-out-remark query))))))))
+
+
+  )
 
 
 (defn apply-order-by
@@ -126,8 +132,8 @@
   [_ honeysql-form {subclauses :order-by}]
   (loop [honeysql-form honeysql-form, [{:keys [field direction]} & more] subclauses]
     (let [honeysql-form (h/merge-order-by honeysql-form [(keyword (qprocessor/display_name field)) (case direction
-                                                                             :ascending  :asc
-                                                                             :descending :desc)])]
+                                                                                                     :ascending  :asc
+                                                                                                     :descending :desc)])]
       (if (seq more)
         (recur honeysql-form more)
         honeysql-form))))
@@ -322,36 +328,36 @@
 (u/strict-extend CrossdataDriver
                  driver/IDriver
                  (merge (sql/IDriverSQLDefaultsMixin)
-         {:date-interval                     (u/drop-first-arg date-interval)
-          :describe-table     describe-table
-          :details-fields                    (constantly [{:name         "host"
-                                                           :display-name "Host"
-                                                           :default      "localhost"}
-                                                          {:name         "port"
-                                                           :display-name "Port"
-                                                           :type         :integer
-                                                           :default      13422}
-                                                          {:name         "dbname"
-                                                           :display-name "Use a secure connection (SSL)?"
-                                                           :default      false
-                                                           :type         :boolean}
-                                                          {:name         "user"
-                                                           :display-name "Database username"
-                                                           :placeholder  "What username do you use to login to the database?"
-                                                           :required     true}
-                                                          {:name         "impersonate"
-                                                           :display-name "Connect with Discovery login user?"
-                                                           :default      false
-                                                           :type         :boolean}
-                                                          {:name         "ssl"
-                                                           :display-name "Use a secure connection (SSL)?"
-                                                           :type         :boolean
-                                                           :default      false}
-                                                          {:name         "additional-options"
-                                                           :display-name "Additional JDBC connection string options"
-                                                           :placeholder  "prepareThreshold=0"}])
-          :execute-query            execute-query
-          :humanize-connection-error-message (u/drop-first-arg humanize-connection-error-message)})
+                        {:date-interval                     (u/drop-first-arg date-interval)
+                         :describe-table     describe-table
+                         :details-fields                    (constantly [{:name         "host"
+                                                                          :display-name "Host"
+                                                                          :default      "localhost"}
+                                                                         {:name         "port"
+                                                                          :display-name "Port"
+                                                                          :type         :integer
+                                                                          :default      13422}
+                                                                         {:name         "dbname"
+                                                                          :display-name "Use a secure connection (SSL)?"
+                                                                          :default      false
+                                                                          :type         :boolean}
+                                                                         {:name         "user"
+                                                                          :display-name "Database username"
+                                                                          :placeholder  "What username do you use to login to the database?"
+                                                                          :required     true}
+                                                                         {:name         "impersonate"
+                                                                          :display-name "Connect with Discovery login user?"
+                                                                          :default      false
+                                                                          :type         :boolean}
+                                                                         {:name         "ssl"
+                                                                          :display-name "Use a secure connection (SSL)?"
+                                                                          :type         :boolean
+                                                                          :default      false}
+                                                                         {:name         "additional-options"
+                                                                          :display-name "Additional JDBC connection string options"
+                                                                          :placeholder  "prepareThreshold=0"}])
+                         :execute-query            execute-query
+                         :humanize-connection-error-message (u/drop-first-arg humanize-connection-error-message)})
 
 
                  sql/ISQLDriver CrossdataISQLDriverMixin)
