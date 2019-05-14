@@ -2,6 +2,7 @@
 
 ## 0.33.2 (May 09, 2019)
 
+* Fix delete databases connections using ELIMINAR
 * [SS-5301] Personalize queries with filter returned error. Fixed in the Crossdata2 driver.
 
 ## 0.33.1 (May 06, 2019)
