@@ -5,8 +5,8 @@ if [ "$MB_DB_SSL" = "true" ]; then
     INFO "Obtaining and setting TLS secrets for SSL secured Postgres"
 
     SSL_CLUSTER=${SSL_CLUSTER:="userland"}
-    SSL_INSTANCE=${TENANT_NAME:="crossdata-1"}
-    SSL_FQDN=${TENANT_NAME:="crossdata-1"}
+    SSL_INSTANCE=${DISCOVERY_INSTANCE_NAME:="crossdata-1"}
+    SSL_FQDN=${DISCOVERY_INSTANCE_NAME:="crossdata-1"}
     SSL_FORMAT=${SSL_FORMAT:="PEM"}
     POSTGRESQL_SSL_CERT_LOCATION="/root/kms"
     POSTGRESQL_SSL_CERT_FILENAME=${POSTGRESQL_SSL_CERT_FILENAME:="$SSL_FQDN.pem"}

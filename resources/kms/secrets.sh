@@ -2,7 +2,7 @@
 
 
 TENANT_UNDERSCORE=${TENANT_NAME//-/_}
-export TENANT_NORM="${TENANT_UNDERSCORE^^}"
+export TENANT_NORM="${DISCOVERY_INSTANCE_NAME^^}"
 
 export PATH=${PATH}:'/root/kms/bin/'
 
