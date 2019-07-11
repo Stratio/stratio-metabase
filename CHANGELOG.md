@@ -2,7 +2,7 @@
 
 ## 0.34.0 (upcoming)
 
-* [ROCK-148] Multitenant 
+* [ROCK-148] Multitenant
 * Fix deleting databases connections using ELIMINAR word in spanish language
 * [SS-5301] Personalize queries with filter returned error. Fixed in the Crossdata2 driver.
 * Upgrade XD jdbc from 2.14.3 to 2.14.4
