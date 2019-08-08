@@ -2,6 +2,8 @@
 
 ## 0.34.0 (July 26, 2019)
 
+* [ROCK-475] Fix "Discovery goes down while testing stability"
+* [ROCK-475] Fix when Discovery showed only tables from default database.
 * [ROCK-148] Multitenant
 * Fix deleting databases connections using ELIMINAR word in spanish language
 * [SS-5301] Personalize queries with filter returned error. Fixed in the Crossdata2 driver.
