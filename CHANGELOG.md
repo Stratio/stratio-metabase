@@ -1,7 +1,12 @@
 # Changelog
 
-## 0.34.0 (upcoming)
+## 0.35.0 (upcoming)
 
+* Pending changelog
+
+## 0.34.0-4c999c3 (Built: July 26, 2019 | Pre-release)
+
+* [ROCK-148] Multitenant
 * Fix deleting databases connections using ELIMINAR word in spanish language
 * [SS-5301] Personalize queries with filter returned error. Fixed in the Crossdata2 driver.
 * Upgrade XD jdbc from 2.14.3 to 2.14.4

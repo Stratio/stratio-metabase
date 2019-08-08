@@ -81,6 +81,15 @@
     (s/replace s #"-" "_")))
 
 ;; workaround for SPARK-9686 Spark Thrift server doesn't return correct JDBC metadata
+(defn- describe-database [_ {:keys [details] :as database}]
+  {:tables (with-open [conn (jdbc/get-connection (sql/db->jdbc-connection-spec database))]
+             (set (for [result (jdbc/query {:connection conn}
+                                           ["show tables"])]
+                    {:name   (:tablename result)
+                     :schema (when (> (count (:database result)) 0)
+                               (:database result))})))})
+
+;; workaround for SPARK-9686 Spark Thrift server doesn't return correct JDBC metadata
 (defn- describe-table [driver {:keys [details] :as database} table]
   (with-open [conn (jdbc/get-connection (sql/db->jdbc-connection-spec database))]
     (jdbc/query {:connection conn}
@@ -325,6 +334,7 @@
                  driver/IDriver
                  (merge (sql/IDriverSQLDefaultsMixin)
          {:date-interval                     (u/drop-first-arg date-interval)
+          :describe-database  describe-database
           :describe-table     describe-table
           :details-fields                    (constantly [{:name         "host"
                                                            :display-name "Host"
