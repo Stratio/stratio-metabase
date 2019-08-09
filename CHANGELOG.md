@@ -4,8 +4,10 @@
 
 * Pending changelog
 
-## 0.34.0-4c999c3 (Built: July 26, 2019 | Pre-release)
+## 0.34.0-6d3ee2f (Built: August 08, 2019 | Pre-release)
 
+* [ROCK-475] Fix "Discovery goes down while testing stability"
+* [ROCK-475] Fix when Discovery showed only tables from default database.
 * [ROCK-148] Multitenant
 * Fix deleting databases connections using ELIMINAR word in spanish language
 * [SS-5301] Personalize queries with filter returned error. Fixed in the Crossdata2 driver.
