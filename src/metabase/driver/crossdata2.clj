@@ -1,5 +1,4 @@
 (ns metabase.driver.crossdata2
-  ;; TODO - rework this to be like newer-style namespaces that use `u/drop-first-arg`
   (:require [clojure.java.jdbc :as jdbc]
             (clojure [set :refer [rename-keys], :as set]
                      [string :as s])
@@ -38,11 +37,11 @@
   "Map of Crossdata2 column types -> Field base types.
    Add more mappings here as you come across them."
   {
-   :SQL_DECIMAL                           :type/Float
-   :SQL_DOUBLE                            :type/Decimal
+   :SQL_DECIMAL                           :type/Decimal
+   :SQL_DOUBLE                            :type/Float
    :SQL_FLOAT                             :type/Float
    :SQL_INTEGER                           :type/Integer
-   :SQL_REAL                              :type/Decimal
+   :SQL_REAL                              :type/Float
    :SQL_VARCHAR                           :type/Text
    :SQL_LONGVARCHAR                       :type/Text
    :SQL_CHAR                              :type/Text
@@ -82,6 +81,7 @@
 
 ;; workaround for SPARK-9686 Spark Thrift server doesn't return correct JDBC metadata
 (defn- describe-table [driver {:keys [details] :as database} table]
+  (println "dentro del describe-table")
   (with-open [conn (jdbc/get-connection (sql/db->jdbc-connection-spec database))]
     (jdbc/query {:connection conn}
                 [(if (:schema table)
@@ -99,7 +99,7 @@
                                               (str "describe " (dash-to-underscore (:name table))))])]
                     {:name (:col_name result)
                      :database-type (:data_type result)
-                     :base-type (hive-like/column->base-type (keyword (:data_type result)))}))}))
+                     :base-type (column->base-type (keyword (:data_type result)))}))}))
 
 
 (defn execute-query
@@ -108,8 +108,6 @@
 
   (def query_with_nominal_user
     (assoc query :query (str "execute as " (get @api/*current-user* :first_name) " " (get query :query))))
-  (println "query modificada con usuario: " query_with_nominal_user)
-
 
   (let [sql (str
              (if (seq params)
@@ -311,7 +309,7 @@
   (merge (sql/ISQLDriverDefaultsMixin)
          {:apply-source-table        (u/drop-first-arg apply-source-table)
           :apply-join-tables         (u/drop-first-arg apply-join-tables)
-          :column->base-type         (u/drop-first-arg hive-like/column->base-type)
+          :column->base-type         (u/drop-first-arg column->base-type)
           :column->special-type      (u/drop-first-arg column->special-type)
           :connection-details->spec  (u/drop-first-arg connection-details->spec)
           :date                      (u/drop-first-arg hive-like/date)
@@ -325,7 +323,7 @@
                  driver/IDriver
                  (merge (sql/IDriverSQLDefaultsMixin)
          {:date-interval                     (u/drop-first-arg date-interval)
-          :describe-table     describe-table
+          :describe-table                    describe-table
           :details-fields                    (constantly [{:name         "host"
                                                            :display-name "Host"
                                                            :default      "localhost"}
