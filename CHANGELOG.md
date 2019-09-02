@@ -1,8 +1,11 @@
 # Changelog
+## 0.33.3
+
+* [ROCK-459] Fix error with Decimal types in Crossdata2 driver
 
 ## 0.33.2 (May 09, 2019)
 
-* Fix delete databases connections using ELIMINAR
+* Fix deleting databases connections using ELIMINAR word in spanish language
 * [SS-5301] Personalize queries with filter returned error. Fixed in the Crossdata2 driver.
 
 ## 0.33.1 (May 06, 2019)
