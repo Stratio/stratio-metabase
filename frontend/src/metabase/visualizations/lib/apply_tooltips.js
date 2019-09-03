@@ -83,9 +83,14 @@ export function getClickHoverObject(
           // this catches values like years that don't parse correctly above
           formatValue(key, { column: rawCols[0] }) === String(x)
         : // otherwise, we just check if the string value matches
+<<<<<<< HEAD
           // we also format null so it matches a key displayed as "(empty)"
           // e.g. String("123") === String(123)
           String(formatNull(x)) === String(key),
+=======
+          // e.g. String("123") === String(123)
+          String(x) === String(key),
+>>>>>>> c7e270d32... Refactor apply_tooltips (#10555)
     );
 
     // try to get row from _origin but fall back to the row we already have
@@ -107,7 +112,11 @@ export function getClickHoverObject(
         }
         return {
           key: getColumnDisplayName(col),
+<<<<<<< HEAD
           value: formatNull(rawRow[i]),
+=======
+          value: rawRow[i],
+>>>>>>> c7e270d32... Refactor apply_tooltips (#10555)
           col: col,
         };
       });
