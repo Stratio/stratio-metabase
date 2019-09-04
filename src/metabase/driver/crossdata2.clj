@@ -115,9 +115,6 @@
   "Process and run a native (raw SQL) QUERY."
   [driver {:keys [database settings ], query :native, {sql :query, params :params} :native, :as outer-query}]
 
-  (def query_with_nominal_user
-    (assoc query :query (str "execute as " (get @api/*current-user* :first_name) " " (get query :query))))
-
   (let [sql (str
              (if (seq params)
                (unprepare/unprepare (cons sql params))
