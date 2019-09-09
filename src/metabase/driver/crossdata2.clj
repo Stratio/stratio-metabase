@@ -32,30 +32,6 @@
   clojure.lang.Named
   (getName [_] "Crossdata2"))
 
-
-(def ^:private ^:const column->base-type
-  "Map of Crossdata2 column types -> Field base types.
-   Add more mappings here as you come across them."
-  {
-   :SQL_DECIMAL                           :type/Decimal
-   :SQL_DOUBLE                            :type/Float
-   :SQL_FLOAT                             :type/Float
-   :SQL_INTEGER                           :type/Integer
-   :SQL_REAL                              :type/Float
-   :SQL_VARCHAR                           :type/Text
-   :SQL_LONGVARCHAR                       :type/Text
-   :SQL_CHAR                              :type/Text
-   :TIMESTAMP                             :type/DateTime
-   :DATE                                  :type/Date
-   :SQL_BOOLEAN                           :type/Boolean
-   (keyword "bit varying")                :type/*
-   (keyword "character varying")          :type/Text
-   (keyword "double precision")           :type/Float
-   (keyword "time with time zone")        :type/Time
-   (keyword "time without time zone")     :type/Time
-   (keyword "timestamp with timezone")    :type/DateTime
-   (keyword "timestamp without timezone") :type/DateTime})
-
 (def ^:private ^:const pattern->type
   [[#"BIGINT"   :type/BigInteger]
    [#"INT"      :type/Integer]
@@ -103,7 +79,6 @@
   (when s
     (s/replace s #"-" "_")))
 
-;; workaround for SPARK-9686 Spark Thrift server doesn't return correct JDBC metadata
 (defn- describe-database [_ {:keys [details] :as database}]
   {:tables (with-open [conn (jdbc/get-connection (sql/db->jdbc-connection-spec database))]
              (set (for [result (jdbc/query {:connection conn}
@@ -112,7 +87,7 @@
                      :schema (when (> (count (:database result)) 0)
                                (:database result))})))})
 
-;; workaround for SPARK-9686 Spark Thrift server doesn't return correct JDBC metadata
+
 (defn- describe-table [driver {:keys [details] :as database} table]
   (with-open [conn (jdbc/get-connection (sql/db->jdbc-connection-spec database))]
     (jdbc/query {:connection conn}
