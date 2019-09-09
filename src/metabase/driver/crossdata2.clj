@@ -56,6 +56,30 @@
    (keyword "timestamp with timezone")    :type/DateTime
    (keyword "timestamp without timezone") :type/DateTime})
 
+(def ^:private ^:const pattern->type
+  [[#"BIGINT"   :type/BigInteger]
+   [#"INT"      :type/Integer]
+   [#"TYNYINT"      :type/Integer]
+   [#"SMALLINT"      :type/Integer]
+   [#"CHAR"     :type/Text]
+   [#"VARCHAR"     :type/Text]
+   [#"STRING"   :type/Text]
+   [#"TEXT"     :type/Text]
+   [#"CLOB"     :type/Text]
+   [#"BLOB"     :type/*]
+   [#"REAL"     :type/Float]
+   [#"DOUB"     :type/Float]
+   [#"FLOA"     :type/Float]
+   [#"NUMERIC"  :type/Float]
+   [#"DECIMAL"  :type/Decimal]
+   [#"BOOLEAN"  :type/Boolean]
+   [#"DATETIME" :type/DateTime]
+   [#"DATE"     :type/Date]
+   [#"TIME"     :type/Time]
+   [#"TIMESTAMP" :type/DateTime]
+   [#"BINARY"   :type/*]])
+
+
 (defn- column->special-type
   "Attempt to determine the special-type of a Field given its name and Crossdata2 column type."
   [column-name column-type]
@@ -90,7 +114,6 @@
 
 ;; workaround for SPARK-9686 Spark Thrift server doesn't return correct JDBC metadata
 (defn- describe-table [driver {:keys [details] :as database} table]
-  (println "dentro del describe-table")
   (with-open [conn (jdbc/get-connection (sql/db->jdbc-connection-spec database))]
     (jdbc/query {:connection conn}
                 [(if (:schema table)
@@ -108,7 +131,7 @@
                                               (str "describe " (dash-to-underscore (:name table))))])]
                     {:name (:col_name result)
                      :database-type (:data_type result)
-                     :base-type (column->base-type (keyword (:data_type result)))}))}))
+                     :base-type ((sql/pattern-based-column->base-type pattern->type) "crossdata2" (keyword (s/upper-case (:data_type result))))}))}))
 
 
 (defn execute-query
@@ -315,7 +338,7 @@
   (merge (sql/ISQLDriverDefaultsMixin)
          {:apply-source-table        (u/drop-first-arg apply-source-table)
           :apply-join-tables         (u/drop-first-arg apply-join-tables)
-          :column->base-type         (u/drop-first-arg column->base-type)
+          :column->base-type         (sql/pattern-based-column->base-type pattern->type)
           :column->special-type      (u/drop-first-arg column->special-type)
           :connection-details->spec  (u/drop-first-arg connection-details->spec)
           :date                      (u/drop-first-arg hive-like/date)
