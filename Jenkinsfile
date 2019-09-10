@@ -1,12 +1,12 @@
 @Library('libpipelines@master') _
 
 hose {
-    EMAIL = 'governance'
+    EMAIL = 'rocket'
     MODULE = 'discovery'
     REPOSITORY = 'discovery'
     SLACKTEAM = 'data-governance'
     BUILDTOOL = 'make'
-    DEVTIMEOUT = 30
+    DEVTIMEOUT = 60
     RELEASETIMEOUT = 40
     BUILDTOOLVERSION = '3.5.0'
     NEW_VERSIONING = 'true'
