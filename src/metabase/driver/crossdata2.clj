@@ -33,27 +33,27 @@
   (getName [_] "Crossdata2"))
 
 (def ^:private ^:const pattern->type
-  [[#"BIGINT"   :type/BigInteger]
-   [#"INT"      :type/Integer]
-   [#"TYNYINT"      :type/Integer]
-   [#"SMALLINT"      :type/Integer]
-   [#"CHAR"     :type/Text]
-   [#"VARCHAR"     :type/Text]
-   [#"STRING"   :type/Text]
-   [#"TEXT"     :type/Text]
-   [#"CLOB"     :type/Text]
-   [#"BLOB"     :type/*]
-   [#"REAL"     :type/Float]
-   [#"DOUB"     :type/Float]
-   [#"FLOA"     :type/Float]
-   [#"NUMERIC"  :type/Float]
-   [#"DECIMAL"  :type/Decimal]
-   [#"BOOLEAN"  :type/Boolean]
-   [#"DATETIME" :type/DateTime]
-   [#"DATE"     :type/Date]
-   [#"TIME"     :type/Time]
-   [#"TIMESTAMP" :type/DateTime]
-   [#"BINARY"   :type/*]])
+  [[#"(?i)BIGINT"   :type/BigInteger]
+   [#"(?i)INT"      :type/Integer]
+   [#"(?i)TYNYINT"      :type/Integer]
+   [#"(?i)SMALLINT"      :type/Integer]
+   [#"(?i)CHAR"     :type/Text]
+   [#"(?i)VARCHAR"     :type/Text]
+   [#"(?i)STRING"   :type/Text]
+   [#"(?i)TEXT"     :type/Text]
+   [#"(?i)CLOB"     :type/Text]
+   [#"(?i)BLOB"     :type/*]
+   [#"(?i)REAL"     :type/Float]
+   [#"(?i)DOUB"     :type/Float]
+   [#"(?i)FLOA"     :type/Float]
+   [#"(?i)NUMERIC"  :type/Float]
+   [#"(?i)DECIMAL"  :type/Decimal]
+   [#"(?i)BOOLEAN"  :type/Boolean]
+   [#"(?i)DATETIME" :type/DateTime]
+   [#"(?i)DATE"     :type/Date]
+   [#"(?i)TIME"     :type/Time]
+   [#"(?i)TIMESTAMP" :type/DateTime]
+   [#"(?i)BINARY"   :type/*]])
 
 
 (defn- column->special-type
@@ -106,7 +106,7 @@
                                               (str "describe " (dash-to-underscore (:name table))))])]
                     {:name (:col_name result)
                      :database-type (:data_type result)
-                     :base-type ((sql/pattern-based-column->base-type pattern->type) "crossdata2" (keyword (s/upper-case (:data_type result))))}))}))
+                     :base-type ((sql/pattern-based-column->base-type pattern->type) "crossdata2" (keyword (:data_type result)))}))}))
 
 
 (defn execute-query
