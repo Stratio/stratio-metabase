@@ -32,29 +32,29 @@
   clojure.lang.Named
   (getName [_] "Crossdata2"))
 
+(def ^:private ^:const pattern->type
+  [[#"(?i)BIGINT"   :type/BigInteger]
+   [#"(?i)INT"      :type/Integer]
+   [#"(?i)TYNYINT"      :type/Integer]
+   [#"(?i)SMALLINT"      :type/Integer]
+   [#"(?i)CHAR"     :type/Text]
+   [#"(?i)VARCHAR"     :type/Text]
+   [#"(?i)STRING"   :type/Text]
+   [#"(?i)TEXT"     :type/Text]
+   [#"(?i)CLOB"     :type/Text]
+   [#"(?i)BLOB"     :type/*]
+   [#"(?i)REAL"     :type/Float]
+   [#"(?i)DOUB"     :type/Float]
+   [#"(?i)FLOA"     :type/Float]
+   [#"(?i)NUMERIC"  :type/Float]
+   [#"(?i)DECIMAL"  :type/Decimal]
+   [#"(?i)BOOLEAN"  :type/Boolean]
+   [#"(?i)DATETIME" :type/DateTime]
+   [#"(?i)DATE"     :type/Date]
+   [#"(?i)TIME"     :type/Time]
+   [#"(?i)TIMESTAMP" :type/DateTime]
+   [#"(?i)BINARY"   :type/*]])
 
-(def ^:private ^:const column->base-type
-  "Map of Crossdata2 column types -> Field base types.
-   Add more mappings here as you come across them."
-  {
-   :SQL_DECIMAL                           :type/Decimal
-   :SQL_DOUBLE                            :type/Float
-   :SQL_FLOAT                             :type/Float
-   :SQL_INTEGER                           :type/Integer
-   :SQL_REAL                              :type/Float
-   :SQL_VARCHAR                           :type/Text
-   :SQL_LONGVARCHAR                       :type/Text
-   :SQL_CHAR                              :type/Text
-   :TIMESTAMP                             :type/DateTime
-   :DATE                                  :type/Date
-   :SQL_BOOLEAN                           :type/Boolean
-   (keyword "bit varying")                :type/*
-   (keyword "character varying")          :type/Text
-   (keyword "double precision")           :type/Float
-   (keyword "time with time zone")        :type/Time
-   (keyword "time without time zone")     :type/Time
-   (keyword "timestamp with timezone")    :type/DateTime
-   (keyword "timestamp without timezone") :type/DateTime})
 
 (defn- column->special-type
   "Attempt to determine the special-type of a Field given its name and Crossdata2 column type."
@@ -80,8 +80,16 @@
     (s/replace s #"-" "_")))
 
 ;; workaround for SPARK-9686 Spark Thrift server doesn't return correct JDBC metadata
+(defn- describe-database [_ {:keys [details] :as database}]
+  {:tables (with-open [conn (jdbc/get-connection (sql/db->jdbc-connection-spec database))]
+             (set (for [result (jdbc/query {:connection conn}
+                                           ["show tables"])]
+                    {:name   (:tablename result)
+                     :schema (when (> (count (:database result)) 0)
+                               (:database result))})))})
+
+;; workaround for SPARK-9686 Spark Thrift server doesn't return correct JDBC metadata
 (defn- describe-table [driver {:keys [details] :as database} table]
-  (println "dentro del describe-table")
   (with-open [conn (jdbc/get-connection (sql/db->jdbc-connection-spec database))]
     (jdbc/query {:connection conn}
                 [(if (:schema table)
@@ -99,15 +107,12 @@
                                               (str "describe " (dash-to-underscore (:name table))))])]
                     {:name (:col_name result)
                      :database-type (:data_type result)
-                     :base-type (column->base-type (keyword (:data_type result)))}))}))
+                     :base-type ((sql/pattern-based-column->base-type pattern->type) "crossdata2" (keyword (:data_type result)))}))}))
 
 
 (defn execute-query
   "Process and run a native (raw SQL) QUERY."
   [driver {:keys [database settings ], query :native, {sql :query, params :params} :native, :as outer-query}]
-
-  (def query_with_nominal_user
-    (assoc query :query (str "execute as " (get @api/*current-user* :first_name) " " (get query :query))))
 
   (let [sql (str
              (if (seq params)
@@ -309,7 +314,7 @@
   (merge (sql/ISQLDriverDefaultsMixin)
          {:apply-source-table        (u/drop-first-arg apply-source-table)
           :apply-join-tables         (u/drop-first-arg apply-join-tables)
-          :column->base-type         (u/drop-first-arg column->base-type)
+          :column->base-type         (sql/pattern-based-column->base-type pattern->type)
           :column->special-type      (u/drop-first-arg column->special-type)
           :connection-details->spec  (u/drop-first-arg connection-details->spec)
           :date                      (u/drop-first-arg hive-like/date)
