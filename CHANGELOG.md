@@ -2,7 +2,7 @@
 
 ## 0.35.0 (upcoming)
 
-* Pending changelog
+* [ROCK-32] Upgrade to Metabase 0.33 Thu Sep 12 15:34:07 2019
 
 ## 0.34.0-6d3ee2f (Built: August 08, 2019 | Pre-release)
 

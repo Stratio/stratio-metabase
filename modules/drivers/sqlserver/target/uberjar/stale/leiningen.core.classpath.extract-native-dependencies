@@ -1,0 +1,1 @@
+[{:dependencies {com.microsoft.sqlserver/mssql-jdbc {:vsn "7.0.0.jre8", :native-prefix nil}}, :native-path "target/uberjar/native"} {:native-path "target/uberjar/native", :dependencies {com.microsoft.sqlserver/mssql-jdbc {:vsn "7.0.0.jre8", :native-prefix nil, :native? false}}}]
