@@ -5,8 +5,8 @@ if [ "$MB_DB_SSL" = "true" ]; then
     INFO "Obtaining and setting TLS secrets for SSL secured Postgres"
 
     SSL_CLUSTER=${SSL_CLUSTER:="userland"}
-    SSL_INSTANCE=${DISCOVERY_INSTANCE_NAME:="crossdata-1"}
-    SSL_FQDN=${DISCOVERY_INSTANCE_NAME:="crossdata-1"}
+    SSL_INSTANCE=${TENANT_NAME:="crossdata-1"}
+    SSL_FQDN=${TENANT_NAME:="crossdata-1"}
     SSL_FORMAT=${SSL_FORMAT:="PEM"}
     POSTGRESQL_SSL_CERT_LOCATION="/root/kms"
     POSTGRESQL_SSL_CERT_FILENAME=${POSTGRESQL_SSL_CERT_FILENAME:="$SSL_FQDN.pem"}
@@ -32,8 +32,7 @@ if [ "$MB_DB_SSL" = "true" ]; then
     chown -R root:root $POSTGRESQL_SSL_CERT_LOCATION
     PG_URL="jdbc:postgresql://$PG_HOST:$PG_PORT/$PG_DATABASE?user=$PG_USER\\&ssl=true\\&sslmode=verify-full\\&sslcert=$SSL_PEM_CERT\\&sslkey=$SSL_KEY\\&sslrootcert=$SSL_ROOT_CERT"
 
-    CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$DISCOVERY_INSTANCE_NAME&password=$MB_DB_PASS&sslmode=verify-full&sslcert=$SSL_PEM_CERT&sslkey=$SSL_KEY&sslrootcert=$SSL_ROOT_CERT"
-    INFO $CONNECTION_STRING
+    CONNECTION_STRING="postgres://$MB_DB_HOST:$MB_DB_PORT/$MB_DB_DBNAME?user=$MB_DB_USER&password=$MB_DB_PASS&sslmode=verify-full&sslcert=$SSL_PEM_CERT&sslkey=$SSL_KEY&sslrootcert=$SSL_ROOT_CERT"
 else
     INFO "Connection to PostgresSQL MD5"
 

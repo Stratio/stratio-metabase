@@ -11,6 +11,7 @@ if [ "$PORT" ]; then
     export MB_JETTY_PORT="$PORT"
 fi
 
+# STRATIO
 source /root/kms/kms_utils.sh
 source /root/kms/b-log.sh
 
@@ -28,7 +29,7 @@ export MB_JETTY_SSL_Keystore_Password="$VAR_SSL_Keystore_Password"
 export MB_JETTY_SSL_Truststore="/root/.crossdata/trustStore.jks"
 export MB_JETTY_SSL_Truststore_Password="$VAR_SSL_Truststore_Password"
 
-# Stratio
+
 export MB_EMOJI_IN_LOGS="false"
 # fin Stratio
 

@@ -2,10 +2,8 @@
   (:require [clj-time
              [core :as t]
              [format :as t.format]]
+            [clojure.core.async :as a]
             [expectations :refer :all]
-            [metabase.api
-             [card :as card.api]
-             [common :as api]]
             [metabase.automagic-dashboards
              [core :as magic :refer :all]
              [rules :as rules]]
@@ -19,12 +17,14 @@
              [permissions-group :as perms-group]
              [query :as query]
              [table :as table :refer [Table]]]
+            [metabase.query-processor.async :as qp.async]
             [metabase.test
              [automagic-dashboards :refer :all]
              [data :as data]
              [util :as tu]]
-            [metabase.util.date :as date]
-            [puppetlabs.i18n.core :as i18n :refer [tru]]
+            [metabase.util
+             [date :as date]
+             [i18n :refer [tru]]]
             [toucan.db :as db]
             [toucan.util.test :as tt]))
 
@@ -101,11 +101,11 @@
            (every? test-automagic-analysis)))))
 
 (expect
-  (tt/with-temp* [Metric [{metric-id :id} {:table_id (data/id :venues)
-                                           :definition {:query {:aggregation ["count"]}}}]]
+  (tt/with-temp* [Metric [metric {:table_id (data/id :venues)
+                                  :definition {:aggregation [[:count]]}}]]
     (with-rasta
       (with-dashboard-cleanup
-        (->> (Metric) (every? test-automagic-analysis))))))
+        (test-automagic-analysis metric)))))
 
 (expect
   (tu/with-non-admin-groups-no-root-collection-perms
@@ -113,7 +113,7 @@
                     Card [{card-id :id} {:table_id      (data/id :venues)
                                          :collection_id collection-id
                                          :dataset_query {:query {:filter [:> [:field-id (data/id :venues :price)] 10]
-                                                                 :source_table (data/id :venues)}
+                                                                 :source-table (data/id :venues)}
                                                          :type :query
                                                          :database (data/id)}}]]
       (with-rasta
@@ -128,7 +128,7 @@
                                          :collection_id collection-id
                                          :dataset_query {:query {:aggregation [[:count]]
                                                                  :breakout [[:field-id (data/id :venues :category_id)]]
-                                                                 :source_table (data/id :venues)}
+                                                                 :source-table (data/id :venues)}
                                                          :type :query
                                                          :database (data/id)}}]]
       (with-rasta
@@ -148,20 +148,26 @@
           (perms/grant-collection-readwrite-permissions! (perms-group/all-users) collection-id)
           (-> card-id Card test-automagic-analysis))))))
 
+(defn- result-metadata-for-query [query]
+  (first
+   (a/alts!!
+    [(qp.async/result-metadata-for-query-async query)
+     (a/timeout 1000)])))
+
 (expect
   (tu/with-non-admin-groups-no-root-collection-perms
-    (let [source-query {:query    {:source_table (data/id :venues)}
+    (let [source-query {:query    {:source-table (data/id :venues)}
                         :type     :query
                         :database (data/id)}]
       (tt/with-temp* [Collection [{collection-id :id}]
                       Card [{source-id :id} {:table_id      (data/id :venues)
                                              :collection_id   collection-id
                                              :dataset_query   source-query
-                                             :result_metadata (#'card.api/result-metadata-for-query source-query)}]
+                                             :result_metadata (with-rasta (result-metadata-for-query source-query))}]
                       Card [{card-id :id} {:table_id      (data/id :venues)
                                            :collection_id collection-id
                                            :dataset_query {:query    {:filter       [:> [:field-literal "PRICE" "type/Number"] 10]
-                                                                      :source_table (str "card__" source-id)}
+                                                                      :source-table (str "card__" source-id)}
                                                            :type     :query
                                                            :database -1337}}]]
         (with-rasta
@@ -175,7 +181,7 @@
                     Card [{card-id :id} {:table_id      (data/id :venues)
                                          :collection_id collection-id
                                          :dataset_query {:query    {:filter       [:> [:field-id (data/id :venues :price)] 10]
-                                                                    :source_table (data/id :venues)}
+                                                                    :source-table (data/id :venues)}
                                                          :type     :query
                                                          :database (data/id)}}]]
       (with-rasta
@@ -192,11 +198,11 @@
                       Card [{source-id :id} {:table_id        nil
                                              :collection_id   collection-id
                                              :dataset_query   source-query
-                                             :result_metadata (#'card.api/result-metadata-for-query source-query)}]
+                                             :result_metadata (with-rasta (result-metadata-for-query source-query))}]
                       Card [{card-id :id} {:table_id      nil
                                            :collection_id collection-id
                                            :dataset_query {:query    {:filter       [:> [:field-literal "PRICE" "type/Number"] 10]
-                                                                      :source_table (str "card__" source-id)}
+                                                                      :source-table (str "card__" source-id)}
                                                            :type     :query
                                                            :database -1337}}]]
         (with-rasta
@@ -211,7 +217,7 @@
                                          :collection_id collection-id
                                          :dataset_query {:query    {:aggregation  [[:count]]
                                                                     :breakout     [[:field-id (data/id :venues :category_id)]]
-                                                                    :source_table (data/id :venues)}
+                                                                    :source-table (data/id :venues)}
                                                          :type     :query
                                                          :database (data/id)}}]]
       (with-rasta
@@ -251,7 +257,7 @@
                     Card [{card-id :id} {:table_id      (data/id :venues)
                                          :collection_id collection-id
                                          :dataset_query {:query    {:filter       [:> [:field-id (data/id :venues :price)] 10]
-                                                                    :source_table (data/id :venues)}
+                                                                    :source-table (data/id :venues)}
                                                          :type     :query
                                                          :database (data/id)}}]]
       (with-rasta
@@ -268,7 +274,7 @@
                     Card [{card-id :id} {:table_id      (data/id :venues)
                                          :collection_id collection-id
                                          :dataset_query {:query    {:filter       [:> [:field-id (data/id :venues :price)] 10]
-                                                                    :source_table (data/id :venues)}
+                                                                    :source-table (data/id :venues)}
                                                          :type     :query
                                                          :database (data/id)}}]]
       (with-rasta
@@ -283,7 +289,7 @@
   (with-rasta
     (with-dashboard-cleanup
       (let [q (query/adhoc-query {:query {:filter [:> [:field-id (data/id :venues :price)] 10]
-                                          :source_table (data/id :venues)}
+                                          :source-table (data/id :venues)}
                                   :type :query
                                   :database (data/id)})]
         (test-automagic-analysis q)))))
@@ -293,7 +299,7 @@
     (with-dashboard-cleanup
       (let [q (query/adhoc-query {:query {:aggregation [[:count]]
                                           :breakout [[:field-id (data/id :venues :category_id)]]
-                                          :source_table (data/id :venues)}
+                                          :source-table (data/id :venues)}
                                   :type :query
                                   :database (data/id)})]
         (test-automagic-analysis q)))))
@@ -303,7 +309,7 @@
     (with-dashboard-cleanup
       (let [q (query/adhoc-query {:query {:aggregation [[:count]]
                                           :breakout [[:fk-> (data/id :checkins) (data/id :venues :category_id)]]
-                                          :source_table (data/id :checkins)}
+                                          :source-table (data/id :checkins)}
                                   :type :query
                                   :database (data/id)})]
         (test-automagic-analysis q)))))
@@ -312,7 +318,7 @@
   (with-rasta
     (with-dashboard-cleanup
       (let [q (query/adhoc-query {:query {:filter [:> [:field-id (data/id :venues :price)] 10]
-                                          :source_table (data/id :venues)}
+                                          :source-table (data/id :venues)}
                                   :type :query
                                   :database (data/id)})]
         (test-automagic-analysis q [:= [:field-id (data/id :venues :category_id)] 2])))))
@@ -321,9 +327,9 @@
 ;;; ------------------- /candidates -------------------
 
 (expect
-  3
+  4
   (with-rasta
-    (->> (Database (data/id)) candidate-tables first :tables count)))
+    (->> (data/db) candidate-tables first :tables count)))
 
 ;; /candidates should work with unanalyzed tables
 (expect
@@ -475,47 +481,47 @@
                                (t.format/unparse
                                 (t.format/formatter formatter (t/time-zone-for-id tz)) dt))]
   (expect
-    [(tru "at {0}" (unparse-with-formatter "h:mm a, MMMM d, YYYY" dt))
-     (tru "at {0}" (unparse-with-formatter "h a, MMMM d, YYYY" dt))
-     (tru "on {0}" (unparse-with-formatter "MMMM d, YYYY" dt))
-     (tru "in {0} week - {1}"
-          (#'magic/pluralize (date/date-extract :week-of-year dt tz))
-          (str (date/date-extract :year dt tz)))
-     (tru "in {0}" (unparse-with-formatter "MMMM YYYY" dt))
-     (tru "in Q{0} - {1}"
-          (date/date-extract :quarter-of-year dt tz)
-          (str (date/date-extract :year dt tz)))
-     (unparse-with-formatter "YYYY" dt)
-     (unparse-with-formatter "EEEE" dt)
-     (tru "at {0}" (unparse-with-formatter "h a" dt))
-     (unparse-with-formatter "MMMM" dt)
-     (tru "Q{0}" (date/date-extract :quarter-of-year dt tz))
-     (date/date-extract :minute-of-hour dt tz)
-     (date/date-extract :day-of-month dt tz)
-     (date/date-extract :week-of-year dt tz)]
+    (map str [(tru "at {0}" (unparse-with-formatter "h:mm a, MMMM d, YYYY" dt))
+              (tru "at {0}" (unparse-with-formatter "h a, MMMM d, YYYY" dt))
+              (tru "on {0}" (unparse-with-formatter "MMMM d, YYYY" dt))
+              (tru "in {0} week - {1}"
+                   (#'magic/pluralize (date/date-extract :week-of-year dt tz))
+                   (str (date/date-extract :year dt tz)))
+              (tru "in {0}" (unparse-with-formatter "MMMM YYYY" dt))
+              (tru "in Q{0} - {1}"
+                   (date/date-extract :quarter-of-year dt tz)
+                   (str (date/date-extract :year dt tz)))
+              (unparse-with-formatter "YYYY" dt)
+              (unparse-with-formatter "EEEE" dt)
+              (tru "at {0}" (unparse-with-formatter "h a" dt))
+              (unparse-with-formatter "MMMM" dt)
+              (tru "Q{0}" (date/date-extract :quarter-of-year dt tz))
+              (date/date-extract :minute-of-hour dt tz)
+              (date/date-extract :day-of-month dt tz)
+              (date/date-extract :week-of-year dt tz)])
     (let [dt (t.format/unparse (t.format/formatters :date-hour-minute-second) dt)]
-      [(#'magic/humanize-datetime dt :minute)
-       (#'magic/humanize-datetime dt :hour)
-       (#'magic/humanize-datetime dt :day)
-       (#'magic/humanize-datetime dt :week)
-       (#'magic/humanize-datetime dt :month)
-       (#'magic/humanize-datetime dt :quarter)
-       (#'magic/humanize-datetime dt :year)
-       (#'magic/humanize-datetime dt :day-of-week)
-       (#'magic/humanize-datetime dt :hour-of-day)
-       (#'magic/humanize-datetime dt :month-of-year)
-       (#'magic/humanize-datetime dt :quarter-of-year)
-       (#'magic/humanize-datetime dt :minute-of-hour)
-       (#'magic/humanize-datetime dt :day-of-month)
-       (#'magic/humanize-datetime dt :week-of-year)])))
+      (map (comp str (partial #'magic/humanize-datetime dt)) [:minute
+                                                              :hour
+                                                              :day
+                                                              :week
+                                                              :month
+                                                              :quarter
+                                                              :year
+                                                              :day-of-week
+                                                              :hour-of-day
+                                                              :month-of-year
+                                                              :quarter-of-year
+                                                              :minute-of-hour
+                                                              :day-of-month
+                                                              :week-of-year]))))
 
 (expect
-  [(tru "{0}st" 1)
-   (tru "{0}nd" 22)
-   (tru "{0}rd" 303)
-   (tru "{0}th" 0)
-   (tru "{0}th" 8)]
-  (map #'magic/pluralize [1 22 303 0 8]))
+  (map str [(tru "{0}st" 1)
+            (tru "{0}nd" 22)
+            (tru "{0}rd" 303)
+            (tru "{0}th" 0)
+            (tru "{0}th" 8)])
+  (map (comp str #'magic/pluralize) [1 22 303 0 8]))
 
 ;; Make sure we have handlers for all the units available
 (expect

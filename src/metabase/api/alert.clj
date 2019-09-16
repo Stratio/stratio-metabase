@@ -14,8 +14,9 @@
              [card :refer [Card]]
              [interface :as mi]
              [pulse :as pulse :refer [Pulse]]]
-            [metabase.util.schema :as su]
-            [puppetlabs.i18n.core :refer [tru]]
+            [metabase.util
+             [i18n :refer [tru]]
+             [schema :as su]]
             [schema.core :as s]
             [toucan
              [db :as db]
@@ -113,11 +114,11 @@
   "Create a new Alert."
   [:as {{:keys [alert_condition card channels alert_first_only alert_above_goal]
          :as new-alert-request-body} :body}]
-  {alert_condition     pulse/AlertConditions
-   alert_first_only    s/Bool
-   alert_above_goal    (s/maybe s/Bool)
-   card                pulse/CardRef
-   channels            (su/non-empty [su/Map])}
+  {alert_condition  pulse/AlertConditions
+   alert_first_only s/Bool
+   alert_above_goal (s/maybe s/Bool)
+   card             pulse/CardRef
+   channels         (su/non-empty [su/Map])}
   ;; do various perms checks as needed. Perms for an Alert == perms for its Card. So to create an Alert you need write
   ;; perms for its Card
   (api/write-check Card (u/get-id card))

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN">
+<Configuration status="DEBUG">
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
             <PatternLayout pattern="%d{MM-dd HH:mm:ss} \u001b[1m%p %c{2}\u001b[0m :: %m%n" />
@@ -18,7 +18,7 @@
 
     <Loggers>
 
-        <Logger name="metabase.driver" level="info" additivity="false">
+        <Logger name="metabase.driver" level="debug" additivity="false">
             <AppenderRef ref="File" />
             <AppenderRef ref="Console" />
         </Logger>
@@ -35,19 +35,24 @@
             <AppenderRef ref="File" />
             <AppenderRef ref="Console" />
         </Logger>
-        <Logger name="metabase.query-processor" level="info" additivity="false">
+        <Logger name="metabase.query-processor" level="debug" additivity="false">
             <AppenderRef ref="File" />
             <AppenderRef ref="Console" />
         </Logger>
-        <Logger name="metabase.sync" level="info" additivity="false">
+        <Logger name="metabase.sync" level="debug" additivity="false">
             <AppenderRef ref="File" />
             <AppenderRef ref="Console" />
         </Logger>
-        <Logger name="metabase.models.field-values" level="info" additivity="false">
+        <Logger name="metabase.models.field-values" level="debug" additivity="false">
             <AppenderRef ref="File" />
             <AppenderRef ref="Console" />
         </Logger>
-        <Logger name="metabase" level="info" additivity="false">
+        <Logger name="metabase" level="debug" additivity="false">
+            <AppenderRef ref="File" />
+            <AppenderRef ref="Console" />
+        </Logger>
+
+	<Logger name="metabase.api" level="debug" additivity="false">
             <AppenderRef ref="File" />
             <AppenderRef ref="Console" />
         </Logger>

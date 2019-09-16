@@ -2,14 +2,14 @@ import React, { Component } from "react";
 import cx from "classnames";
 import _ from "underscore";
 import { assocIn } from "icepick";
-import { t } from "c-3po";
+import { t } from "ttag";
 
 import FormMessage from "metabase/components/form/FormMessage";
 import SchedulePicker from "metabase/components/SchedulePicker";
 import LoadingAndErrorWrapper from "metabase/components/LoadingAndErrorWrapper";
 
 import MetabaseAnalytics from "metabase/lib/analytics";
-import colors from "metabase/lib/colors";
+import { color } from "metabase/lib/colors";
 
 export const SyncOption = ({ selected, name, children, select }) => (
   <div
@@ -22,7 +22,7 @@ export const SyncOption = ({ selected, name, children, select }) => (
         width: 18,
         height: 18,
         borderWidth: 2,
-        borderColor: selected ? colors["brand"] : colors["text-light"],
+        borderColor: selected ? color("brand") : color("text-light"),
         borderStyle: "solid",
       }}
     >
@@ -32,7 +32,7 @@ export const SyncOption = ({ selected, name, children, select }) => (
           style={{
             width: 8,
             height: 8,
-            backgroundColor: selected ? colors["brand"] : colors["text-light"],
+            backgroundColor: selected ? color("brand") : color("text-light"),
           }}
         />
       )}
@@ -142,7 +142,7 @@ export default class DatabaseSchedulingForm extends Component {
                           schedule_type: "daily",
                         }
                   }
-                  scheduleOptions={["15minutes","30minutes","hourly", "daily"]}
+                  scheduleOptions={["hourly", "daily"]}
                   onScheduleChange={this.updateSchemaSyncSchedule}
                   textBeforeInterval={t`Scan`}
                 />
@@ -155,8 +155,7 @@ export default class DatabaseSchedulingForm extends Component {
                                     can be a somewhat resource-intensive process, particularly if you have a very large
                                     database.`}</p>
 
-                <h3
-                >{t`When should Metabase automatically scan and cache field values?`}</h3>
+                <h3>{t`When should Metabase automatically scan and cache field values?`}</h3>
                 <ol className="bordered shadowed mt3">
                   <li className="border-bottom">
                     <SyncOption

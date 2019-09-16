@@ -1,0 +1,47 @@
+info:
+  name: Metabase Crossdata Driver
+  version: 1.0.0-SNAPSHOT-7.0.0-jre8
+  description: Allows Metabase to connect to Crossdata databases.
+
+dependencies:
+  - class: com.stratio.jdbc.core.jdbc4.StratioDriver
+    message: >
+      Metabase requires the Vertica JDBC driver in order to connect to Vertica databases, but we can't ship it as part
+      of Metabase due to licensing restrictions. See
+      https://metabase.com/docs/latest/administration-guide/databases/vertica.html for more details.
+
+driver:
+  name: crossdata
+  display-name: Stratio Crossdata
+  lazy-load: true
+  parent: sql-jdbc
+  connection-properties:
+    - merge:
+      - host
+      - placeholder: localhost
+    - merge:
+        - port
+        - placeholder: 13422
+    - merge:
+        - dbname
+        - placeholder: crossdata
+    - user
+    - name: impersonate
+      display-name: Connect with Discovery login user?
+      default: false
+      type: boolean
+
+    - ssl
+    - name: ssl-option
+      display-name: Use a secure connection (SSL)?
+      default: false
+      type: boolean
+    - merge:
+        - additional-options
+        - placeholder: "prepareThreshold = 0"
+
+init:
+  - step: load-namespace
+    namespace: metabase.driver.crossdata
+  - step: register-jdbc-driver
+    class: com.stratio.jdbc.core.jdbc4.StratioDriver

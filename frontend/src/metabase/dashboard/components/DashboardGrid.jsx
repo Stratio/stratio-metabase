@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import GridLayout from "./grid/GridLayout.jsx";
-import DashCard from "./DashCard.jsx";
+import GridLayout from "./grid/GridLayout";
+import DashCard from "./DashCard";
 
-import Modal from "metabase/components/Modal.jsx";
-import ExplicitSize from "metabase/components/ExplicitSize.jsx";
-import RemoveFromDashboardModal from "./RemoveFromDashboardModal.jsx";
-import AddSeriesModal from "./AddSeriesModal.jsx";
+import Modal from "metabase/components/Modal";
+import ExplicitSize from "metabase/components/ExplicitSize";
+import RemoveFromDashboardModal from "./RemoveFromDashboardModal";
+import AddSeriesModal from "./AddSeriesModal";
 
 import { getVisualizationRaw } from "metabase/visualizations";
 import MetabaseAnalytics from "metabase/lib/analytics";
@@ -25,7 +25,7 @@ import cx from "classnames";
 const MOBILE_ASPECT_RATIO = 3 / 2;
 const MOBILE_TEXT_CARD_ROW_HEIGHT = 40;
 
-@ExplicitSize
+@ExplicitSize()
 export default class DashboardGrid extends Component {
   constructor(props, context) {
     super(props, context);
@@ -73,11 +73,11 @@ export default class DashboardGrid extends Component {
   }
 
   onLayoutChange(layout) {
-    let changes = layout.filter(
+    const changes = layout.filter(
       newLayout =>
         !_.isEqual(newLayout, this.getLayoutForDashCard(newLayout.dashcard)),
     );
-    for (let change of changes) {
+    for (const change of changes) {
       this.props.setDashCardAttributes({
         id: change.dashcard.id,
         attributes: {
@@ -116,9 +116,9 @@ export default class DashboardGrid extends Component {
   }
 
   getLayoutForDashCard(dashcard) {
-    let { CardVisualization } = getVisualizationRaw([{ card: dashcard.card }]);
-    let initialSize = DEFAULT_CARD_SIZE;
-    let minSize = CardVisualization.minSize || DEFAULT_CARD_SIZE;
+    const { visualization } = getVisualizationRaw([{ card: dashcard.card }]);
+    const initialSize = DEFAULT_CARD_SIZE;
+    const minSize = visualization.minSize || DEFAULT_CARD_SIZE;
     return {
       i: String(dashcard.id),
       x: dashcard.col || 0,
@@ -136,7 +136,7 @@ export default class DashboardGrid extends Component {
 
   renderRemoveModal() {
     // can't use PopoverWithTrigger due to strange interaction with ReactGridLayout
-    let isOpen = this.state.removeModalDashCard != null;
+    const isOpen = this.state.removeModalDashCard != null;
     return (
       <Modal isOpen={isOpen}>
         {isOpen && (
@@ -153,7 +153,7 @@ export default class DashboardGrid extends Component {
 
   renderAddSeriesModal() {
     // can't use PopoverWithTrigger due to strange interaction with ReactGridLayout
-    let isOpen = this.state.addSeriesModalDashCard != null;
+    const isOpen = this.state.addSeriesModalDashCard != null;
     return (
       <Modal className="Modal AddSeriesModal" isOpen={isOpen}>
         {isOpen && (

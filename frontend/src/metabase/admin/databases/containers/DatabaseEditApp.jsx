@@ -4,16 +4,16 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import title from "metabase/hoc/Title";
-import { t } from "c-3po";
+import { t } from "ttag";
 
 import MetabaseSettings from "metabase/lib/settings";
-import DeleteDatabaseModal from "../components/DeleteDatabaseModal.jsx";
-import DatabaseEditForms from "../components/DatabaseEditForms.jsx";
+import DeleteDatabaseModal from "../components/DeleteDatabaseModal";
+import DatabaseEditForms from "../components/DatabaseEditForms";
 import DatabaseSchedulingForm from "../components/DatabaseSchedulingForm";
-import ActionButton from "metabase/components/ActionButton.jsx";
-import Breadcrumbs from "metabase/components/Breadcrumbs.jsx";
-import Radio from "metabase/components/Radio.jsx";
-import ModalWithTrigger from "metabase/components/ModalWithTrigger.jsx";
+import ActionButton from "metabase/components/ActionButton";
+import Breadcrumbs from "metabase/components/Breadcrumbs";
+import Radio from "metabase/components/Radio";
+import ModalWithTrigger from "metabase/components/ModalWithTrigger";
 
 import {
   getEditingDatabase,
@@ -61,7 +61,10 @@ const TABS: TabOption[] = [
   { name: t`Scheduling`, value: "scheduling" },
 ];
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)
 @title(({ database }) => database && database.name)
 export default class DatabaseEditApp extends Component {
   state: {
@@ -108,7 +111,7 @@ export default class DatabaseEditApp extends Component {
   }
 
   render() {
-    let { database, formState } = this.props;
+    const { database, formState } = this.props;
     const { currentTab } = this.state;
 
     const editingExistingDatabase = database && database.id != null;

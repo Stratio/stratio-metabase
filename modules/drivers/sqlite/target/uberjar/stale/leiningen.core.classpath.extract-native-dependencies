@@ -1,0 +1,1 @@
+[{:dependencies {org.xerial/sqlite-jdbc {:vsn "3.25.2", :native-prefix nil}}, :native-path "target/uberjar/native"} {:native-path "target/uberjar/native", :dependencies {org.xerial/sqlite-jdbc {:vsn "3.25.2", :native-prefix nil, :native? false}}}]

@@ -1,30 +1,29 @@
 import React, { Component } from "react";
-import { t } from "c-3po";
+import { t } from "ttag";
 
-import Icon from "metabase/components/Icon.jsx";
+import ColumnItem from "./ColumnItem";
 
 import { SortableContainer, SortableElement } from "react-sortable-hoc";
 
 import StructuredQuery from "metabase-lib/lib/queries/StructuredQuery";
-import {
-  fieldRefForColumn,
-  findColumnForColumnSetting,
-} from "metabase/lib/dataset";
+import { keyForColumn, findColumnForColumnSetting } from "metabase/lib/dataset";
 import { getFriendlyName } from "metabase/visualizations/lib/utils";
 
 import _ from "underscore";
 
 const SortableColumn = SortableElement(
-  ({ columnSetting, getColumnName, onRemove }) => (
+  ({ columnSetting, getColumnName, onEdit, onRemove }) => (
     <ColumnItem
       title={getColumnName(columnSetting)}
-      onRemove={() => onRemove(columnSetting)}
+      onEdit={onEdit ? () => onEdit(columnSetting) : null}
+      onRemove={onRemove ? () => onRemove(columnSetting) : null}
+      draggable
     />
   ),
 );
 
 const SortableColumnList = SortableContainer(
-  ({ columnSettings, getColumnName, onRemove }) => {
+  ({ columnSettings, getColumnName, onEdit, onRemove }) => {
     return (
       <div>
         {columnSettings.map((columnSetting, index) => (
@@ -33,6 +32,7 @@ const SortableColumnList = SortableContainer(
             index={columnSetting.index}
             columnSetting={columnSetting}
             getColumnName={getColumnName}
+            onEdit={onEdit}
             onRemove={onRemove}
           />
         ))}
@@ -62,16 +62,25 @@ export default class ChartSettingOrderedColumns extends Component {
     this.props.onChange(fields);
   };
 
+  handleEdit = columnSetting => {
+    const column = findColumnForColumnSetting(
+      this.props.columns,
+      columnSetting,
+    );
+    if (column) {
+      this.props.onShowWidget({
+        id: "column_settings",
+        props: {
+          initialKey: keyForColumn(column),
+        },
+      });
+    }
+  };
+
   handleAddNewField = fieldRef => {
-    const { value, onChange, addField } = this.props;
-    onChange([
-      // remove duplicates
-      ...value.filter(
-        columnSetting => !_.isEqual(columnSetting.fieldRef, fieldRef),
-      ),
-      { fieldRef, enabled: true },
-    ]);
-    addField(fieldRef);
+    const { value, onChange } = this.props;
+    const columnSettings = [...value, { fieldRef, enabled: true }];
+    onChange(columnSettings);
   };
 
   getColumnName = columnSetting =>
@@ -83,13 +92,14 @@ export default class ChartSettingOrderedColumns extends Component {
 
   render() {
     const { value, question, columns } = this.props;
+    const query = question && question.query();
 
     let additionalFieldOptions = { count: 0 };
-    if (columns && question && question.query() instanceof StructuredQuery) {
-      const fieldRefs = columns.map(column => fieldRefForColumn(column));
-      additionalFieldOptions = question.query().fieldsOptions(dimension => {
-        const mbql = dimension.mbql();
-        return !_.find(fieldRefs, fieldRef => _.isEqual(fieldRef, mbql));
+    if (columns && query instanceof StructuredQuery) {
+      additionalFieldOptions = query.fieldsOptions(dimension => {
+        return !_.find(columns, column =>
+          dimension.isSameBaseDimension(column.field_ref),
+        );
       });
     }
 
@@ -109,6 +119,7 @@ export default class ChartSettingOrderedColumns extends Component {
           <SortableColumnList
             columnSettings={enabledColumns}
             getColumnName={this.getColumnName}
+            onEdit={this.handleEdit}
             onRemove={this.handleDisable}
             onSortEnd={this.handleSortEnd}
             distance={5}
@@ -120,13 +131,14 @@ export default class ChartSettingOrderedColumns extends Component {
           </div>
         )}
         {disabledColumns.length > 0 || additionalFieldOptions.count > 0 ? (
-          <h4 className="mb2 mt4 pt4 border-top">{`More fields`}</h4>
+          <h4 className="mb2 mt4 pt4 border-top">{`More columns`}</h4>
         ) : null}
         {disabledColumns.map((columnSetting, index) => (
           <ColumnItem
             key={index}
             title={this.getColumnName(columnSetting)}
             onAdd={() => this.handleEnable(columnSetting)}
+            onClick={() => this.handleEnable(columnSetting)}
           />
         ))}
         {additionalFieldOptions.count > 0 && (
@@ -141,7 +153,10 @@ export default class ChartSettingOrderedColumns extends Component {
             {additionalFieldOptions.fks.map(fk => (
               <div>
                 <div className="my2 text-medium text-bold text-uppercase text-small">
-                  {fk.field.target.table.display_name}
+                  {fk.name ||
+                    (fk.field.target
+                      ? fk.field.target.table.display_name
+                      : fk.field.display_name)}
                 </div>
                 {fk.dimensions.map((dimension, index) => (
                   <ColumnItem
@@ -158,36 +173,3 @@ export default class ChartSettingOrderedColumns extends Component {
     );
   }
 }
-
-const ColumnItem = ({ title, onAdd, onRemove }) => (
-  <div
-    className="my1 bordered rounded shadowed cursor-pointer overflow-hidden bg-white"
-    onClick={onAdd}
-  >
-    <div className="p1 border-bottom relative">
-      <div className="px1 flex align-center relative">
-        <span className="h4 flex-full text-dark">{title}</span>
-        {onAdd && (
-          <Icon
-            name="add"
-            className="cursor-pointer text-light text-medium-hover"
-            onClick={e => {
-              e.stopPropagation();
-              onAdd();
-            }}
-          />
-        )}
-        {onRemove && (
-          <Icon
-            name="close"
-            className="cursor-pointer text-light text-medium-hover"
-            onClick={e => {
-              e.stopPropagation();
-              onRemove();
-            }}
-          />
-        )}
-      </div>
-    </div>
-  </div>
-);

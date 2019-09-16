@@ -2,7 +2,10 @@ import React from "react";
 import { Provider } from "react-redux";
 import { getStore } from "metabase/store";
 
+// StructuredQuery import needs to come before Question due to cyclical depedency issue
+import StructuredQuery from "metabase-lib/lib/queries/StructuredQuery";
 import Question from "metabase-lib/lib/Question";
+
 import { getMetadata } from "metabase/selectors/metadata";
 import { assocIn } from "icepick";
 import _ from "underscore";
@@ -18,18 +21,24 @@ export const PRODUCT_TABLE_ID = 3;
 export const ORDERS_CREATED_DATE_FIELD_ID = 1;
 export const ORDERS_PK_FIELD_ID = 2;
 export const ORDERS_PRODUCT_FK_FIELD_ID = 3;
+export const ORDERS_SUBTOTAL_FIELD_ID = 4;
+export const ORDERS_TAX_FIELD_ID = 5;
 export const ORDERS_TOTAL_FIELD_ID = 6;
+export const ORDERS_USER_FK_FIELD_ID = 7;
 
 export const MAIN_METRIC_ID = 1;
 
 export const PRODUCT_CATEGORY_FIELD_ID = 21;
+export const PRODUCT_CREATED_AT_FIELD_ID = 22;
 export const PRODUCT_PK_FIELD_ID = 24;
+export const PRODUCT_PRICE_FIELD_ID = 25;
 export const PRODUCT_TILE_FIELD_ID = 27;
 
 export const PEOPLE_LATITUDE_FIELD_ID = 14;
 export const PEOPLE_LONGITUDE_FIELD_ID = 15;
 export const PEOPLE_STATE_FIELD_ID = 19;
 
+// TODO: dump this from a real instance
 export const state = {
   entities: {
     metrics: {
@@ -38,7 +47,7 @@ export const state = {
         table_id: 1,
         definition: {
           aggregation: [["sum", ["field-id", 6]]],
-          source_table: 1,
+          "source-table": 1,
         },
         creator: {
           email: "sameer@metabase.com",
@@ -70,7 +79,7 @@ export const state = {
         table_id: 1,
         definition: {
           filter: [">", ["field-id", 6], 30],
-          source_table: 1,
+          "source-table": 1,
         },
         creator: {
           email: "sameer@metabase.com",
@@ -104,6 +113,10 @@ export const state = {
           "foreign-keys",
           "native-parameters",
           "expressions",
+          "right-join",
+          "left-join",
+          "inner-join",
+          "nested-queries",
         ],
         name: "Sample Dataset",
         caveats: null,
@@ -500,6 +513,38 @@ export const state = {
         base_type: "type/Float",
         points_of_interest: null,
         values: [],
+        default_dimension_option: {
+          mbql: ["binning-strategy", null, "default"],
+          name: "Auto bin",
+          type: "type/Number",
+        },
+        dimension_options: [
+          {
+            mbql: ["binning-strategy", null, "default"],
+            name: "Auto bin",
+            type: "type/Number",
+          },
+          {
+            mbql: ["binning-strategy", null, "num-bins", 10],
+            name: "10 bins",
+            type: "type/Number",
+          },
+          {
+            mbql: ["binning-strategy", null, "num-bins", 50],
+            name: "50 bins",
+            type: "type/Number",
+          },
+          {
+            mbql: ["binning-strategy", null, "num-bins", 100],
+            name: "100 bins",
+            type: "type/Number",
+          },
+          {
+            mbql: null,
+            name: "Don't bin",
+            type: "type/Number",
+          },
+        ],
       },
       "7": {
         description:
@@ -1291,6 +1336,55 @@ export const state = {
 
 export const metadata = getMetadata(state);
 
+export function makeMetadata(metadata) {
+  metadata = {
+    databases: {
+      1: { name: "database", tables: [] },
+    },
+    tables: {
+      1: { display_name: "table", fields: [], segments: [], metrics: [] },
+    },
+    fields: {
+      1: { display_name: "field" },
+    },
+    metrics: {
+      1: { name: "metric" },
+    },
+    segments: {
+      1: { name: "segment" },
+    },
+    ...metadata,
+  };
+  // convienence for filling in missing bits
+  for (const objects of Object.values(metadata)) {
+    for (const [id, object] of Object.entries(objects)) {
+      object.id = parseInt(id);
+      if (!object.name && object.display_name) {
+        object.name = object.display_name;
+      }
+    }
+  }
+  // linking to default db
+  for (const table of Object.values(metadata.tables)) {
+    if (table.db == null) {
+      const db0 = Object.values(metadata.databases)[0];
+      table.db = db0.id;
+      (db0.tables = db0.tables || []).push(table.id);
+    }
+  }
+  // linking to default table
+  for (const childType of ["fields", "segments", "metrics"]) {
+    for (const child of Object.values(metadata[childType])) {
+      if (child.table == null) {
+        const table0 = Object.values(metadata.tables)[0];
+        child.table = table0.id;
+        (table0[childType] = table0[childType] || []).push(child.id);
+      }
+    }
+  }
+  return getMetadata({ entities: metadata });
+}
+
 export const card = {
   display: "table",
   visualization_settings: {},
@@ -1298,7 +1392,7 @@ export const card = {
     type: "query",
     database: DATABASE_ID,
     query: {
-      source_table: ORDERS_TABLE_ID,
+      "source-table": ORDERS_TABLE_ID,
     },
   },
 };
@@ -1310,7 +1404,7 @@ export const product_card = {
     type: "query",
     database: DATABASE_ID,
     query: {
-      source_table: PRODUCT_TABLE_ID,
+      "source-table": PRODUCT_TABLE_ID,
     },
   },
 };
@@ -1325,7 +1419,7 @@ export const orders_raw_card = {
     type: "query",
     database: DATABASE_ID,
     query: {
-      source_table: ORDERS_TABLE_ID,
+      "source-table": ORDERS_TABLE_ID,
     },
   },
 };
@@ -1340,7 +1434,7 @@ export const orders_count_card = {
     database: DATABASE_ID,
     query: {
       aggregation: [["count"]],
-      source_table: ORDERS_TABLE_ID,
+      "source-table": ORDERS_TABLE_ID,
     },
   },
 };
@@ -1397,9 +1491,16 @@ export const orders_count_by_id_card = {
     database: DATABASE_ID,
     query: {
       aggregation: [["count"]],
-      source_table: ORDERS_TABLE_ID,
+      "source-table": ORDERS_TABLE_ID,
       breakout: [["field-id", ORDERS_PK_FIELD_ID]],
     },
+  },
+};
+
+export const clickedCreatedAtHeader = {
+  column: {
+    ...metadata.field(ORDERS_CREATED_DATE_FIELD_ID),
+    source: "fields",
   },
 };
 
@@ -1478,13 +1579,55 @@ const NoFieldsMetadata = getMetadata(
 );
 export const questionNoFields = new Question(NoFieldsMetadata, card);
 
+// COUNT BY CREATED AT
+
+export const countByCreatedAtQuestion = question
+  .query()
+  .addAggregation(["count"])
+  .addBreakout(["field-id", ORDERS_CREATED_DATE_FIELD_ID])
+  .question();
+
+export const clickedCountAggregationHeader = {
+  column: {
+    name: "count",
+    display_name: "count",
+    base_type: "type/Integer",
+    special_type: "type/Number",
+    source: "aggregation",
+  },
+};
+
+export const clickedCreatedAtBreakoutHeader = {
+  column: {
+    ...metadata.field(ORDERS_CREATED_DATE_FIELD_ID),
+    source: "breakout",
+  },
+};
+
+// NOTE: defauts to orders table
+export function makeDatasetQuery(query = {}) {
+  return {
+    type: "query",
+    database: DATABASE_ID,
+    query: {
+      "source-table": query["source-query"] ? undefined : ORDERS_TABLE_ID,
+      ...query,
+    },
+  };
+}
+
+// NOTE: defauts to orders table
+export function makeStructuredQuery(query) {
+  return new StructuredQuery(question, makeDatasetQuery(query));
+}
+
 export const orders_past_300_days_segment = {
   id: null,
   name: "Past 300 days",
   description: "Past 300 days created at",
   table_id: 1,
   definition: {
-    source_table: 1,
+    "source-table": 1,
     filter: ["time-interval", ["field-id", 1], -300, "day"],
   },
 };
@@ -1496,7 +1639,7 @@ export const vendor_count_metric = {
   table_id: 3,
   definition: {
     aggregation: [["distinct", ["field-id", 28]]],
-    source_table: 3,
+    "source-table": 3,
   },
 };
 

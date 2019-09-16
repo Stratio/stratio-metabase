@@ -19,9 +19,9 @@
              [pulse-channel :refer [channel-types]]]
             [metabase.pulse.render :as render]
             [metabase.util
+             [i18n :refer [tru]]
              [schema :as su]
              [urls :as urls]]
-            [puppetlabs.i18n.core :refer [tru]]
             [schema.core :as s]
             [toucan
              [db :as db]
@@ -134,10 +134,13 @@
                    (catch Throwable e
                      (assoc-in chan-types [:slack :error] (.getMessage e)))))}))
 
-(defn- pulse-card-query-results [card]
-  (qp/process-query-and-save-execution! (:dataset_query card) {:executed-by api/*current-user-id*
-                                                               :context     :pulse
-                                                               :card-id     (u/get-id card)}))
+(defn- pulse-card-query-results
+  {:arglists '([card])}
+  [{query :dataset_query, card-id :id}]
+  (qp/process-query-and-save-execution! (assoc query :async? false)
+    {:executed-by api/*current-user-id*
+     :context     :pulse
+     :card-id     card-id}))
 
 (api/defendpoint GET "/preview_card/:id"
   "Get HTML rendering of a Card with `id`."

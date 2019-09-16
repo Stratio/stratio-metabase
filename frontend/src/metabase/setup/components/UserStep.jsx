@@ -2,16 +2,16 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { Box, Flex } from "grid-styled";
-import { t } from "c-3po";
-import FormField from "metabase/components/form/FormField.jsx";
-import FormLabel from "metabase/components/form/FormLabel.jsx";
-import FormMessage from "metabase/components/form/FormMessage.jsx";
+import { t } from "ttag";
+import FormField from "metabase/components/form/FormField";
+import FormLabel from "metabase/components/form/FormLabel";
+import FormMessage from "metabase/components/form/FormMessage";
 import MetabaseAnalytics from "metabase/lib/analytics";
 import MetabaseSettings from "metabase/lib/settings";
 import MetabaseUtils from "metabase/lib/utils";
 
-import StepTitle from "./StepTitle.jsx";
-import CollapsedStep from "./CollapsedStep.jsx";
+import StepTitle from "./StepTitle";
+import CollapsedStep from "./CollapsedStep";
 
 import _ from "underscore";
 import cx from "classnames";
@@ -45,7 +45,7 @@ export default class UserStep extends Component {
   };
 
   validateForm = () => {
-    let { fieldValues, valid, validPassword } = this.state;
+    const { fieldValues, valid, validPassword } = this.state;
     let isValid = true;
 
     // required: first_name, last_name, email, password
@@ -96,7 +96,7 @@ export default class UserStep extends Component {
       formError: null,
     });
 
-    let formErrors = { data: { errors: {} } };
+    const formErrors = { data: { errors: {} } };
 
     // validate email address
     if (!MetabaseUtils.validEmail(fieldValues.email)) {
@@ -146,8 +146,8 @@ export default class UserStep extends Component {
   onSiteNameChange = e => this.updateFieldValue("site_name", e.target.value);
 
   render() {
-    let { activeStep, setActiveStep, stepNumber, userDetails } = this.props;
-    let { formError, passwordError, valid } = this.state;
+    const { activeStep, setActiveStep, stepNumber, userDetails } = this.props;
+    const { formError, passwordError, valid } = this.state;
 
     const passwordComplexityDesc = MetabaseSettings.passwordComplexityDescription();
     const stepText =

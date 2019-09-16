@@ -121,6 +121,12 @@ export const LdapApi = {
   updateSettings: PUT("/api/ldap/settings"),
 };
 
+// adds a flag to google analytics provided segments and metrics
+// we use this when we just want to filter out our own segments/metrics
+function addGoogleAnalyticsFlag(segmentOrMetric) {
+  return { ...segmentOrMetric, googleAnalyics: true };
+}
+
 export const MetabaseApi = {
   db_list: GET("/api/database"),
   db_list_with_tables: GET(
@@ -156,10 +162,10 @@ export const MetabaseApi = {
     async table => {
       // HACK: inject GA metadata that we don't have intergrated on the backend yet
       if (table && table.db && table.db.engine === "googleanalytics") {
-        let GA = await getGAMetadata();
+        const GA = await getGAMetadata();
         table.fields = table.fields.map(f => ({ ...f, ...GA.fields[f.name] }));
-        table.metrics.push(...GA.metrics);
-        table.segments.push(...GA.segments);
+        table.metrics.push(...GA.metrics.map(addGoogleAnalyticsFlag));
+        table.segments.push(...GA.segments.map(addGoogleAnalyticsFlag));
       }
 
       if (table && table.fields) {
@@ -196,6 +202,7 @@ export const MetabaseApi = {
   field_remapping: GET("/api/field/:fieldId/remapping/:remappedFieldId"),
   dataset: POST("/api/dataset"),
   dataset_duration: POST("/api/dataset/duration"),
+  native: POST("/api/dataset/native"),
 };
 
 export const PulseApi = {
@@ -302,6 +309,7 @@ export const UtilApi = {
   password_check: POST("/api/util/password_check"),
   random_token: GET("/api/util/random_token"),
   logs: GET("/api/util/logs"),
+  bug_report_details: GET("/api/util/bug_report_details"),
 };
 
 export const GeoJSONApi = {
@@ -310,6 +318,11 @@ export const GeoJSONApi = {
 
 export const I18NApi = {
   locale: GET("/app/locales/:locale.json"),
+};
+
+export const TaskApi = {
+  get: GET("/api/task"),
+  getJobsInfo: GET("/api/task/info"),
 };
 
 export function setPublicQuestionEndpoints(uuid: string) {

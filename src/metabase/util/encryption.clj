@@ -10,7 +10,7 @@
             [clojure.tools.logging :as log]
             [environ.core :as env]
             [metabase.util :as u]
-            [puppetlabs.i18n.core :refer [trs]]
+            [metabase.util.i18n :refer [trs]]
             [ring.util.codec :as codec]))
 
 (defn secret-key->hash
@@ -27,17 +27,19 @@
   (when-let [secret-key (env/env :mb-encryption-secret-key)]
     (when (seq secret-key)
       (assert (>= (count secret-key) 16)
-        (trs "MB_ENCRYPTION_SECRET_KEY must be at least 16 characters."))
+        (str (trs "MB_ENCRYPTION_SECRET_KEY must be at least 16 characters.")))
       (secret-key->hash secret-key))))
 
 ;; log a nice message letting people know whether DB details encryption is enabled
-(log/info
- (if default-secret-key
-   (trs "Saved credentials encryption is ENABLED for this Metabase instance.")
-   (trs "Saved credentials encryption is DISABLED for this Metabase instance."))
- (u/emoji (if default-secret-key "🔐" "🔓"))
- (trs "\nFor more information, see")
- "https://www.metabase.com/docs/latest/operations-guide/start.html#encrypting-your-database-connection-details-at-rest")
+(when-not *compile-files*
+  (log/info
+   (if default-secret-key
+     (trs "Saved credentials encryption is ENABLED for this Metabase instance.")
+     (trs "Saved credentials encryption is DISABLED for this Metabase instance."))
+   (u/emoji (if default-secret-key "🔐" "🔓"))
+   "\n"
+   (trs "For more information, see")
+   "https://metabase.com/docs/latest/operations-guide/encrypting-database-details-at-rest.html"))
 
 (defn encrypt
   "Encrypt string `s` as hex bytes using a `secret-key` (a 64-byte byte array), by default the hashed value of
@@ -93,18 +95,24 @@
 
 (defn maybe-decrypt
   "If `MB_ENCRYPTION_SECRET_KEY` is set and `s` is encrypted, decrypt `s`; otherwise return `s` as-is."
-  (^String [^String s]
-   (maybe-decrypt default-secret-key s))
-  (^String [secret-key, ^String s]
-   (if (and secret-key (possibly-encrypted-string? s))
-     (try
-       (decrypt secret-key s)
-       (catch Throwable e
-         ;; if we can't decrypt `s`, but it *is* probably encrypted, log a warning
-         (log/warn
-          (trs "Cannot decrypt encrypted string. Have you changed or forgot to set MB_ENCRYPTION_SECRET_KEY?")
-          (.getMessage e)
-          (u/pprint-to-str (u/filtered-stacktrace e)))
-         s))
-     ;; otherwise return `s` without decrypting. It's probably not decrypted in the first place
-     s)))
+  {:arglists '([secret-key? s & {:keys [log-errors?], :or {log-errors? true}}])}
+  [& args]
+  (let [[secret-key & more]        (if (bytes? (first args))
+                                     args
+                                     (cons default-secret-key args))
+        [s & options]              more
+        {:keys [log-errors?]
+         :or   {log-errors? true}} (apply hash-map options)]
+    (if (and secret-key (possibly-encrypted-string? s))
+      (try
+        (decrypt secret-key s)
+        (catch Throwable e
+          ;; if we can't decrypt `s`, but it *is* probably encrypted, log a warning
+          (when log-errors?
+            (log/warn
+             (trs "Cannot decrypt encrypted string. Have you changed or forgot to set MB_ENCRYPTION_SECRET_KEY?")
+             (.getMessage e)
+             (u/pprint-to-str (u/filtered-stacktrace e))))
+          s))
+      ;; otherwise return `s` without decrypting. It's probably not encrypted in the first place
+      s)))

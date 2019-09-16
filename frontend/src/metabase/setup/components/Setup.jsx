@@ -3,15 +3,15 @@ import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
 import { Link } from "react-router";
-import { t } from "c-3po";
-import LogoIcon from "metabase/components/LogoIcon.jsx";
-import NewsletterForm from "metabase/components/NewsletterForm.jsx";
+import { t } from "ttag";
+import LogoIcon from "metabase/components/LogoIcon";
+import NewsletterForm from "metabase/components/NewsletterForm";
 import MetabaseAnalytics from "metabase/lib/analytics";
 import MetabaseSettings from "metabase/lib/settings";
 
-import UserStep from "./UserStep.jsx";
-import DatabaseConnectionStep from "./DatabaseConnectionStep.jsx";
-import PreferencesStep from "./PreferencesStep.jsx";
+import UserStep from "./UserStep";
+import DatabaseConnectionStep from "./DatabaseConnectionStep";
+import PreferencesStep from "./PreferencesStep";
 import DatabaseSchedulingStep from "metabase/setup/components/DatabaseSchedulingStep";
 
 const WELCOME_STEP_NUMBER = 0;
@@ -39,15 +39,12 @@ export default class Setup extends Component {
   }
 
   renderFooter() {
-    const { tag } = MetabaseSettings.get("version");
     return (
       <div className="SetupHelp bordered border-dashed p2 rounded mb4">
         {t`If you feel stuck`},{" "}
         <a
           className="link"
-          href={
-            "http://www.metabase.com/docs/" + tag + "/setting-up-metabase.html"
-          }
+          href={MetabaseSettings.docsUrl("setting-up-metabase")}
           target="_blank"
         >{t`our getting started guide`}</a>{" "}
         {t`is just a click away.`}
@@ -73,7 +70,7 @@ export default class Setup extends Component {
   }
 
   render() {
-    let {
+    const {
       activeStep,
       setupComplete,
       databaseDetails,
@@ -92,7 +89,7 @@ export default class Setup extends Component {
               <h1
                 style={{ fontSize: "2.2rem" }}
                 className="text-brand"
-              >{t`Welcome to Discovery`}</h1>
+              >{t`Welcome to Metabase`}</h1>
               <p className="text-body">{t`Looks like everything is working. Now let’s get to know you, connect to your data, and start finding you some answers!`}</p>
               <button
                 className="Button Button--primary mt4"
@@ -153,7 +150,7 @@ export default class Setup extends Component {
                       to="/"
                       className="Button Button--primary"
                       onClick={this.completeSetup.bind(this)}
-                    >{t`Take me to Discovery`}</Link>
+                    >{t`Take me to Metabase`}</Link>
                   </div>
                 </section>
               ) : null}

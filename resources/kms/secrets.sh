@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-TENANT_UNDERSCORE=${DISCOVERY_INSTANCE_NAME//-/_}
+TENANT_UNDERSCORE=${TENANT_NAME//-/_}
 export TENANT_NORM="${TENANT_UNDERSCORE^^}"
 
 export PATH=${PATH}:'/root/kms/bin/'

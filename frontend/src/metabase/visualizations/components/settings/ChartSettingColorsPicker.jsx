@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 
-import ChartSettingColorPicker from "./ChartSettingColorPicker.jsx";
+import ChartSettingColorPicker from "./ChartSettingColorPicker";
 
 export default class ChartSettingColorsPicker extends Component {
   render() {
@@ -11,14 +11,13 @@ export default class ChartSettingColorsPicker extends Component {
           <ChartSettingColorPicker
             key={index}
             onChange={color =>
-              onChange([
-                ...value.slice(0, index),
-                color,
-                ...value.slice(index + 1),
-              ])
+              onChange({
+                ...value,
+                [title]: color,
+              })
             }
             title={title}
-            value={value[index]}
+            value={value[title]}
           />
         ))}
       </div>

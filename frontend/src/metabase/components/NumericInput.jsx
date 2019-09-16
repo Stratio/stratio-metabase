@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import InputBlurChange from "metabase/components/InputBlurChange.jsx";
+import InputBlurChange from "metabase/components/InputBlurChange";
 
 type Props = {
   value: ?(number | string),
@@ -13,7 +13,7 @@ const NumericInput = ({ value, onChange, ...props }: Props) => (
   <InputBlurChange
     value={value == null ? "" : String(value)}
     onBlurChange={({ target: { value } }) => {
-      value = value ? parseInt(value, 10) : null;
+      value = value ? parseFloat(value) : null;
       if (!isNaN(value)) {
         onChange(value);
       }

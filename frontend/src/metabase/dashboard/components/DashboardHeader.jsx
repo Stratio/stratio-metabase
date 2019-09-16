@@ -2,7 +2,7 @@
 
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { t } from "c-3po";
+import { t } from "ttag";
 import ActionButton from "metabase/components/ActionButton";
 import AddToDashSelectQuestionModal from "./AddToDashSelectQuestionModal";
 import ArchiveDashboardModal from "./ArchiveDashboardModal";
@@ -34,7 +34,6 @@ import type {
   DashboardId,
   DashCardId,
 } from "metabase/meta/types/Dashboard";
-import type { RevisionId } from "metabase/meta/types/Revision";
 import { Link } from "react-router";
 
 type Props = {
@@ -50,7 +49,7 @@ type Props = {
   isNightMode: boolean,
 
   refreshPeriod: ?number,
-  refreshElapsed: ?number,
+  setRefreshElapsedHook: Function,
 
   parametersWidget: React$Element<*>,
 
@@ -59,12 +58,6 @@ type Props = {
   archiveDashboard: (dashboardId: DashboardId) => void,
   fetchCards: (filterMode?: string) => void,
   fetchDashboard: (dashboardId: DashboardId, queryParams: ?QueryParams) => void,
-  fetchRevisions: ({ entity: string, id: number }) => void,
-  revertToRevision: ({
-    entity: string,
-    id: number,
-    revision_id: RevisionId,
-  }) => void,
   saveDashboardAndCards: () => Promise<void>,
   setDashboardAttribute: (attribute: string, value: any) => void,
 
@@ -97,15 +90,13 @@ export default class DashboardHeader extends Component {
     isNightMode: PropTypes.bool.isRequired,
 
     refreshPeriod: PropTypes.number,
-    refreshElapsed: PropTypes.number,
+    setRefreshElapsedHook: PropTypes.func.isRequired,
 
     addCardToDashboard: PropTypes.func.isRequired,
     addTextDashCardToDashboard: PropTypes.func.isRequired,
     archiveDashboard: PropTypes.func.isRequired,
     fetchCards: PropTypes.func.isRequired,
     fetchDashboard: PropTypes.func.isRequired,
-    fetchRevisions: PropTypes.func.isRequired,
-    revertToRevision: PropTypes.func.isRequired,
     saveDashboardAndCards: PropTypes.func.isRequired,
     setDashboardAttribute: PropTypes.func.isRequired,
 
@@ -168,9 +159,8 @@ export default class DashboardHeader extends Component {
         triggerElement="Archive"
       >
         <ArchiveDashboardModal
-          dashboard={this.props.dashboard}
+          onArchive={() => this.onArchive(this.props.dashboard)}
           onClose={() => this.refs.archiveDashboardModal.toggle()}
-          onArchive={() => this.onArchive()}
         />
       </ModalWithTrigger>,
       <ActionButton
@@ -196,7 +186,7 @@ export default class DashboardHeader extends Component {
       location,
     } = this.props;
     const isEmpty = !dashboard || dashboard.ordered_cards.length === 0;
-    const canEdit = isEditable && !!dashboard;
+    const canEdit = dashboard.can_write && isEditable && !!dashboard;
 
     const isPublicLinksEnabled = MetabaseSettings.get("public_sharing");
     const isEmbeddingEnabled = MetabaseSettings.get("embedding");
@@ -210,7 +200,7 @@ export default class DashboardHeader extends Component {
     if (!isFullscreen && canEdit) {
       buttons.push(
         <ModalWithTrigger
-          key="add"
+          key="add-a-question"
           ref="addQuestionModal"
           triggerElement={
             <Tooltip tooltip={t`Add a question`}>
@@ -244,7 +234,7 @@ export default class DashboardHeader extends Component {
     if (isEditing) {
       // Parameters
       buttons.push(
-        <span>
+        <span key="add-a-filter">
           <Tooltip tooltip={t`Add a filter`}>
             <a
               key="parameters"
@@ -254,25 +244,24 @@ export default class DashboardHeader extends Component {
               title={t`Parameters`}
               onClick={() => this.setState({ modal: "parameters" })}
             >
-              <Icon name="funneladd" size={16} />
+              <Icon name="funnel_add" size={16} />
             </a>
           </Tooltip>
 
-          {this.state.modal &&
-            this.state.modal === "parameters" && (
-              <Popover onClose={() => this.setState({ modal: null })}>
-                <ParametersPopover
-                  onAddParameter={this.props.addParameter}
-                  onClose={() => this.setState({ modal: null })}
-                />
-              </Popover>
-            )}
+          {this.state.modal && this.state.modal === "parameters" && (
+            <Popover onClose={() => this.setState({ modal: null })}>
+              <ParametersPopover
+                onAddParameter={this.props.addParameter}
+                onClose={() => this.setState({ modal: null })}
+              />
+            </Popover>
+          )}
         </span>,
       );
 
       // Add text card button
       buttons.push(
-        <Tooltip tooltip={t`Add a text box`}>
+        <Tooltip key="add-a-text-box" tooltip={t`Add a text box`}>
           <a
             data-metabase-event="Dashboard;Add Text Box"
             key="add-text"
@@ -286,7 +275,7 @@ export default class DashboardHeader extends Component {
       );
 
       buttons.push(
-        <Tooltip tooltip={t`Revision history`}>
+        <Tooltip key="revision-history" tooltip={t`Revision history`}>
           <Link
             to={location.pathname + "/history"}
             data-metabase-event={"Dashboard;Revisions"}
@@ -297,20 +286,9 @@ export default class DashboardHeader extends Component {
       );
     }
 
-    buttons.push(
-      <Tooltip tooltip={t`Move dashboard`}>
-        <Link
-          to={location.pathname + "/move"}
-          data-metabase-event={"Dashboard;Move"}
-        >
-          <Icon className="text-brand-hover" name="move" size={18} />
-        </Link>
-      </Tooltip>,
-    );
-
     if (!isFullscreen && !isEditing && canEdit) {
       buttons.push(
-        <Tooltip tooltip={t`Edit dashboard`}>
+        <Tooltip key="edit-dashboard" tooltip={t`Edit dashboard`}>
           <a
             data-metabase-event="Dashboard;Edit"
             key="edit"
@@ -324,12 +302,39 @@ export default class DashboardHeader extends Component {
       );
     }
 
+    if (!isFullscreen && !isEditing) {
+      if (canEdit) {
+        buttons.push(
+          <Tooltip key="new-dashboard" tooltip={t`Move dashboard`}>
+            <Link
+              to={location.pathname + "/move"}
+              data-metabase-event={"Dashboard;Move"}
+            >
+              <Icon className="text-brand-hover" name="move" size={18} />
+            </Link>
+          </Tooltip>,
+        );
+      }
+      buttons.push(
+        <Tooltip key="copy-dashboard" tooltip={t`Duplicate dashboard`}>
+          <Link
+            to={location.pathname + "/copy"}
+            data-metabase-event={"Dashboard;Copy"}
+          >
+            <Icon className="text-brand-hover" name="clone" size={18} />
+          </Link>
+        </Tooltip>,
+      );
+    }
+
     if (
       !isFullscreen &&
       ((isPublicLinksEnabled && (isAdmin || dashboard.public_uuid)) ||
         (isEmbeddingEnabled && isAdmin))
     ) {
-      buttons.push(<DashboardEmbedWidget dashboard={dashboard} />);
+      buttons.push(
+        <DashboardEmbedWidget key="dashboard-embed" dashboard={dashboard} />,
+      );
     }
 
     buttons.push(...getDashboardActions(this.props));
@@ -338,7 +343,7 @@ export default class DashboardHeader extends Component {
   }
 
   render() {
-    let { dashboard } = this.props;
+    const { dashboard } = this.props;
 
     return (
       <Header
@@ -347,6 +352,7 @@ export default class DashboardHeader extends Component {
         analyticsContext="Dashboard"
         item={dashboard}
         isEditing={this.props.isEditing}
+        showBadge={!this.props.isEditing && !this.props.isFullscreen}
         isEditingInfo={this.props.isEditing}
         headerButtons={this.getHeaderButtons()}
         editingTitle={t`You are editing a dashboard`}

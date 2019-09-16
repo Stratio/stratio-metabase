@@ -127,7 +127,7 @@
   []
   (:min (db/select-one [User [:%min.date_joined :min]])))
 
-(defn- environment-type
+(defn environment-type
   "Figure out what we're running under"
   []
   (cond
@@ -170,7 +170,7 @@
   {:groups (db/count PermissionsGroup)})
 
 (defn- card-has-params? [card]
-  (boolean (get-in card [:dataset_query :native :template_tags])))
+  (boolean (get-in card [:dataset_query :native :template-tags])))
 
 (defn- question-metrics
   "Get metrics based on questions

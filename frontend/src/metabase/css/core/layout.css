@@ -9,6 +9,7 @@
 :local(.wrapper) {
   width: 100%;
   margin: 0 auto;
+  padding: 0 1em;
 }
 
 @media screen and (--breakpoint-min-sm) {
@@ -145,4 +146,9 @@
   left: 0;
   right: 0;
   bottom: 0;
+}
+
+/* force a stacking context for adding z-index to children */
+.stacking-context {
+  transform: scale(1);
 }

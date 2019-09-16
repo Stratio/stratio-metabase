@@ -1,10 +1,19 @@
 /* @flow */
 
+import {
+  compose,
+  withAction,
+  withAnalytics,
+  withRequestState,
+} from "metabase/lib/redux";
+
 import { createEntity, undo } from "metabase/lib/entities";
 import * as Urls from "metabase/lib/urls";
-import { normal } from "metabase/lib/colors";
+import { color } from "metabase/lib/colors";
 import { assocIn } from "icepick";
-import { t } from "c-3po";
+import { t } from "ttag";
+
+import { addUndo } from "metabase/redux/undo";
 
 import { POST, DELETE } from "metabase/lib/api";
 import {
@@ -14,15 +23,20 @@ import {
 
 const FAVORITE_ACTION = `metabase/entities/dashboards/FAVORITE`;
 const UNFAVORITE_ACTION = `metabase/entities/dashboards/UNFAVORITE`;
+const COPY_ACTION = `metabase/entities/dashboards/COPY`;
 
 const Dashboards = createEntity({
   name: "dashboards",
   path: "/api/dashboard",
 
+  displayNameOne: t`dashboard`,
+  displayNameMany: t`dashboards`,
+
   api: {
     favorite: POST("/api/dashboard/:id/favorite"),
     unfavorite: DELETE("/api/dashboard/:id/favorite"),
     save: POST("/api/dashboard/save"),
+    copy: POST("/api/dashboard/:id/copy"),
   },
 
   objectActions: {
@@ -59,6 +73,36 @@ const Dashboards = createEntity({
         return { type: UNFAVORITE_ACTION, payload: id };
       }
     },
+
+    // TODO move into more common area as copy is implemented for more entities
+    copy: compose(
+      withAction(COPY_ACTION),
+      // NOTE: unfortunately we can't use Dashboard.withRequestState, etc because the entity isn't defined yet
+      withRequestState(dashboard => [
+        "entities",
+        "dashboard",
+        dashboard.id,
+        "copy",
+      ]),
+      withAnalytics("entities", "dashboard", "copy"),
+    )(
+      (entityObject, overrides, { notify } = {}) => async (
+        dispatch,
+        getState,
+      ) => {
+        const result = Dashboards.normalize(
+          await Dashboards.api.copy({
+            id: entityObject.id,
+            ...overrides,
+          }),
+        );
+        if (notify) {
+          dispatch(addUndo(notify));
+        }
+        dispatch({ type: Dashboards.actionTypes.INVALIDATE_LISTS_ACTION });
+        return result;
+      },
+    ),
   },
 
   actions: {
@@ -77,6 +121,8 @@ const Dashboards = createEntity({
       return assocIn(state, [payload, "favorite"], true);
     } else if (type === UNFAVORITE_ACTION && !error) {
       return assocIn(state, [payload, "favorite"], false);
+    } else if (type === COPY_ACTION && !error && state[""]) {
+      return { ...state, "": state[""].concat([payload.result]) };
     }
     return state;
   },
@@ -86,7 +132,7 @@ const Dashboards = createEntity({
     getName: dashboard => dashboard && dashboard.name,
     getUrl: dashboard => dashboard && Urls.dashboard(dashboard.id),
     getIcon: dashboard => "dashboard",
-    getColor: () => normal.blue,
+    getColor: () => color("dashboard"),
   },
 
   form: {
@@ -107,13 +153,13 @@ const Dashboards = createEntity({
         name: "collection_id",
         title: t`Which collection should this go in?`,
         type: "collection",
-        validate: colelctionId =>
-          colelctionId === undefined ? "Collection is required" : null,
+        validate: collectionId =>
+          collectionId === undefined ? "Collection is required" : null,
       },
     ],
   },
 
-  getAnalyticsMetadata(action, object, getState) {
+  getAnalyticsMetadata([object], { action }, getState) {
     const type = object && getCollectionType(object.collection_id, getState());
     return type && `collection=${type}`;
   },

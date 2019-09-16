@@ -27,8 +27,9 @@
              [pulse-card :refer [PulseCard]]
              [pulse-channel :as pulse-channel :refer [PulseChannel]]
              [pulse-channel-recipient :refer [PulseChannelRecipient]]]
-            [metabase.util.schema :as su]
-            [puppetlabs.i18n.core :refer [tru]]
+            [metabase.util
+             [i18n :refer [deferred-tru tru]]
+             [schema :as su]]
             [schema.core :as s]
             [toucan
              [db :as db]
@@ -53,7 +54,7 @@
    ;; can only have one Card
    (-> (hydrate alert :cards) :cards first)
    ;; if there's still not a Card, throw an Exception!
-   (throw (Exception. (str (tru "Invalid Alert: Alert does not have a Card assoicated with it"))))))
+   (throw (Exception. (tru "Invalid Alert: Alert does not have a Card assoicated with it")))))
 
 (defn- perms-objects-set
   "Permissions to read or write a *Pulse* are the same as those of its parent Collection.
@@ -68,14 +69,18 @@
 
 (u/strict-extend (class Pulse)
   models/IModel
-  (merge models/IModelDefaults
-         {:hydration-keys (constantly [:pulse])
-          :properties     (constantly {:timestamped? true})
-          :pre-delete     pre-delete})
+  (merge
+   models/IModelDefaults
+   {:hydration-keys (constantly [:pulse])
+    :properties     (constantly {:timestamped? true})
+    :pre-delete     pre-delete})
   i/IObjectPermissions
-  {:can-read?         (partial i/current-user-has-full-permissions? :read)
-   :can-write?        (partial i/current-user-has-full-permissions? :write)
-   :perms-objects-set perms-objects-set})
+  (merge
+   i/IObjectPermissionsDefaults
+   {:can-read?         (partial i/current-user-has-full-permissions? :read)
+    :can-write?        (partial i/current-user-has-full-permissions? :write)
+    :perms-objects-set perms-objects-set}))
+
 
 ;;; ---------------------------------------------------- Schemas -----------------------------------------------------
 
@@ -89,7 +94,7 @@
   (su/with-api-error-message {:id          su/IntGreaterThanZero
                               :include_csv s/Bool
                               :include_xls s/Bool}
-    (tru "value must be a map with the keys `{0}`, `{1}`, and `{2}`." "id" "include_csv" "include_xls")))
+    (deferred-tru "value must be a map with the keys `{0}`, `{1}`, and `{2}`." "id" "include_csv" "include_xls")))
 
 (def HybridPulseCard
   "This schema represents the cards that are included in a pulse. This is the data from the `PulseCard` and some
@@ -101,7 +106,7 @@
               :description   (s/maybe s/Str)
               :display       (s/maybe su/KeywordOrString)
               :collection_id (s/maybe su/IntGreaterThanZero)})
-    (tru "value must be a map with the following keys `({0})`"
+    (deferred-tru "value must be a map with the following keys `({0})`"
          (str/join ", " ["collection_id" "description" "display" "id" "include_csv" "include_xls" "name"]))))
 
 (def CoercibleToCardRef
@@ -160,10 +165,11 @@
           notification->pulse))
 
 (s/defn retrieve-notification :- (s/maybe PulseInstance)
-  "Fetch an Alert or Pulse, and do the 'standard' hydrations."
+  "Fetch an Alert or Pulse, and do the 'standard' hydrations, adding `:channels` with `:recipients`, `:creator`, and
+  `:cards`."
   [notification-or-id & additional-condtions]
-  (-> (apply Pulse :id (u/get-id notification-or-id), additional-condtions)
-      hydrate-notification))
+  (some-> (apply Pulse :id (u/get-id notification-or-id), additional-condtions)
+          hydrate-notification))
 
 (s/defn ^:private notification->alert :- PulseInstance
   "Take a generic `Notification` and put it in the standard `Alert` format the frontend expects. This really just

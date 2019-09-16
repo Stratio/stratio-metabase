@@ -46,6 +46,7 @@ button {
   padding: 0;
   margin: 0;
   outline: none;
+  background-color: transparent;
 }
 
 a {
@@ -73,6 +74,10 @@ textarea {
 .faded,
 :local(.faded) {
   opacity: 0.4;
+}
+.fade-in-hover:hover {
+  opacity: 1;
+  transition: opacity 0.3s;
 }
 
 .MB-lightBG {
