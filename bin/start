@@ -144,9 +144,13 @@ JAVA_OPTS="$JAVA_OPTS --add-modules=java.xml.bind"      # Enable access to java.
 JAVA_OPTS="$JAVA_OPTS -Dlog4j.configuration=target/log/log4j2.xml"
 JAVA_OPTS="$JAVA_OPTS --XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
 
-if [ -n "$MAX_HEAP" ]; then
-    JAVA_OPTS="$JAVA_OPTS -Xmx$MAX_HEAP"
-fi
+# Heap Size using a percentage coming from Discovery descriptor
+CURRENT_MEMORY=$MARATHON_APP_RESOURCE_MEM
+PERCENTAGE=$PERCENTAGE_MAX_HEAP_JVM
+MAX_HEAP=$(awk '{printf("%.0f\n", ($1*$2)/100)}' <<<"$CURRENT_MEMORY $PERCENTAGE")m
+INFO "Max heap: $MAX_HEAP"
+JAVA_OPTS="$JAVA_OPTS -Xmx$MAX_HEAP"
+
 
 if [ "$JMX" ]; then
     JAVA_OPTS="$JAVA_OPTS $JMX"
