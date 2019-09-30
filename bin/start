@@ -141,7 +141,6 @@ fi
 JAVA_OPTS="$JAVA_OPTS -XX:+IgnoreUnrecognizedVMOptions" # Don't barf if we see an option we don't understand (e.g. Java 9 option on Java 7/8)
 JAVA_OPTS="$JAVA_OPTS -Djava.awt.headless=true"         # don't try to start AWT. Not sure this does anything but better safe than wasting memory
 JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8"            # Use UTF-8
-JAVA_OPTS="$JAVA_OPTS --add-modules=java.xml.bind"      # Enable access to java.xml.bind module (Java 9)
 JAVA_OPTS="$JAVA_OPTS -Dlog4j.configuration=target/log/log4j2.xml"
 JAVA_OPTS="$JAVA_OPTS --XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
 
