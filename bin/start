@@ -157,13 +157,6 @@ MAX_HEAP=$(awk '{printf("%.0f\n", ($1*$2)/100)}' <<<"$CURRENT_MEMORY $PERCENTAGE
 INFO "Max heap: $MAX_HEAP"
 JAVA_OPTS="$JAVA_OPTS -Xmx$MAX_HEAP"
 
-
-
-MAX_HEAP=$(awk '{printf("%.0f\n", ($1*$2)/100)}' <<<"$CURRENT_MEMORY $PERCENTAGE")m
-INFO "Max heap: $MAX_HEAP"
-JAVA_OPTS="$JAVA_OPTS -Xmx$MAX_HEAP"
-
-
 if [ "$JMX" ]; then
     JAVA_OPTS="$JAVA_OPTS $JMX"
 fi
