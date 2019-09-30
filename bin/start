@@ -146,7 +146,13 @@ JAVA_OPTS="$JAVA_OPTS --XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimi
 
 # Heap Size using a percentage coming from Discovery descriptor
 CURRENT_MEMORY=$MARATHON_APP_RESOURCE_MEM
-PERCENTAGE=$PERCENTAGE_MAX_HEAP_JVM
+if [ -n "$PERCENTAGE_MAX_HEAP_JVM" ];
+then
+  PERCENTAGE=$PERCENTAGE_MAX_HEAP_JVM
+else
+  PERCENTAGE="60"
+fi
+
 MAX_HEAP=$(awk '{printf("%.0f\n", ($1*$2)/100)}' <<<"$CURRENT_MEMORY $PERCENTAGE")m
 INFO "Max heap: $MAX_HEAP"
 JAVA_OPTS="$JAVA_OPTS -Xmx$MAX_HEAP"
