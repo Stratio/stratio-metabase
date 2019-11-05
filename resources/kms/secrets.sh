@@ -1,5 +1,10 @@
 #!/bin/bash
 
+    # Datio compatibility
+    if [[ "$TENANT_NAME" != "" ]]; then
+      DISCOVERY_INSTANCE_NAME="$TENANT_NAME"
+    fi
+    #######
 
 TENANT_UNDERSCORE=${DISCOVERY_INSTANCE_NAME//-/_}
 export TENANT_NORM="${TENANT_UNDERSCORE^^}"
