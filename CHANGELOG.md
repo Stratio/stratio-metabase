@@ -2,6 +2,8 @@
 
 ## 0.35.0 (upcoming)
 
+* [ROCK-459] Maintaining the compatibility with Datio descriptor in Stratio scripts about service 
+  instance (DISCOVERY_INSTANCE_NAME)
 * Upgrade to Metabase 0.33.2
 * New Crossdata driver as a plugin 
 

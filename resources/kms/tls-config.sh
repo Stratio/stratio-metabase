@@ -2,6 +2,12 @@
 
 INFO "Obtaining and setting TLS secrets for HTTP exposed service"
 
+    # Datio compatibility
+    if [[ "$TENANT_NAME" != "" ]]; then
+      DISCOVERY_INSTANCE_NAME="$TENANT_NAME"
+    fi
+    #######
+
 getCert "userland" "$DISCOVERY_INSTANCE_NAME" "$DISCOVERY_INSTANCE_NAME" "JKS" "/root/kms/secrets" || exit $?
 
 ### Get keystore password
