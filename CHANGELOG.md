@@ -2,6 +2,7 @@
 
 ## 0.34.1 (November 07, 2019)
 
+*  avoiding Discovery checks Crossdata connection each 3 mins. This allow Dynamic Allocation in Crossdata.
 * [ROCK-459] Fix the compatibility error with Datio descriptor and TENANT_NAME env variable
 
 ## 0.34.0 (September 19, 2019)
