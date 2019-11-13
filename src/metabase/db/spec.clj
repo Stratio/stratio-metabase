@@ -68,11 +68,15 @@
   (if db
     (merge {:classname "com.stratio.jdbc.core.jdbc4.StratioDriver" ; must be in classpath
             :subprotocol "crossdata"
-            :subname (str "//Server=" host ":" port ";UID=" user ";SSL=true;LogLevel=3;LogPath=/tmp/crossdata-jdbc-logs")}
+            :subname (str "//Server=" host ":" port ";UID=" user ";SSL=true;LogLevel=3;LogPath=/tmp/crossdata-jdbc-logs")
+            :idle-connection-test-period 0
+            }
            (dissoc opts :host :port :db))
     (merge {:classname "com.stratio.jdbc.core.jdbc4.StratioDriver" ; must be in classpath
             :subprotocol "crossdata"
-            :subname (str "//Server=" host ":" port ";UID=" user ";LogLevel=3;LogPath=/tmp/crossdata-jdbc-logs")}
+            :subname (str "//Server=" host ":" port ";UID=" user ";LogLevel=3;LogPath=/tmp/crossdata-jdbc-logs")
+            :idle-connection-test-period 0
+            }
            (dissoc opts :host :port :db))))
 
 

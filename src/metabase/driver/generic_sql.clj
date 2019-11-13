@@ -140,7 +140,8 @@
     (assoc (db/connection-pool (assoc spec
                                  :minimum-pool-size           1
                                  ;; prevent broken connections closed by dbs by testing them every 3 mins
-                                 :idle-connection-test-period (* 3 60)
+                                 ;;:idle-connection-test-period (* 3 60)
+                                 ;; :idle-connection-test-period 0
                                  ;; prevent overly large pools by condensing them when connections are idle for 15m+
                                  :excess-timeout              (* 15 60)))
       :ssh-tunnel (:tunnel-connection details-with-tunnel))))

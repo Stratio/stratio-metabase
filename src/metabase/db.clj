@@ -319,7 +319,7 @@
   "Create a C3P0 connection pool for the given database `spec`."
   [{:keys [subprotocol subname classname minimum-pool-size idle-connection-test-period excess-timeout]
     :or   {minimum-pool-size           3
-           idle-connection-test-period 0
+           idle-connection-test-period (* 3 60)
            excess-timeout              (* 30 60)}
     :as   spec}]
   {:datasource (doto (ComboPooledDataSource.)
