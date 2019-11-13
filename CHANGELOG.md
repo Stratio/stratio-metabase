@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.34.1 (November 07, 2019)
+
+* [ROCK-459] Fix the compatibility error with Datio descriptor and TENANT_NAME env variable
+
 ## 0.34.0 (September 19, 2019)
 
 * [ROCK-459] Fix error with Decimal types in Crossdata2 driver
