@@ -2,7 +2,7 @@
 
 ## 0.35.0 (upcoming)
 
-* Pending changelog
+* Avoid Discovery checks Crossdata connection each 3 mins
 
 ## 0.34.0-7f4b16c (Built: September 19, 2019 | Released: September 20, 2019)
 

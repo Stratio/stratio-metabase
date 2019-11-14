@@ -2,7 +2,8 @@
   :min-lein-version "2.5.0"
 
   :dependencies
-  [[com.stratio.jdbc/stratio-crossdata-jdbc4 "2.14.4-1830fff"]]
+  [[com.stratio.jdbc/stratio-crossdata-jdbc4 "2.14.4-1830fff"
+    :exclusions [com.fasterxml.jackson.core/jackson-core]]]
 
   :profiles
   {:provided
