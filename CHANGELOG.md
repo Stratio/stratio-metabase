@@ -3,6 +3,10 @@
 ## 0.35.0 (upcoming)
 
 * Avoid Discovery checks Crossdata connection each 3 mins
+* Upgrade to Metabase 0.33.2
+* New Crossdata driver as a plugin 
+
+
 
 ## 0.34.0-7f4b16c (Built: September 19, 2019 | Released: September 20, 2019)
 

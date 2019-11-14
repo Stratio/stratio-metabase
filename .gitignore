@@ -1,6 +1,7 @@
 \#*\#
 .\#*
 /target
+/modules/drivers/crossdata/target
 /classes
 /checkouts
 pom.xml.asc

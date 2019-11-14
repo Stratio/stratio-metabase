@@ -1,1 +1,0 @@
-[{:dependencies {com.stratio.jdbc/stratio-crossdata-jdbc4 {:vsn "2.14.4-1830fff", :native-prefix nil}}, :native-path "target/uberjar/native"} {:native-path "target/uberjar/native", :dependencies {com.stratio.jdbc/stratio-crossdata-jdbc4 {:vsn "2.14.4-1830fff", :native-prefix nil, :native? false}}}]
