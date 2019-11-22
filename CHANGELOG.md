@@ -2,7 +2,7 @@
 
 ## 0.35.0 (upcoming)
 
-
+* Logs in Datacentric standard format
 * Avoid Discovery checks Crossdata connection each 3 mins
 * [ROCK-459] Maintaining the compatibility with Datio descriptor in Stratio scripts about service 
   instance (DISCOVERY_INSTANCE_NAME)

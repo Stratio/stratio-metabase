@@ -92,7 +92,7 @@
                  org.flatland/ordered
                  org.yaml/snakeyaml]]
    [kixi/stats "0.4.4" :exclusions [org.clojure/data.avl]]            ; Various statistic measures implemented as transducers
-   [log4j/log4j "1.2.17"                                              ; logging framework. TODO - consider upgrading to Log4j 2 -- see https://logging.apache.org/log4j/log4j-2.6.1/manual/migration.html
+   [org.apache.logging.log4j/log4j-1.2-api "2.10.0"                   ; logging framework. TODO - consider upgrading to Log4j 2 -- see https://logging.apache.org/log4j/log4j-2.6.1/manual/migration.html
     :exclusions [javax.mail/mail
                  javax.jms/jms
                  com.sun.jdmk/jmxtools
@@ -110,14 +110,23 @@
     :exclusions [ch.qos.logback/logback-classic]]
    [org.mariadb.jdbc/mariadb-java-client "2.3.0"]                     ; MySQL/MariaDB driver
    [org.postgresql/postgresql "42.2.5"]                               ; Postgres driver
-   [org.slf4j/slf4j-log4j12 "1.7.25"]                                 ; abstraction for logging frameworks -- allows end user to plug in desired logging framework at deployment time
+   ;[org.slf4j/slf4j-log4j12 "1.7.21"]                                 ; abstraction for logging frameworks -- allows end user to plug in desired logging framework at deployment time
    [org.tcrawley/dynapath "1.0.0"]                                    ; Dynamically add Jars (e.g. Oracle or Vertica) to classpath
    [org.yaml/snakeyaml "1.23"]                                        ; YAML parser (required by liquibase)
    [potemkin "0.4.5"]                                                 ; utility macros & fns
    [com.stratio.jdbc/stratio-crossdata-jdbc4       "2.14.4-1830fff"
                   :exclusions [org.clojure/clojure
                                org.bouncycastle/bcpkix-jdk15on
-                               org.bouncycastle/bcprov-jdk15on]]    ; Crossdata driver
+                               org.bouncycastle/bcprov-jdk15on
+;                               org.slf4j/slf4j-api
+;                               org.slf4j/slf4j-simple
+;                               slf4j/log4j12
+;                               org.apache.logging.log4j/log4j-api
+;                               org.apache.logging.log4j/log4j-slf4j-impl
+;                               org.apache.logging.log4j/log4j-1.2-api
+;                               org.apache.logging.log4j/log4j-core
+;                               log4j/log4j
+                               ]]    ; Crossdata driver
    [com.stratio.metabase/local-query-execution-factory "0.2"]
    [prismatic/schema "1.1.11"]                                        ; Data schema declaration and validation library
    [puppetlabs/i18n "0.8.0"]                                          ; Internationalization library

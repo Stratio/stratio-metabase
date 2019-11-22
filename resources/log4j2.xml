@@ -1,70 +1,143 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="DEBUG">
+    <Properties>
+        <Property name="formattedJsonPatternCentralizedLogging">
+            %d{yyyy-MM-dd'T'HH:mm:ss.SSS}%replace{%d{XXX}}{^Z$}{+00:00} %level %replace{%X{[MDC_USER_KEY]}}{^.{0}$}{-} %replace{%X{[MDC_AUDIT_KEY]}}{^.{0}$}{0} %replace{%X{[MDC_PROCESS_KEY]}}{^.{0}$}{-} %c %m%n
+        </Property>
+        <Property name="unformattedJsonPatternCentralizedLogging">
+            %d{yyyy-MM-dd'T'HH:mm:ss.SSS}%replace{%d{XXX}}{^Z$}{+00:00} %level %replace{%X{[MDC_USER_KEY]}}{^.{0}$}{-} %replace{%X{[MDC_AUDIT_KEY]}}{^.{0}$}{0} %replace{%X{[MDC_PROCESS_KEY]}}{^.{0}$}{-} %c {"@message":"Unformatted message. Provided log has been added to @data","@data": %m,"@exception":"%enc{%throwable}{JSON}"}%n
+        </Property>
+        <Property name="commonPatternCentralizedLogging">
+            %d{yyyy-MM-dd'T'HH:mm:ss.SSS}%replace{%d{XXX}}{^Z$}{+00:00} %level %replace{%X{[MDC_USER_KEY]}}{^.{0}$}{-} %replace{%X{[MDC_AUDIT_KEY]}}{^.{0}$}{0} %replace{%X{[MDC_PROCESS_KEY]}}{^.{0}$}{-} %c {"@message":"%enc{%m}{JSON}","@data":%replace{%X{[MDC_DATA-JSON_KEY]}}{^.{0}$}{{}},"@exception":"%enc{%throwable}{JSON}"}%n
+        </Property>
+        <Property name="basePattern">
+            %level | %d{dd-MM-yyyy HH:mm:ss,SSS} | %c | %m%n
+        </Property>
+    </Properties>
+    <Scripts>
+        <Script name="messageSelectorCentralizedLogging" language="javascript"><![CDATA[
+            var result = "Common";
+            try {
+                var originalMessage = logEvent.getMessage().getFormattedMessage();
+                var stringMessage = typeof originalMessage !== "string" ? JSON.stringify(originalMessage) : originalMessage;
+                var message = JSON.parse(stringMessage);
+                if (typeof message === "object" && message !== null) {
+                    if (message.hasOwnProperty("@message")) {
+                        result = "FormattedJSON";
+                    } else {
+                        result = "UnformattedJSON";
+                    }
+                }
+            } catch (e) {
+                result = "Common";
+            }
+            result;
+            ]]>
+        </Script>
+    </Scripts>
     <Appenders>
-        <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{MM-dd HH:mm:ss} \u001b[1m%p %c{2}\u001b[0m :: %m%n" />
+        <Console name="stderrCentralizedJSONLogging" target="SYSTEM_ERR">
+            <PatternLayout>
+                <ScriptPatternSelector alwaysWriteExceptions="false">
+                    <ScriptRef ref="messageSelectorCentralizedLogging"/>
+                    <PatternMatch key="FormattedJSON">
+                        <Pattern>${formattedJsonPatternCentralizedLogging}</Pattern>
+                    </PatternMatch>
+                    <PatternMatch key="UnformattedJSON">
+                        <Pattern>${unformattedJsonPatternCentralizedLogging}</Pattern>
+                    </PatternMatch>
+                    <PatternMatch key="Common">
+                        <Pattern>${commonPatternCentralizedLogging}</Pattern>
+                    </PatternMatch>
+                </ScriptPatternSelector>
+            </PatternLayout>
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
         </Console>
-
-        <RollingFile name="File" fileName="${logfile.path}/metabase.log"
-                     filePattern="metabase-%d{yyyy-MM-dd}.%i.log">
-            <PatternLayout pattern="%d [%t] %-5p%c - %m%n" />
-            <Policies>
-                <TimeBasedTriggeringPolicy />
-                <SizeBasedTriggeringPolicy size="500 MB" />
-            </Policies>
-        </RollingFile>
-
+        <Console name="stdoutCentralizedJSONLogging" target="SYSTEM_OUT">
+            <PatternLayout alwaysWriteExceptions="false">
+                <ScriptPatternSelector>
+                    <ScriptRef ref="messageSelectorCentralizedLogging"/>
+                    <PatternMatch key="FormattedJSON">
+                        <Pattern>${formattedJsonPatternCentralizedLogging}</Pattern>
+                    </PatternMatch>
+                    <PatternMatch key="UnformattedJSON">
+                        <Pattern>${unformattedJsonPatternCentralizedLogging}</Pattern>
+                    </PatternMatch>
+                    <PatternMatch key="Common">
+                        <Pattern>${commonPatternCentralizedLogging}</Pattern>
+                    </PatternMatch>
+                </ScriptPatternSelector>
+            </PatternLayout>
+            <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="ACCEPT"/>
+        </Console>
+        <Console name="stdoutCentralizedLogging" target="SYSTEM_OUT">
+            <PatternLayout alwaysWriteExceptions="false">
+                <Pattern>${formattedJsonPatternCentralizedLogging}</Pattern>
+            </PatternLayout>
+            <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="ACCEPT"/>
+        </Console>
+        <Console name="stderrDevelopmentLogging" target="SYSTEM_ERR">
+            <PatternLayout alwaysWriteExceptions="true">
+                <Pattern>${basePattern}</Pattern>
+            </PatternLayout>
+            <ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="DENY"/>
+        </Console>
+        <Console name="stdoutDevelopmentLogging" target="SYSTEM_OUT">
+            <PatternLayout alwaysWriteExceptions="true">
+                <Pattern>${basePattern}</Pattern>
+            </PatternLayout>
+            <ThresholdFilter level="ERROR" onMatch="DENY" onMismatch="ACCEPT"/>
+        </Console>
+        <Async name="stdoutAsync">
+            <AppenderRef ref="stdoutCentralizedJSONLogging"/>
+        </Async>
     </Appenders>
 
     <Loggers>
-
-        <Logger name="metabase.driver" level="debug" additivity="false">
-            <AppenderRef ref="File" />
-            <AppenderRef ref="Console" />
-        </Logger>
-        <Logger name="metabase.middleware" level="debug" additivity="false">
-            <AppenderRef ref="File" />
-            <AppenderRef ref="Console" />
-        </Logger>
-
-        <Logger name="metabase.models.permissions" level="info" additivity="false">
-            <AppenderRef ref="File" />
-            <AppenderRef ref="Console" />
-        </Logger>
-        <Logger name="metabase.query-processor.permissions" level="info" additivity="false">
-            <AppenderRef ref="File" />
-            <AppenderRef ref="Console" />
-        </Logger>
-        <Logger name="metabase.query-processor" level="debug" additivity="false">
-            <AppenderRef ref="File" />
-            <AppenderRef ref="Console" />
-        </Logger>
-        <Logger name="metabase.sync" level="debug" additivity="false">
-            <AppenderRef ref="File" />
-            <AppenderRef ref="Console" />
-        </Logger>
-        <Logger name="metabase.models.field-values" level="debug" additivity="false">
-            <AppenderRef ref="File" />
-            <AppenderRef ref="Console" />
-        </Logger>
-        <Logger name="metabase" level="debug" additivity="false">
-            <AppenderRef ref="File" />
-            <AppenderRef ref="Console" />
-        </Logger>
-
-	<Logger name="metabase.api" level="debug" additivity="false">
-            <AppenderRef ref="File" />
-            <AppenderRef ref="Console" />
-        </Logger>
-
-        <Logger name="com.mchange" level="error" additivity="false">
-            <AppenderRef ref="File" />
-            <AppenderRef ref="Console" />
-        </Logger>
-
-        <Root level="WARN">
-            <AppenderRef ref="Console" />
+        <Root level="${env:SERVICE_LOG_LEVEL:-ERROR}">
+            <AppenderRef ref="stdoutAsync"/>
+            <AppenderRef ref="stderrCentralizedJSONLogging"/>
         </Root>
+
+        <Logger name="metabase.driver" level="${env:SERVICE_LOG_LEVEL:-ERROR}"/>
+
+        <Logger name="metabase.middleware" level="debug">
+
+        </Logger>
+
+        <Logger name="metabase.models.permissions" level="info">
+
+
+        </Logger>
+        <Logger name="metabase.query-processor.permissions" level="info">
+
+
+        </Logger>
+        <Logger name="metabase.query-processor" level="debug">
+
+
+        </Logger>
+        <Logger name="metabase.sync" level="info">
+
+
+        </Logger>
+        <Logger name="metabase.models.field-values" level="info">
+
+
+        </Logger>
+        <Logger name="metabase" level="${env:SERVICE_LOG_LEVEL:-ERROR}">
+
+
+        </Logger>
+
+	    <Logger name="metabase.api" level="debug">
+
+
+        </Logger>
+
+        <Logger name="com.mchange" level="error">
+
+        </Logger>
 
     </Loggers>
 </Configuration>
