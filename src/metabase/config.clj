@@ -37,7 +37,7 @@
    :jwt-username-claim         "sub"
    :jwt-groups-claim           "groups"
    :jwt-public-key-endpoint    ""
-   :jwt-insecure-requests-pkwy "false"})
+   :jwt-insecure-requests-pkey "false"})
 
 
 (defn config-str
