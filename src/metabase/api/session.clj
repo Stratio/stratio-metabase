@@ -11,8 +11,7 @@
              [public-settings :as public-settings]
              [util :as u]]
             [metabase.api.common :as api]
-            [metabase.api.jwt-authenticator :as jwt-authenticator]
-            [metabase.api.header-authenticator :as header-authenticator]
+            [metabase.stratio.header-user-info :refer [http-headers->user-info]]
             [metabase.email.messages :as email]
             [metabase.integrations.ldap :as ldap]
             [metabase.middleware.session :as mw.session]
@@ -88,13 +87,6 @@
         (create-session! :sso (ldap/fetch-or-create-user! user-info)))
       (catch LDAPSDKException e
         (log/error e (trs "Problem connecting to LDAP server, will fall back to local authentication"))))))
-
-
-;; STRATIO
-(def ^:private http-headers->user-info
-  (if (config/config-bool :use-jwt-authentication)
-    jwt-authenticator/http-headers->user-info
-    header-authenticator/http-headers->user-info))
 
 ;; STRATIO
 (s/defn ^:private email-login :- (s/maybe UUID)
