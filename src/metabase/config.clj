@@ -31,6 +31,7 @@
    :mb-emoji-in-logs       (str (not is-windows?))                        ; disable them by default when running on Windows. Otherwise they're enabled
    :mb-qp-cache-backend    "db"
 
+   ;; STRATIO
    ;; settings for jwt authentication
    :use-jwt-authentication     "false"
    :jwt-header-name            "X-USER-TOKEN"
