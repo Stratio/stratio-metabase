@@ -38,12 +38,18 @@
   </head>
 
   <body>
+
+
     <div id="root"></div>
 
     <!-- Using the Web Font Loader lets us load the fonts asynchronously for faster page loads -- see https://github.com/typekit/webfontloader -->
     <!-- If you modify this script, make sure you update the whitelisted Content-Security-Policy hash in metabase.middleware.security -->
     <script type="text/javascript">{{{webFontConfigJS}}}</script>
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" async></script>
+
+    <!-- STRATIO: trigger auto login for headers and jwt -->
+    <script type="text/javascript">{{{autoHeaderLogin}}}</script>
+    <!-- END STRATIO -->
 
     <!-- If Google Auth is enabled load the Google Auth JS lib -->
     {{#enableGoogleAuth}}

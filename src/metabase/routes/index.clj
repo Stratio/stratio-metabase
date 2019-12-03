@@ -73,6 +73,9 @@
      {:bootstrapJS        (load-inline-js "index_bootstrap")
       :googleAnalyticsJS  (load-inline-js "index_ganalytics")
       :webFontConfigJS    (load-inline-js "index_webfontconfig")
+      ;; STRATIO -> for automatic login via headers or jwt
+      :autoHeaderLogin    (load-inline-js "auto_header_login")
+      ;; End STRATIO
       :bootstrapJSON      (escape-script (json/generate-string public-settings))
       :localizationJSON   (escape-script (load-localization))
       :uri                (h.util/escape-html uri)

@@ -33,7 +33,9 @@
                      ;; Web Font Loader font configuration (WebFontConfig) in index.html
                      "frontend_client/inline_js/index_webfontconfig.js"
                      ;; inline script in init.html
-                     "frontend_client/inline_js/init.js"])))
+                     "frontend_client/inline_js/init.js"
+                     ;; STRATIO -> whitelist auto login js script for automatic header/jwt login
+                     "frontend_client/inline_js/auto_header_login.js"])))
 
 (defn- cache-prevention-headers
   "Headers that tell browsers not to cache a response."
