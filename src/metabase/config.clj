@@ -27,7 +27,16 @@
    :max-session-age        "20160"                                        ; session length in minutes (14 days)
    :mb-colorize-logs       (str (not is-windows?))                        ; since PowerShell and cmd.exe don't support ANSI color escape codes or emoji,
    :mb-emoji-in-logs       (str (not is-windows?))                        ; disable them by default when running on Windows. Otherwise they're enabled
-   :mb-qp-cache-backend    "db"})
+   :mb-qp-cache-backend    "db"
+
+   ;; STRATIO
+   ;; settings for jwt authentication
+   :use-jwt-authentication     "false"
+   :jwt-header-name            "X-USER-TOKEN"
+   :jwt-username-claim         "sub"
+   :jwt-groups-claim           "groups"
+   :jwt-public-key-endpoint    ""
+   :jwt-insecure-request-pkey "false"})
 
 
 (defn config-str
