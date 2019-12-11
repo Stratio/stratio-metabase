@@ -4,10 +4,11 @@
 
 * Logs in Datacentric standard format
 * Avoid Discovery checks Crossdata connection each 3 mins
-* [ROCK-459] Maintaining the compatibility with Datio descriptor in Stratio scripts about service 
+* [ROCK-459] Maintaining the compatibility with Datio descriptor in Stratio scripts about service
   instance (DISCOVERY_INSTANCE_NAME)
 * Upgrade to Metabase 0.33.2
-* New Crossdata driver as a plugin 
+* New Crossdata driver as a plugin
+* [ROCK-629] Add JWT authentication
 
 
 
@@ -59,4 +60,3 @@
 * [DGPB-865] Integration with Jenkins
 * [DGPB-864] Metabase version upgrade: 0.24.0 ? 0.27.2
 * Armadillo integration for user login
-
