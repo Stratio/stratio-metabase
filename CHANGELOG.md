@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.34.2 (upcoming)
+
+* [ROCK-629] Add JWT authentication
+
 ## 0.34.1 (November 22, 2019)
 
 *  avoiding Discovery checks Crossdata connection each 3 mins. This allow Dynamic Allocation in Crossdata.
@@ -53,4 +57,3 @@
 * [DGPB-865] Integration with Jenkins
 * [DGPB-864] Metabase version upgrade: 0.24.0 ? 0.27.2
 * Armadillo integration for user login
-
