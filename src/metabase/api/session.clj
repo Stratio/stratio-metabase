@@ -11,6 +11,7 @@
              [public-settings :as public-settings]
              [util :as u]]
             [metabase.api.common :as api]
+            [metabase.stratio.header-user-info :refer [http-headers->user-info]]
             [metabase.email.messages :as email]
             [metabase.integrations.ldap :as ldap]
             [metabase.middleware.session :as mw.session]
@@ -91,10 +92,9 @@
 (s/defn ^:private email-login :- (s/maybe UUID)
   "Find a matching `User` if one exists and return a new Session for them, or `nil` if they couldn't be authenticated."
   [username password headers]
-
-  (let [user_login (get headers (public-settings/user-header))
-        user (db/select-one [User :id :password_salt :password :last_login :first_name], :first_name user_login, :is_active true)]
-          (if (and user_login user)
+  (let [header-user (:user (http-headers->user-info headers))
+        user (db/select-one [User :id :password_salt :password :last_login :first_name], :first_name header-user, :is_active true)]
+          (if (and header-user user)
             (create-session! :password user)
             (when-let [user (db/select-one [User :id :password_salt :password :last_login], :email username, :is_active true)]
               (when (pass/verify-password password (:password_salt user) (:password user))
@@ -112,46 +112,39 @@
 (defn- get-existing-groups
   "Return only existing groups from the list"
   [group_list]
-
   (vec (clojure.set/intersection (set group_list) (db/select-field :name PermissionsGroup))))
 
 ;; STRATIO
 (defn- get-admin-groups
   "Return only admin groups from the list"
   [group_list]
-
   (vec (clojure.set/intersection (set group_list)
                                  (set (clojure.string/split
                                        (public-settings/admin-group-header)
                                        (clojure.core/re-pattern (public-settings/group-header-delimiter)))))))
 
-
 ;; STRATIO
 (defn- group-login
   "Find a matching `Group` if one exists. Create user, assign group and return a new Session for them, or `nil` if they couldn't be authenticated."
   [username password headers]
-  (if (get headers (public-settings/group-header))
-    (let [group_login (get-existing-groups
-                       (clojure.string/split
-                        (get headers (public-settings/group-header)) (clojure.core/re-pattern (public-settings/group-header-delimiter))))
-          user_login (get headers (public-settings/user-header))]
-
-      (if (and (not-empty group_login) user_login)
-        (let [admin_group_login (get-admin-groups group_login)
-              admin_group_found (if (seq admin_group_login) true false)]
-          (let [user (user/create-new-header-auth-user! user_login "" (str user_login "@example.com") admin_group_found)]
-            (doseq [x group_login]
+  (let [user-info (http-headers->user-info headers)]
+    (log/debug "received user info: " user-info)
+    (if-not (contains? user-info :error)
+      (let [header-groups (get-existing-groups (:groups user-info))
+            header-user (:user user-info)
+            is-admin (boolean (seq (get-admin-groups header-groups)))]
+        (if (and (not-empty header-groups) header-user)
+          (let [user (user/create-new-header-auth-user! header-user "" (str header-user "@example.com") is-admin)]
+            (doseq [x header-groups]
               (try (db/insert! PermissionsGroupMembership
-                               :group_id (get (db/select-one [PermissionsGroup :id], :name x) :id)
-                               :user_id  (get user :id))
-                (catch Exception e (log/info "User-group tuple already exists. User: " user_login " Group: " x))))
-            (log/info "Successfully user created with group-hearder. User: " user_login " For this group: " group_login)
-            (email-login username password headers)))
+                     :group_id (get (db/select-one [PermissionsGroup :id], :name x) :id)
+                     :user_id  (get user :id))
+                   (catch Exception e (log/info "User-group tuple already exists. User: " header-user " Group: " x ". Exception " (.toString e)))))
+            (log/info "Successfully user created with group-hearder. User: " header-user " For this group: " header-groups)
+            (email-login username password headers))
+          (log/error "The received user groups do not exist in Discovery")))
+      (log/error "Couldn't obtain user info from http request header/token. Error: " (:error user-info)))))
 
-        (log/error "This group doesn't exist in Discovery"))
-      )
-    (log/error "Couldn't find a valid group in the given header"))
-  )
 
 ;; STRATIO
 (s/defn ^:private login :- UUID
@@ -159,7 +152,6 @@
   throwing an Exception if login could not be completed."
   [username :- su/NonBlankString, password :- su/NonBlankString , headers]
 
-  (println "username:" username " password:" password " headers:" headers)
   ;; Primitive "strategy implementation", should be reworked for modular providers in #3210
   (or (ldap-login username password)    ; First try LDAP if it's enabled
       (email-login username password headers)   ; Then try local authentication
