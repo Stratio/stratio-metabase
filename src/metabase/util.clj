@@ -130,11 +130,27 @@
              (re-matches #"[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?"
                          (str/lower-case s)))))
 
+;; STRATIO redefine this function with the 0.34 version since the new one is too strict (does not allow tpd for internal domains)
+;; (defn url?
+;;   "Is `s` a valid HTTP/HTTPS URL string?"
+;;   ^Boolean [s]
+;;   (let [validator (UrlValidator. (varargs String ["http" "https"]) UrlValidator/ALLOW_LOCAL_URLS)]
+;;     (.isValid validator (str s))))
 (defn url?
-  "Is `s` a valid HTTP/HTTPS URL string?"
-  ^Boolean [s]
-  (let [validator (UrlValidator. (varargs String ["http" "https"]) UrlValidator/ALLOW_LOCAL_URLS)]
-    (.isValid validator (str s))))
+  "Is STRING a valid HTTP/HTTPS URL? (This only handles `localhost` and domains like `metabase.com`; URLs containing
+  IP addresses will return `false`.)"
+  ^Boolean [^String s]
+  (boolean (when (seq s)
+             (when-let [^java.net.URL url (ignore-exceptions (java.net.URL. s))]
+               ;; these are both automatically downcased
+               (let [protocol (.getProtocol url)
+                     host     (.getHost url)]
+                 (and protocol
+                      host
+                      (re-matches #"^https?$" protocol)
+                      (or (re-matches #"^.+\..{2,}$" host) ; 2+ letter TLD
+                          (= host "localhost"))))))))
+
 
 (defn maybe?
   "Returns `true` if X is `nil`, otherwise calls (F X).
