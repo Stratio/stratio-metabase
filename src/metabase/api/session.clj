@@ -211,8 +211,7 @@
   (throttle-check (login-throttlers :username)   username)
   (let [session-id (login username password headers)
         response   {:id session-id}]
-    (u/prog1 (mw.session/set-session-cookie request response session-id)
-      (log/debug "Attaching Set-cookie header to login response: " <>))))
+    (mw.session/set-session-cookie request response session-id)))
 
 
 (api/defendpoint DELETE "/"
