@@ -123,8 +123,6 @@
 ;; refresh values in Metabase cache
 (defmethod driver/describe-table :crossdata
   [driver {:keys [details] :as database} {table-name :name, schema :schema, :as table}]
-  (log/debug (u/format-color 'cyan "crossdata.clj->describe-table"))
-  (println "table-name:" table-name " schema:" schema " table:" table)
   ; Do a "refresh schema.table" to update metadata. This is mandatory.
   (with-open [conn (jdbc/get-connection (sql-jdbc.conn/db->pooled-connection-spec database))]
     (jdbc/query {:connection conn}
@@ -155,8 +153,7 @@
 (defmethod driver/execute-query :crossdata
   [driver {:keys [database settings], query :native, :as outer-query}]
 
-  (log/debug (u/format-color 'cyan "crossdata.clj->execute-query"))
-  (println "query:" query " outer-query:" outer-query)
+  (log/debug "query:" query " outer-query:" outer-query)
   (let [query (-> (assoc query
                          :remark (qputil/query->remark outer-query)
                          :query  (if (seq (:params query))

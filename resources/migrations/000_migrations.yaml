@@ -5291,3 +5291,17 @@ databaseChangeLog:
               constraints:
                 nullable: false
               defaultValueBoolean: true
+
+  - changeSet:
+      id: 200
+      author: screspo
+      comment: 'Added 0.33.2. Change the old driver crossdata2 to crossata label'
+      preConditions:
+        - onFail: MARK_RAN
+        - onUpdateSQL: IGNORE
+        - tableExists:
+            tableName: databasechangelog
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: update metabase_database set engine = 'crossdata' where engine = 'crossdata2'
