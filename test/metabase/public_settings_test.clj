@@ -47,19 +47,20 @@
   (tu/with-temporary-setting-values [site-url nil]
     (public-settings/site-url "http://https://www.camsaul.com")))
 
-(expect
-  AssertionError
-  (tu/with-temporary-setting-values [site-url nil]
-    (public-settings/site-url "https://www.camsaul.x")))
+;; STRATIO - comment these two test since changed the too strict site-url validation
+;; (expect
+;;   AssertionError
+;;   (tu/with-temporary-setting-values [site-url nil]
+;;     (public-settings/site-url "https://www.camsaul.x")))
 
 ;; if `site-url` in the database is invalid, the getter for `site-url` should return `nil` (#9849)
-(expect
-  {:get-string "https://www.camsaul.x", :site-url nil}
-  (tu.log/suppress-output
-    (tu/with-temporary-setting-values [site-url "https://metabase.com"]
-      (setting/set-string! :site-url "https://www.camsaul.x")
-      {:get-string (setting/get-string :site-url)
-       :site-url   (public-settings/site-url)})))
+;; (expect
+;;   {:get-string "https://www.camsaul.x", :site-url nil}
+;;   (tu.log/suppress-output
+;;     (tu/with-temporary-setting-values [site-url "https://metabase.com"]
+;;       (setting/set-string! :site-url "https://www.camsaul.x")
+;;       {:get-string (setting/get-string :site-url)
+;;        :site-url   (public-settings/site-url)})))
 
 ;; We should normalize `site-url` when set via env var we should still normalize it (#9764)
 (expect
