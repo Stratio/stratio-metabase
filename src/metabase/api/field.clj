@@ -1,21 +1,26 @@
 (ns metabase.api.field
   (:require [compojure.core :refer [DELETE GET POST PUT]]
+            [clojure.tools.logging :as log]
+            [metabase.util.i18n :refer [deferred-trs trs]]
             [metabase
              [query-processor :as qp]
              [related :as related]
              [util :as u]]
+            [metabase.query-processor.middleware.parameters.dates :as dates]
             [metabase.api.common :as api]
             [metabase.db.metadata-queries :as metadata]
             [metabase.models
              [dimension :refer [Dimension]]
              [field :as field :refer [Field]]
              [field-values :as field-values :refer [FieldValues]]
-             [table :refer [Table]]]
+             [table :as table :refer [Table]]]
             [metabase.util.schema :as su]
             [schema.core :as s]
             [toucan
              [db :as db]
-             [hydrate :refer [hydrate]]])
+             [hydrate :refer [hydrate]]]
+            [cheshire.core :as json]
+            )
   (:import java.text.NumberFormat))
 
 ;;; --------------------------------------------- Basic CRUD Operations ----------------------------------------------
@@ -165,11 +170,185 @@
         (dissoc :human_readable_values :created_at :updated_at :id))
     {:values [], :field_id (:id field)}))
 
+
+(defn- table-id [field]
+  (u/get-id (:table_id field)))
+
+(defn- db-id [field]
+  (u/get-id (db/select-one-field :db_id Table :id (table-id field))))
+
+
+;; STRATIO ;;;;;;;;;
+
+
+
+;; Check if field-id is a fk in the table table-id.
+;; in -> table-id (integer), field-id (integer)
+;; out -> fk field if exist in the table-id
+;;        nil in other case
+(defn is-fk
+  [table-id field-id]
+  (let [field-result (db/select-one Field, :fk_target_field_id [:= field-id], :table_id table-id, :active true)]
+    field-result)
+  )
+;; get fk Field in destination table coming from origin table.
+;; in -> table-origin (integer), table-destination (integer)
+;; out -> fk in destination-table from origin-table
+(defn get-fk
+  [table-origin table-destination]
+
+  (if-let [pks-table-origin (db/select-one Field, :table_id table-origin, :special_type "type/PK" )]
+    (db/select-one Field, :table_id table-destination, :fk_target_field_id (pks-table-origin :id))
+    )
+  )
+
+(defn date?
+  "Is field a datetime?"
+  [{:keys [base_type]}]
+  (isa? base_type :type/DateTime))
+
+;; in -> field id (integer), values ["a","b",...]
+;; out -> if one value -> [:= [:field-id field-id] "value"]]
+;;        if several values -> [:or [:= [:field-id field-id] "value"]] [:= [:field-id field-id] "value"]]]
+(defn filter-clause-with-values
+  [field-id values]
+
+  (let [field-entity (Field field-id)]
+    (if (date? (Field field-id))
+      ;; Field is a datetime. The values should be only one element, the date.
+      (dates/date-string->filter (first values) [:field-literal (:name field-entity) (:base_type field-entity)])
+      ;; String, Number
+      (if (= (count values) 1)
+        [:= [:field-id field-id] (first values)]
+        (apply vector :or (for [x values]
+                            [:= [:field-id field-id] x])))
+
+      )
+
+    )
+  )
+
+
+
+; in -> field of a table, field-catagory-with-values as [:id 3,:values ["a","b",...]
+; out -> result of query {:data {:rows (.....values....)}}
+(defn get-field-with-fieldvalues
+  [field field-category-with-values]
+
+  (let [field-category-entity (Field (field-category-with-values :id))]
+    (qp/process-query
+     {:database (db-id field-category-entity)
+      :type     :query
+      :query    {:source-table (table-id field-category-entity)
+                 :filter       (filter-clause-with-values (field-category-with-values :id) (field-category-with-values :values))
+                 ;:filter       [:or [:contains [:field-id 12729] "LAVANDERIA"]
+                 ;               [:contains [:field-id 12729] "COCINA"]]
+                 :fields       [[:field-id (:id field)]]
+                 :middleware {:format-rows?           false
+                              :skip-results-metadata? true}
+                 }}))
+  )
+
+;; Generate the where clausule for a field filter in dashboard taking account the values of other filters in the
+;; dashboard.
+;; in -> Field , {:id id, :value ["a","b"]} & more
+;; out -> [:= name_field set-values]
+(defn generate-in-clause
+  "Generate MBQL where clause to filter the values to show in a dashboard filter"
+  [field-to-filter field-with-values & more-field-id-values]
+
+
+  (if more-field-id-values
+    ;; Recursion if more than one dashboard filter
+    (remove nil? [:and (generate-in-clause field-to-filter field-with-values) (generate-in-clause field-to-filter (first more-field-id-values))])
+    (let [field-with-values-entity (Field (field-with-values :id))
+          values-filter (field-with-values :values)]
+      (if (= (table-id field-to-filter) (table-id field-with-values-entity))
+        ;same table both filter
+        (filter-clause-with-values (field-with-values :id) values-filter)
+        (do
+          ; different table from filter and field-value-id is not :TypeId
+          ; fk in table of field to filter
+          (if-let [fk-field-in-field-to-filter (get-fk (table-id field-with-values-entity) (table-id field-to-filter))]
+            (if (= (fk-field-in-field-to-filter :fk_target_field_id) (field-with-values-entity :id))
+              ; field with values is Pk (typeId)
+              (filter-clause-with-values (fk-field-in-field-to-filter :id) values-filter)
+              (let [rows (get-in (get-field-with-fieldvalues (Field (table/pk-field-id (Table (table-id field-with-values-entity)))) field-with-values) [:data :rows])]
+                ;field with values is not pk
+                (filter-clause-with-values (fk-field-in-field-to-filter :id) (flatten rows))
+                )
+              )
+            ; fk in table of field with values
+            (if-let [fk-field-in-field-with-values (get-fk (table-id field-to-filter) (table-id field-with-values-entity))]
+              (let [rows (get-in (get-field-with-fieldvalues fk-field-in-field-with-values field-with-values) [:data :rows])]
+                (filter-clause-with-values (table/pk-field-id (Table (table-id field-to-filter))) (flatten rows)) ;field with values is not pk
+                ))
+            ))
+        )
+      )
+    )
+  )
+
+
+; in -> Field to filter, {"filter-field-values":[{"id":12729,"value":"LAVANDERIA"}]}
+; out -> [:= [:field-id id] [["ASEO"] ["ESPACIO TRABAJO"]]]
+(defn filter-from-json
+  [field-to-filter json-values]
+
+  (as-> (json/parse-string json-values true) values-in-filter
+        (apply generate-in-clause field-to-filter (values-in-filter :filter-field-values)))
+  )
+
+;; Get field values taking a count the values of filter values placed before.
+;; in -> where_values -> {"filter-field-values":[{"id":12729,"value":"LAVANDERIA"}]}
+;; out -> mbql filter for field-to-filter field [("a"),("b"),("c"),...]
+(defn field->values_with_where
+  [field-to-filter where_values]
+
+  ; json to map  {:field-field-values [{:id 12729, :values [LAVANDERIA]}]}
+  (let [map_values_in_filter (filter-from-json field-to-filter where_values)
+        rows-query (qp/process-query
+                    {:database (db-id field-to-filter)
+                     :type     :query
+                     :query    {:source-table (table-id field-to-filter)
+                                ;:aggregation [:distinct [:field-id (u/get-id field)]]
+                                :filter       map_values_in_filter
+                                ;:filter       [:or [:contains [:field-id 12729] "LAVANDERIA"]
+                                ;               [:contains [:field-id 12729] "COCINA"]]
+                                :fields       [[:field-id (u/get-id field-to-filter)]]
+                                :breakout     [[:field-id (u/get-id field-to-filter)]]
+                                }})
+        rows    (get-in rows-query [:data :rows])]
+
+    (flatten rows)
+    ))
+
+;(api/defendpoint GET "/:id/values"
+;  "If a Field's value of `has_field_values` is `list`, return a list of all the distinct values of the Field, and (if
+;  defined by a User) a map of human-readable remapped values."
+;  [id]
+;  (field->values (api/read-check Field id)))
+
+
+;;;;; STRATIO ;;;;;;;;;;;;;;;
+;; /api/field/:id/values?field_values={"field_values":[{"id":12729,"value":"LAVANDERIA"}]} -> it returns the values filtering with other_filter if it
+;; is possible.
+;; out -> [:values [["a"],["b"],...],:field_id (:id field)]
 (api/defendpoint GET "/:id/values"
   "If a Field's value of `has_field_values` is `list`, return a list of all the distinct values of the Field, and (if
   defined by a User) a map of human-readable remapped values."
-  [id]
-  (field->values (api/read-check Field id)))
+  [id filter-field-values]
+  {filter-field-values (s/maybe su/JSONString)}
+
+  (if (nil? filter-field-values)
+    ; there is not field values of other filters in the dashboard
+    (field->values (api/read-check Field id))
+    ; there are some field values from other dashboard filters
+    (let [field (Field id)]
+      {:values (field->values_with_where field filter-field-values) :field_id id}
+      ))
+  )
+;;;;;;FIN stratio;;;;;;;;;;;;;;;;
 
 ;; match things like GET /field-literal%2Ccreated_at%2Ctype%2FDatetime/values
 ;; (this is how things like [field-literal,created_at,type/Datetime] look when URL-encoded)
@@ -241,11 +420,11 @@
 
 ;;; --------------------------------------------------- Searching ----------------------------------------------------
 
-(defn- table-id [field]
-  (u/get-id (:table_id field)))
+;(defn- table-id [field]
+;  (u/get-id (:table_id field)))
 
-(defn- db-id [field]
-  (u/get-id (db/select-one-field :db_id Table :id (table-id field))))
+;(defn- db-id [field]
+;  (u/get-id (db/select-one-field :db_id Table :id (table-id field))))
 
 (defn- follow-fks
   "Automatically follow the target IDs in an FK `field` until we reach the PK it points to, and return that. For

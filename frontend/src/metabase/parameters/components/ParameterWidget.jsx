@@ -30,13 +30,14 @@ export default class ParameterWidget extends Component {
   };
 
   renderPopover(value, setValue, placeholder, isFullscreen) {
-    const { parameter, editingParameter, commitImmediately } = this.props;
+    const { parameter, parameters, editingParameter, commitImmediately } = this.props;
     const isEditingParameter = !!(
       editingParameter && editingParameter.id === parameter.id
     );
     return (
       <ParameterValueWidget
         parameter={parameter}
+        parameters={parameters}
         name={name}
         value={value}
         setValue={setValue}

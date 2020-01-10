@@ -87,10 +87,8 @@ export const fetchData = async ({
         () => dispatch(setRequestState({ statePath, state: "LOADED" })),
         0,
       );
-
       return data;
     }
-
     return existingData;
   } catch (error) {
     dispatch(setRequestState({ statePath, error }));

@@ -11,7 +11,9 @@ import LoadingSpinner from "metabase/components/LoadingSpinner";
 import AutoExpanding from "metabase/hoc/AutoExpanding";
 
 import { MetabaseApi } from "metabase/services";
-import { addRemappings, fetchFieldValues } from "metabase/redux/metadata";
+//Stratio
+import { addRemappings, fetchFilterFieldValues } from "metabase/redux/metadata";
+//Fin Stratio
 import { defer } from "metabase/lib/promise";
 import { debounce } from "underscore";
 import { stripId } from "metabase/lib/formatting";
@@ -24,9 +26,10 @@ import type { LayoutRendererProps } from "metabase/components/TokenField";
 
 const MAX_SEARCH_RESULTS = 100;
 
+//Stratio
 const mapDispatchToProps = {
   addRemappings,
-  fetchFieldValues,
+  fetchFilterFieldValues,
 };
 
 type Props = {
@@ -37,7 +40,7 @@ type Props = {
   multi?: boolean,
   autoFocus?: boolean,
   color?: string,
-  fetchFieldValues: (id: FieldId) => void,
+  fetchFilterFieldValues: (id: FieldId) => void,
   maxResults: number,
   style?: { [key: string]: string | number },
   placeholder?: string,
@@ -49,7 +52,7 @@ type Props = {
 
   className?: string,
 };
-
+//Fin Stratio
 type State = {
   loadingState: "INIT" | "LOADING" | "LOADED",
   options: [Value, ?string][],
@@ -81,12 +84,55 @@ export class FieldValuesWidget extends Component {
     maxWidth: 500,
   };
 
+  //Stratio
+  _getPosFilter(parameters, fieldId) {
+    let paramIndex;
+    parameters && parameters.forEach((param,i) => {
+      if (param.field_id === fieldId) {
+        paramIndex = i;
+        return;
+      }
+    });
+    return paramIndex;
+  }
+
+  _castInt(strToCast) {
+    console.log('strToCast', strToCast);
+    console.log('find -', strToCast.includes("-"));
+    return parseInt(strToCast) && !strToCast.includes("-") ? parseInt(strToCast) : strToCast;
+    // return parseInt(strToCast) && strToCast.indexOf("-") === -1 ? parseInt(strToCast) : strToCast;
+  }
+
+  _genQueryFilter(parameters, posField) {
+    if (posField !== 0) {
+      let filters = { "filter-field-values": [] };
+      let urlParams = new URLSearchParams(window.location.search);
+      for (var i = 0; i < posField; i++) {
+        let parameter = parameters[i];
+        let filterValues = urlParams.getAll(parameter.slug).map(val => this._castInt(val));
+        let filter = { id: parameter.field_id, values: filterValues };
+        if (filter.id !== null && filter.values && filter.values.length > 0) {
+          filters["filter-field-values"].push(filter);
+        }
+      }
+      return filters["filter-field-values"].length > 0 ? filters : null;
+    }
+    return null;
+  }
+
   componentWillMount() {
-    const { field, fetchFieldValues } = this.props;
+    const { field, parameters, fetchFilterFieldValues } = this.props;
     if (field.has_field_values === "list") {
-      fetchFieldValues(field.id);
+      let queryFilter = null;
+      if (parameters) {
+        const posFilter = this._getPosFilter(parameters, field.id);
+        queryFilter = this._genQueryFilter(parameters, posFilter);
+      }
+      fetchFilterFieldValues(field.id, queryFilter);
     }
   }
+  //Fin Stratio
+
 
   componentWillUnmount() {
     if (this._cancel) {

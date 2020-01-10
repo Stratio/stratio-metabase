@@ -17,7 +17,7 @@ import CategoryWidget from "./widgets/CategoryWidget";
 import TextWidget from "./widgets/TextWidget";
 import ParameterFieldWidget from "./widgets/ParameterFieldWidget";
 
-import { fetchField, fetchFieldValues } from "metabase/redux/metadata";
+import { fetchField, fetchFilterFieldValues } from "metabase/redux/metadata";
 import {
   getMetadata,
   makeGetMergedParameterFieldValues,
@@ -49,7 +49,7 @@ const makeMapStateToProps = () => {
 };
 
 const mapDispatchToProps = {
-  fetchFieldValues,
+  fetchFilterFieldValues,
   fetchField,
 };
 
@@ -125,16 +125,55 @@ export default class ParameterValueWidget extends Component {
     }
   }
 
+  _getPosFilter(parameters, fieldId) {
+    let paramIndex;
+    parameters.forEach((param,i) => {
+      if (param.field_ids[0] === fieldId) {
+        paramIndex = i;
+        return;
+      }
+    });
+    return paramIndex;
+  }
+
+  _castInt(strToCast) {
+    console.log('strToCast', strToCast);
+    console.log('find -', strToCast.includes("-"));
+    return parseInt(strToCast) && !strToCast.includes("-") ? parseInt(strToCast) : strToCast;
+  }
+
+  _genQueryFilter(parameters, posField) {
+    if (posField > 0) {
+      let filters = { "filter-field-values": [] };
+      let urlParams = new URLSearchParams(window.location.search);
+      for (var i = 0; i < posField; i++) {
+        let parameter = parameters[i];
+        let filterValues = urlParams.getAll(parameter.slug).map(val => this._castInt(val));
+        let filter = { id: parameter.field_ids[0], values: filterValues };
+        console.log('cambio');
+        if (filter.id !== null && filter.values && filter.values.length > 0) {
+          filters["filter-field-values"].push(filter);
+        }
+      }
+      return filters["filter-field-values"].length > 0 ? filters : null;
+    }
+    return null;
+  }
+
   updateFieldValues(props) {
+    const { parameters, parameter } = props;
+    const posFilter = this._getPosFilter(parameters, parameter.field_ids[0]);
+    const queryFilter = this._genQueryFilter(parameters, posFilter);
     for (const id of this.fieldIds(props)) {
       props.fetchField(id);
-      props.fetchFieldValues(id);
+      props.fetchFilterFieldValues(id, queryFilter);
     }
   }
 
   render() {
     const {
       parameter,
+      parameters,
       value,
       values,
       setValue,
@@ -229,6 +268,7 @@ export default class ParameterValueWidget extends Component {
           {getParameterTypeIcon()}
           <Widget
             placeholder={placeholder}
+            parameters={parameters}
             value={value}
             values={values}
             field={this.getSingleField()}

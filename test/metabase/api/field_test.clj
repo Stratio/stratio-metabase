@@ -188,6 +188,32 @@
   ((test-users/user->client :rasta) :get 200 (format "field/%d/values" (data/id :users :password))))
 
 
+;;; ---------------STRATIO----------------------
+;; in -> filter-field-values={"filter-field-values":[{"id":12729,"values":["Burguer"]}]} the value is a Category ("Burguer")
+;; out -> [:values ["Stout Burgers & Beers","The Apple Pan","25°","In-N-Out Burger"], :field_id (data/id :venues :name)]
+(expect
+ {:values ["25°" "In-N-Out Burger" "Stout Burgers & Beers" "The Apple Pan"], :field_id (data/id :venues :name)}
+ ;{:values [], :field_id (data/id :venues :name)}
+; ((test-users/user->client :rasta) :get 200 (format "field/%d/values?filter-field-values={\"filter-field-values\":[{\"id\":345,\"values\":[\"Burguer\"]}]}" (data/id :venues :name)
+;                                                    )))
+ ((test-users/user->client :rasta) :get 200 (str "field/" (data/id :venues :name)
+                                                 "/values?filter-field-values={\"filter-field-values\":[{\"id\":"
+                                                 (data/id :categories :name) ",\"values\":[\"Burger\"]}]}" )))
+
+;;
+(expect
+ {:values ["Conchúr Tihomir" "Dwight Gresham" "Rüstem Hebel" "Shad Ferdynand"], :field_id (data/id :users :name)}
+ ;{:values [], :field_id (data/id :venues :name)}
+ ; ((test-users/user->client :rasta) :get 200 (format "field/%d/values?filter-field-values={\"filter-field-values\":[{\"id\":345,\"values\":[\"Burguer\"]}]}" (data/id :venues :name)
+ ;                                                    )))
+ ((test-users/user->client :rasta) :get 200 (str "field/" (data/id :users :name)
+                                                 "/values?filter-field-values={\"filter-field-values\":[{\"id\":"
+                                                 (data/id :users :last_login) ",\"values\":[\"2014-08\"]}]}" )))
+
+
+
+;;;----------------stratio----------------------
+
 ;;; ------------------------------------------- POST /api/field/:id/values -------------------------------------------
 
 (def ^:private list-field {:name "Field Test", :base_type :type/Integer, :has_field_values "list"})

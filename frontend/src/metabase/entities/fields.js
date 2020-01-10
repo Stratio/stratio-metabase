@@ -22,6 +22,9 @@ import { TYPE } from "metabase/lib/types";
 // ADDITIONAL OBJECT ACTIONS
 
 export const FETCH_FIELD_VALUES = "metabase/entities/fields/FETCH_FIELD_VALUES";
+// Stratio
+export const FETCH_FILTER_FIELD_VALUES = "metabase/entities/fields/FETCH_FILTERED_FIELD_VALUES";
+//Fin Stratio
 export const UPDATE_FIELD_VALUES =
   "metabase/entities/fields/UPDATE_FIELD_VALUES";
 export const DELETE_FIELD_DIMENSION =
@@ -55,6 +58,21 @@ export default createEntity({
           reload,
         }),
     ),
+    //Stratio
+    fetchFilterFieldValues: createThunkAction(
+      FETCH_FILTER_FIELD_VALUES,
+      ({ id, filters }, reload) => (dispatch, getState) => {
+        return fetchData({
+          dispatch,
+          getState,
+          requestStatePath: ["entities", "fields", id, "values"],
+          existingStatePath: ["entities", "fields", id, "values"],
+          getData: () => MetabaseApi.filter_field_values(id, filters)({ fieldId: id }),
+          reload,
+        })
+      }
+    ),
+    //Fin Stratio
 
     // Docstring from m.api.field:
     // Update the human-readable values for a `Field` whose special type is
@@ -128,6 +146,18 @@ export default createEntity({
               )
             : state,
       },
+      //Stratio
+      [FETCH_FILTER_FIELD_VALUES]: {
+        next: (state, { payload: fieldValues }) =>
+          fieldValues
+            ? assocIn(
+            state,
+            [fieldValues.field_id, "values"],
+            fieldValues.values,
+            )
+            : state,
+      },
+      //Fin Stratio
       [ADD_PARAM_VALUES]: {
         next: (state, { payload: paramValues }) => {
           for (const fieldValues of Object.values(paramValues)) {

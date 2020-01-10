@@ -143,7 +143,12 @@ export const fetchFieldValues = (id, reload = false) => {
   deprecated("metabase/redux/metadata fetchFieldValues");
   return Fields.actions.fetchFieldValues({ id }, reload);
 };
-
+// Stratio
+export const FETCH_FILTER_FIELD_VALUES = Fields.actions.fetchFilterFieldValues.toString();
+export const fetchFilterFieldValues = (id, filters, reload = true) => {
+  return Fields.actions.fetchFilterFieldValues({ id, filters }, reload);
+};
+//Fin Stratio
 export const UPDATE_FIELD_VALUES = Fields.actions.updateFieldValues.toString();
 export const updateFieldValues = (fieldId, fieldValuePairs) => {
   deprecated("metabase/redux/metadata updateFieldValues");

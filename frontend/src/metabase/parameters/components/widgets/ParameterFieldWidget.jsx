@@ -76,9 +76,9 @@ export default class ParameterFieldWidget extends Component<*, Props, State> {
       }
     }
   }
-
+  //Stratio
   render() {
-    const { setValue, isEditing, field, parentFocusChanged } = this.props;
+    const { setValue, isEditing, field, parentFocusChanged, parameters } = this.props;
     const { isFocused } = this.state;
 
     const savedValue = normalizeValue(this.props.value);
@@ -132,6 +132,7 @@ export default class ParameterFieldWidget extends Component<*, Props, State> {
             }}
             placeholder={placeholder}
             field={field}
+            parameters={parameters}
             searchField={field.parameterSearchField()}
             multi
             autoFocus
@@ -152,10 +153,11 @@ export default class ParameterFieldWidget extends Component<*, Props, State> {
               primary
               className="ml-auto"
               disabled={savedValue.length === 0 && unsavedValue.length === 0}
-              onClick={() => {
+              onClick={ () => {
                 setValue(unsavedValue.length > 0 ? unsavedValue : null);
                 focusChanged(false);
-              }}
+              }
+              }
             >
               {savedValue.length > 0 ? "Update filter" : "Add filter"}
             </Button>
