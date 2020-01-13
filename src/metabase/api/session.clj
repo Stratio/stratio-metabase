@@ -120,8 +120,8 @@
   [group_list]
   (vec (clojure.set/intersection (set group_list)
                                  (set (clojure.string/split
-                                       (public-settings/admin-group-header)
-                                       (clojure.core/re-pattern (public-settings/group-header-delimiter)))))))
+                                       (str (public-settings/admin-group-header))
+                                       (clojure.core/re-pattern (str (public-settings/group-header-delimiter))))))))
 
 ;; STRATIO
 (defn- group-login
