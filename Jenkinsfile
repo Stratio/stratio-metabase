@@ -7,7 +7,7 @@ hose {
     SLACKTEAM = 'data-governance'
     BUILDTOOL = 'make'
     DEVTIMEOUT = 60
-    RELEASETIMEOUT = 40
+    RELEASETIMEOUT = 80
     BUILDTOOLVERSION = '3.5.0'
     NEW_VERSIONING = 'true'
 
