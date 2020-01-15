@@ -8,9 +8,11 @@
             [metabase.mbql.util :as mbql.u]
             [metabase.models
              [activity :as activity :refer [Activity]]
+             [user :refer [User]]
              [card :refer [Card]]
              [dashboard :refer [Dashboard]]
              [table :as table]]
+            [metabase.stratio.audit-log :as audit]
             [metabase.util.i18n :refer [tru]]
             [toucan.db :as db]))
 
@@ -142,11 +144,23 @@
    "segment"   process-segment-activity!
    "user"      process-user-activity!})
 
+
+;; < STRATIO
+(defn- audit-activity
+  [activity-event]
+  (let [user-id (events/object->user-id (:item activity-event))
+        user (if user-id (db/select-one-field :first_name User :id user-id) "-")]
+    (audit/log user "metabase.events.activity-feed" activity-event)))
+;; STRATIO >
+
 (defn process-activity-event!
   "Handle processing for a single event notification received on the activity-feed-channel"
   [activity-event]
   ;; try/catch here to prevent individual topic processing exceptions from bubbling up.  better to handle them here.
   (try
+    ;; < STRATIO - print audit log of event
+    (audit-activity activity-event)
+    ;; STRATIO >
     (when-let [{topic :topic, object :item} activity-event]
       (if-let [f (model->processing-fn (events/topic->model topic))]
         (f topic object)

@@ -11,6 +11,7 @@
 * New Crossdata driver as a plugin
 * [ROCK-629] Add JWT authentication
 * Fix: Revert too strict site-url validation
+* [ROCK-1220] Audit log activity events
 
 ## 0.34.0-7f4b16c (Built: September 19, 2019 | Released: September 20, 2019)
 
