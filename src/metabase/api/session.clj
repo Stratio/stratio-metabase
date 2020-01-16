@@ -12,6 +12,7 @@
              [util :as u]]
             [metabase.api.common :as api]
             [metabase.stratio.header-user-info :refer [http-headers->user-info]]
+            [metabase.stratio.audit-log :as audit]
             [metabase.email.messages :as email]
             [metabase.integrations.ldap :as ldap]
             [metabase.middleware.session :as mw.session]
@@ -219,6 +220,16 @@
   [:as {:keys [metabase-session-id]}]
   (api/check-exists? Session metabase-session-id)
   (db/delete! Session :id metabase-session-id)
+  ;;< STRATIO - audit-log the user logout
+  (let [user @api/*current-user*
+        user-name (or (:first_name user) "-")
+        user-id (:id user)]
+    (audit/log user-name
+               "metabase.api.session"
+               {:topic :user-logout
+                :item {:user_id user-id
+                       :session_id (str metabase-session-id)}}))
+  ;; STRATIO >
   (mw.session/clear-session-cookie api/generic-204-no-content))
 
 ;; Reset tokens: We need some way to match a plaintext token with the a user since the token stored in the DB is
