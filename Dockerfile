@@ -44,7 +44,10 @@ RUN apk add --update wget && \
     mvn install:install-file -Dfile=/app/source/bin/lib/local-query-execution-factory-0.2.jar -DgroupId=com.stratio.metabase -DartifactId=local-query-execution-factory -Dversion=0.2 -Dpackaging=jar && \
     mvn dependency:get -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.14.4-1830fff -DremoteRepositories=http://sodio.stratio.com/repository/public/ -Dtransitive=false && \
     mv /root/.m2/repository/com/stratio/jdbc/stratio-crossdata-jdbc4/2.14.4-1830fff/stratio-crossdata-jdbc4-2.14.4-1830fff.jar /app/source/bin/lib/stratio-crossdata-jdbc4-2.14.4-1830fff.jar && \
-    mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.14.4-1830fff.jar -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.14.4-1830fff -Dpackaging=jar
+    mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.14.4-1830fff.jar -DgroupId=com.stratio.jdbc -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.14.4-1830fff -Dpackaging=jar && \
+    mvn dependency:get -DgroupId=com.oracle.ojdbc -DartifactId=ojdbc8 -Dversion=19.3.0.0 -DremoteRepositories=https://repo1.maven.org/maven2/ -Dtransitive=false && \
+    mv /root/.m2/repository/com/oracle/ojdbc/ojdbc8/19.3.0.0/ojdbc8-19.3.0.0.jar /app/source/bin/lib/ojdbc8-19.3.0.0.jar && \
+    mvn install:install-file -Dfile=/app/source/bin/lib/ojdbc8-19.3.0.0.jar -DgroupId=com.oracle.jdbc -DartifactId=ojdbc8 -Dversion=19.3.0.0 -Dpackaging=jar
 
 # lein:    backend dependencies and building
 ADD https://raw.github.com/technomancy/leiningen/stable/bin/lein /usr/local/bin/lein

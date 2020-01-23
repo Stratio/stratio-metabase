@@ -128,6 +128,7 @@
 ;                               log4j/log4j
                                ]]    ; Crossdata driver
    [com.stratio.metabase/local-query-execution-factory "0.2"]
+   [com.oracle.ojdbc/ojdbc8  "19.3.0.0"]
    [prismatic/schema "1.1.11"]                                        ; Data schema declaration and validation library
    [puppetlabs/i18n "0.8.0"]                                          ; Internationalization library
    [redux "0.1.4"]                                                    ; Utility functions for building and composing transducers
