@@ -5305,3 +5305,17 @@ databaseChangeLog:
         - sql:
             dbms: postgresql
             sql: update metabase_database set engine = 'crossdata' where engine = 'crossdata2'
+
+  - changeSet:
+      id: 201
+      author: darroyo
+      comment: 'Added 0.33.2. Replace ssl option field with ssl-option'
+      preConditions:
+        - onFail: MARK_RAN
+        - onUpdateSQL: IGNORE
+        - tableExists:
+            tableName: databasechangelog
+      changes:
+        - sql:
+            dbms: postgresql
+            sql: UPDATE metabase_database SET details = cast( jsonb_set(cast(details as jsonb), '{ssl-option}', cast(details as jsonb)->'ssl', true) as character varying) where engine = 'crossdata'
