@@ -1,6 +1,7 @@
 \#*\#
 .\#*
 /target
+target/
 /modules/drivers/crossdata/target
 /classes
 /checkouts
@@ -11,6 +12,7 @@ pom.xml.asc
 /.lein-failures
 /.lein-plugins
 /.lein-repl-history
+metabase-core.iml
 /.nrepl-port
 .idea/
 /docs/uberdoc.html
