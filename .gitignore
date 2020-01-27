@@ -54,3 +54,6 @@ coverage-summary.json
 bin/node_modules/
 *.log
 *.trace.db
+
+**.iml
+**/**.iml
