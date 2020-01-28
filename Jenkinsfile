@@ -11,6 +11,8 @@ hose {
     BUILDTOOLVERSION = '3.5.0'
     NEW_VERSIONING = 'true'
 
+    ANCHORE_TEST = true
+
     ATTIMEOUT = 90
     INSTALLTIMEOUT = 90
 
