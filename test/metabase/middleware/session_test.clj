@@ -20,7 +20,7 @@
       :path    "/"}
      "metabase.SESSION"
      {:value     (str uuid)
-      :same-site :lax
+      ;; :same-site :lax
       :http-only true
       :path      "/"
       :max-age   1209600}}
@@ -31,7 +31,7 @@
 (let [uuid (UUID/randomUUID)]
   (expect
     {:value     (str uuid)
-     :same-site :lax
+     ;; :same-site :lax
      :http-only true
      :path      "/"}
     (let [env env/env]

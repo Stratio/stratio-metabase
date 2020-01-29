@@ -82,7 +82,7 @@
        metabase-session-cookie
        (str session-id)
        (merge
-        {:same-site :lax
+        {;; :same-site :lax
          :http-only true
          :path      "/"}
         ;; If the env var `MB_SESSION_COOKIES=true`, do not set the `Max-Age` directive; cookies with no `Max-Age` and
