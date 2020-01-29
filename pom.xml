@@ -500,7 +500,7 @@
       <version>0.4.5</version>
     </dependency>
     <dependency>
-      <groupId>com.stratio.jdbc</groupId>
+      <groupId>com.stratio.crossdata.driver</groupId>
       <artifactId>stratio-crossdata-jdbc4</artifactId>
       <version>2.16.2-2e12375</version>
       <exclusions>
