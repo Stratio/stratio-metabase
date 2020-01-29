@@ -1,1 +1,0 @@
-[{:dependencies {net.snowflake/snowflake-jdbc {:vsn "3.8.0", :native-prefix nil}}, :native-path "target/uberjar/native"} {:native-path "target/uberjar/native", :dependencies {net.snowflake/snowflake-jdbc {:vsn "3.8.0", :native-prefix nil, :native? false}}}]
