@@ -94,7 +94,13 @@
     ;; get a connection from our application DB connection pool. Quartz will close it (i.e., return it to the pool)
     ;; when it's done
     (jdbc/get-connection (db/connection)))
-  (shutdown [_]))
+  (shutdown [_])
+  ;; <STRATIO - bumping quartz to fix vulnerabilities forces us to implement this method
+  ;; of the ConnectionProvider interface (in old quartz version it was not called)
+  (initialize [_])
+  ;; STRATIO >
+  )
+
 
 (when-not *compile-files*
   (System/setProperty "org.quartz.dataSource.db.connectionProvider.class" (.getName ConnectionProvider)))
