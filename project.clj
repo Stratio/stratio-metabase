@@ -131,7 +131,6 @@
 ;                               org.apache.logging.log4j/log4j-core
 ;                               log4j/log4j
                                ]]    ; Crossdata driver
-   [com.stratio.metabase/local-query-execution-factory "0.2"]
    [prismatic/schema "1.1.11"]                                        ; Data schema declaration and validation library
    [puppetlabs/i18n "0.8.0"]                                          ; Internationalization library
    [redux "0.1.4"]                                                    ; Utility functions for building and composing transducers
@@ -142,6 +141,10 @@
    [stencil "0.5.0"]                                                  ; Mustache templates for Clojure
    [toucan "1.14.0" :exclusions [org.clojure/java.jdbc honeysql]]     ; Model layer, hydration, and DB utilities
    [weavejester/dependency "0.2.1"]]                                  ; Dependency graphs and topological sorting
+
+  ;; < STRARIO - add stratio repo to be able to download XD dependency
+  :repositories [["stratio" "http://niquel.stratio.com/repository/public"]]
+  ;; STRATIO >
 
   :main ^:skip-aot metabase.core
 

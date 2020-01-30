@@ -5,6 +5,8 @@
   [[com.stratio.crossdata.driver/stratio-crossdata-jdbc4 "2.17.0-07b9b70"
     :exclusions [com.fasterxml.jackson.core/jackson-core]]]
 
+  :repositories [["stratio" "http://niquel.stratio.com/repository/public"]]
+
   :profiles
   {:provided
    {:dependencies [[metabase-core "1.0.0-SNAPSHOT"]]}

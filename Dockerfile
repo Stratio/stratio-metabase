@@ -28,23 +28,6 @@ RUN mkdir /root/.crossdata/ && \
     mkdir /root/kms/ && \
     mv  /app/source/resources/kms/* /root/kms/.
 
-ENV MAVEN_VERSION="3.2.5" \
-    M2_HOME=/usr/lib/mvn
-
-# To generate local docker, comment mvn dependency:get and mv. Download jar in ./bin/lib/
-# http://qa.stratio.com/repository/releases/com/stratio/crossdata/driver/stratio-crossdata-jdbc4/2.17.0-07b9b70/stratio-crossdata-jdbc4-2.17.0-07b9b70.jar
-RUN apk add --update wget && \
-    cd /tmp && \
-    wget "http://ftp.unicamp.br/pub/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz" && \
-    tar -zxvf "apache-maven-$MAVEN_VERSION-bin.tar.gz" && \
-    mv "apache-maven-$MAVEN_VERSION" "$M2_HOME" && \
-    ln -s "$M2_HOME/bin/mvn" /usr/bin/mvn && \
-    mvn package -f /app/source/local-query-execution-factory/pom.xml && \
-    mv /app/source/local-query-execution-factory/target/local-query-execution-factory-0.2.jar /app/source/bin/lib/local-query-execution-factory-0.2.jar && \
-    mvn install:install-file -Dfile=/app/source/bin/lib/local-query-execution-factory-0.2.jar -DgroupId=com.stratio.metabase -DartifactId=local-query-execution-factory -Dversion=0.2 -Dpackaging=jar && \
-    mvn dependency:get -DgroupId=com.stratio.crossdata.driver -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.17.0-07b9b70 -DremoteRepositories=http://sodio.stratio.com/repository/public/ -Dtransitive=false && \
-    mv /root/.m2/repository/com/stratio/crossdata/driver/stratio-crossdata-jdbc4/2.17.0-07b9b70/stratio-crossdata-jdbc4-2.17.0-07b9b70.jar /app/source/bin/lib/stratio-crossdata-jdbc4-2.17.0-07b9b70.jar && \
-    mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.17.0-07b9b70.jar -DgroupId=com.stratio.crossdata.driver -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.17.0-07b9b70 -Dpackaging=jar
 
 # lein:    backend dependencies and building
 ADD https://raw.github.com/technomancy/leiningen/stable/bin/lein /usr/local/bin/lein
