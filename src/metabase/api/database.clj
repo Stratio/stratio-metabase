@@ -387,12 +387,10 @@
    schedules        (s/maybe ExpandedSchedulesMap)
    auto_run_queries (s/maybe s/Bool)}
   (api/check-superuser)
-  (log/debug "Santi POST:" details)
   (let [is-full-sync?    (or (nil? is_full_sync)
                              (boolean is_full_sync))
         details-or-error (test-connection-details engine details)
         valid?           (not= (:valid details-or-error) false)]
-    (log/debug "Santi valid?:" valid?)
     (if valid?
       ;; no error, proceed with creation. If record is inserted successfuly, publish a `:database-create` event.
       ;; Throw a 500 if nothing is inserted
