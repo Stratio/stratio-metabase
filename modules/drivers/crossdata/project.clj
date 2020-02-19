@@ -2,7 +2,7 @@
   :min-lein-version "2.5.0"
 
   :dependencies
-  [[com.stratio.crossdata.driver/stratio-crossdata-jdbc4 "2.17.0-876a273"
+  [[com.stratio.crossdata.driver/stratio-crossdata-jdbc4 "2.17.0"
     :exclusions [com.fasterxml.jackson.core/jackson-core]]]
 
   :profiles

@@ -32,7 +32,7 @@ ENV MAVEN_VERSION="3.2.5" \
     M2_HOME=/usr/lib/mvn
 
 # To generate local docker, comment mvn dependency:get and mv. Download jar in ./bin/lib/
-# http://qa.stratio.com/repository/releases/com/stratio/crossdata/driver/stratio-crossdata-jdbc4/2.17.0-876a273/stratio-crossdata-jdbc4-2.17.0-876a273.jar
+# http://qa.stratio.com/repository/releases/com/stratio/crossdata/driver/stratio-crossdata-jdbc4/2.17.0/stratio-crossdata-jdbc4-2.17.0.jar
 RUN apk add --update wget && \
     cd /tmp && \
     wget "http://ftp.unicamp.br/pub/apache/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz" && \
@@ -42,9 +42,9 @@ RUN apk add --update wget && \
     mvn package -f /app/source/local-query-execution-factory/pom.xml && \
     mv /app/source/local-query-execution-factory/target/local-query-execution-factory-0.2.jar /app/source/bin/lib/local-query-execution-factory-0.2.jar && \
     mvn install:install-file -Dfile=/app/source/bin/lib/local-query-execution-factory-0.2.jar -DgroupId=com.stratio.metabase -DartifactId=local-query-execution-factory -Dversion=0.2 -Dpackaging=jar && \
-    mvn dependency:get -DgroupId=com.stratio.crossdata.driver -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.17.0-876a273 -DremoteRepositories=http://sodio.stratio.com/repository/public/ -Dtransitive=false && \
-    mv /root/.m2/repository/com/stratio/crossdata/driver/stratio-crossdata-jdbc4/2.17.0-876a273/stratio-crossdata-jdbc4-2.17.0-876a273.jar /app/source/bin/lib/stratio-crossdata-jdbc4-2.17.0-876a273.jar && \
-    mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.17.0-876a273.jar -DgroupId=com.stratio.crossdata.driver -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.17.0-876a273 -Dpackaging=jar
+    mvn dependency:get -DgroupId=com.stratio.crossdata.driver -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.17.0 -DremoteRepositories=http://sodio.stratio.com/repository/public/ -Dtransitive=false && \
+    mv /root/.m2/repository/com/stratio/crossdata/driver/stratio-crossdata-jdbc4/2.17.0/stratio-crossdata-jdbc4-2.17.0.jar /app/source/bin/lib/stratio-crossdata-jdbc4-2.17.0.jar && \
+    mvn install:install-file -Dfile=/app/source/bin/lib/stratio-crossdata-jdbc4-2.17.0.jar -DgroupId=com.stratio.crossdata.driver -DartifactId=stratio-crossdata-jdbc4 -Dversion=2.17.0 -Dpackaging=jar
 
 # lein:    backend dependencies and building
 ADD https://raw.github.com/technomancy/leiningen/stable/bin/lein /usr/local/bin/lein
