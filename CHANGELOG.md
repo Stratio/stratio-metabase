@@ -2,7 +2,7 @@
 
 ## 0.35.0 (February 14, 2020)
 
-* Update Crossdata JDBC driver to 2.17.0 version
+* Update Crossdata JDBC driver to 2.17.0-07b9b70 version
 * [ROCK-345] Dashboard nested filters
 * Logs in Datacentric standard format
 * Avoid Discovery checks Crossdata connection each 3 mins
