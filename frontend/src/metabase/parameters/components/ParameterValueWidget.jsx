@@ -137,8 +137,6 @@ export default class ParameterValueWidget extends Component {
   }
 
   _castInt(strToCast) {
-    console.log('strToCast', strToCast);
-    console.log('find -', strToCast.includes("-"));
     return parseInt(strToCast) && !strToCast.includes("-") ? parseInt(strToCast) : strToCast;
   }
 
@@ -150,7 +148,6 @@ export default class ParameterValueWidget extends Component {
         let parameter = parameters[i];
         let filterValues = urlParams.getAll(parameter.slug).map(val => this._castInt(val));
         let filter = { id: parameter.field_ids[0], values: filterValues };
-        console.log('cambio');
         if (filter.id !== null && filter.values && filter.values.length > 0) {
           filters["filter-field-values"].push(filter);
         }
