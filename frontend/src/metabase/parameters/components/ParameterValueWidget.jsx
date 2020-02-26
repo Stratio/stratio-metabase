@@ -162,7 +162,7 @@ export default class ParameterValueWidget extends Component {
 
   updateFieldValues(props) {
     const { parameters, parameter } = props;
-    const posFilter = this._getPosFilter(parameters, parameter.field_ids[0]);
+    const posFilter = parameter.field_ids ? this._getPosFilter(parameters, parameter.field_ids[0]) : 0;
     const queryFilter = this._genQueryFilter(parameters, posFilter);
     for (const id of this.fieldIds(props)) {
       props.fetchField(id);
