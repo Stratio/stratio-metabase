@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.35.1 (upcoming)
+
+* Fix use of variables in native questions  
+
 ## 0.35.0 (February 19, 2020)
 
 * Update Crossdata JDBC driver to 2.17.0-07b9b70 version
