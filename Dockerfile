@@ -17,7 +17,7 @@ ENV LC_CTYPE en_US.UTF-8
 # make:    backend building
 # gettext: translations
 
-RUN apk add --update bash git wget make gettext yarn
+RUN apk add --update bash git wget make gettext yarn coreutils
 
 ADD . /app/source
 
