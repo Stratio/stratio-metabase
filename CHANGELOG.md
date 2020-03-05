@@ -4,7 +4,11 @@
 
 * Fix vulnerabilities
 
-## 0.35.0-edadd56 (Built: February 19, 2020 | Released: February 19, 2020)
+## 0.35.1 (February 27, 2020)
+
+* Fix use of variables in native questions  
+
+## 0.35.0 (February 19, 2020)
 
 * Update Crossdata JDBC driver to 2.17.0-07b9b70 version
 * [ROCK-345] Dashboard nested filters
