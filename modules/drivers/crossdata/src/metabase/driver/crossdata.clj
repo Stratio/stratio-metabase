@@ -91,7 +91,7 @@
 
 (def ^:private source-table-alias
   "Default alias for all source tables. (Not for source queries; those still use the default SQL QP alias of `source`.)"
-  "default")
+  "defaultalias")
 
 ;; use `source-table-alias` for the source Table, e.g. `t1.field` instead of the normal `schema.table.field`
 (defmethod sql.qp/->honeysql [:crossdata (class Field)]
