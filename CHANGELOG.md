@@ -2,15 +2,18 @@
 
 ## 0.37.0 (upcoming)
 
-* Pending changelog
+* Allow Pgbouncer connection
+* Integrate with SSO Login
 
-## 0.36.0-6ad4005 (Built: March 05, 2020 | Released: March 06, 2020)
+* Fix postgres connection through crossdata
+
+## 0.36.0 (March 05, 2020)
 
 * Fix vulnerabilities
 
 ## 0.35.1 (February 27, 2020)
 
-* Fix use of variables in native questions  
+* Fix use of variables in native questions
 
 ## 0.35.0 (February 19, 2020)
 
