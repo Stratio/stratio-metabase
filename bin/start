@@ -149,7 +149,7 @@ JAVA_OPTS="$JAVA_OPTS -Djava.awt.headless=true"         # don't try to start AWT
 JAVA_OPTS="$JAVA_OPTS -Dfile.encoding=UTF-8"            # Use UTF-8
 JAVA_OPTS="$JAVA_OPTS -Dlog4j.configuration=target/log/log4j2.xml"
 JAVA_OPTS="$JAVA_OPTS --XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap"
-JAVA_OPTS="$JAVA_OPTS -javaagent:./target/uberjar/jmx_prometheus_javaagent-0.12.0.jar=8080:./target/uberjar/config.yaml"
+JAVA_OPTS="$JAVA_OPTS -javaagent:/app/target/uberjar/jmx_prometheus_javaagent-0.12.0.jar=8080:/app/target/uberjar/config.yaml"
 
 if [ -n "$MAX_HEAP" ]; then
     JAVA_OPTS="$JAVA_OPTS -Xmx$MAX_HEAP"
