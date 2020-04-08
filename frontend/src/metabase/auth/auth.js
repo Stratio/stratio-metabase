@@ -90,10 +90,23 @@ export const logout = createThunkAction(LOGOUT, function() {
 
     MetabaseAnalytics.trackEvent("Auth", "Logout");
 
-    dispatch(push("/auth/login"));
+    // < STRATIO - redirect to proxy logout if using dcos-oauth proxy authentication (Gosec SSO)
+    // coment the following lines and replace them by stratio modification below
+    // dispatch(push("/auth/login"));
 
-    // refresh to ensure all application state is cleared
-    window.location.reload();
+    // // refresh to ensure all application state is cleared
+    // window.location.reload();
+
+    // stratio modification
+    if (MetabaseSettings.get("stratio_proxy_auth", false)) {
+      let marathonlb_vhost = MetabaseSettings.get("marathonlb_vhost");
+      window.location.href = `${marathonlb_vhost}/logout`;
+    } else {
+      // refresh to ensure all application state is cleared
+      dispatch(push("/auth/login"));
+      window.location.reload();
+    }
+    // STRATIO >
   };
 });
 

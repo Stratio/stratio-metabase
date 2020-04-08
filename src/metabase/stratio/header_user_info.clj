@@ -100,7 +100,7 @@
   (try
     (let [user-name  (get headers (public-settings/user-header))
           groups-str (get headers (public-settings/group-header) "")
-          groups     (str/split groups-str (re-pattern (public-settings/group-header-delimiter)))]
+          groups     (mapv str/trim (str/split groups-str (re-pattern (public-settings/group-header-delimiter))))]
       {:user user-name :groups groups})
     (catch Exception e
       {:error (.toString e)})))

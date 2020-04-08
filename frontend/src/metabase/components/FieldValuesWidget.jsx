@@ -97,8 +97,6 @@ export class FieldValuesWidget extends Component {
   }
 
   _castInt(strToCast) {
-    console.log('strToCast', strToCast);
-    console.log('find -', strToCast.includes("-"));
     return parseInt(strToCast) && !strToCast.includes("-") ? parseInt(strToCast) : strToCast;
     // return parseInt(strToCast) && strToCast.indexOf("-") === -1 ? parseInt(strToCast) : strToCast;
   }

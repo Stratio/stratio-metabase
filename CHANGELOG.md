@@ -1,11 +1,27 @@
 # Changelog
 
-## 0.36.0 (upcoming)
+## 0.38.0 (upcoming)
 
 * Pending changelog
 
-## 0.35.0-af854b5 (Built: January 16, 2020 | Pre-release)
+## 0.37.0-518ff9f (Built: April 06, 2020 | Released: April 07, 2020)
 
+* Allow Pgbouncer connection
+* Integrate with SSO Login
+
+* Fix postgres connection through crossdata
+
+## 0.36.0 (March 05, 2020)
+
+* Fix vulnerabilities
+
+## 0.35.1 (February 27, 2020)
+
+* Fix use of variables in native questions
+
+## 0.35.0 (February 19, 2020)
+
+* Update Crossdata JDBC driver to 2.17.0-07b9b70 version
 * [ROCK-345] Dashboard nested filters
 * Logs in Datacentric standard format
 * Avoid Discovery checks Crossdata connection each 3 mins

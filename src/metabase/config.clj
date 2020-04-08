@@ -38,7 +38,11 @@
    :jwt-username-claim         "sub"
    :jwt-groups-claim           "groups"
    :jwt-public-key-endpoint    ""
-   :jwt-insecure-request-pkey "false"})
+   :jwt-insecure-request-pkey "false"
+
+   ;; setting to check if using dcos-oauth authentication
+   :use-gosec-sso-auth "false"
+   :marathon-app-label-haproxy-1-path "/"})
 
 
 (defn config-str

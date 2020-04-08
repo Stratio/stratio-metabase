@@ -7,30 +7,36 @@ set -e
 
 # Translate various Heroku environment variables to Metabase equivalents
 
-if [ "$PORT" ]; then
-    export MB_JETTY_PORT="$PORT"
-fi
-
 # STRATIO
-source /root/kms/kms_utils.sh
-source /root/kms/b-log.sh
 
-
-source /root/kms/secrets.sh
-
+source /usr/local/lib/b-log.sh
 
 export VAR_SSL_Keystore_Password=`cat /root/.crossdata/keyStore`
 export VAR_SSL_Truststore_Password=`cat /root/.crossdata/trustStore`
 
-export MB_JETTY_SSL="true"
-export MB_JETTY_SSL_Port="$PORT1"
+
+# Although now we run behind the proxy so we do not server TLS directly,
+# we still need these variables to verify the JWT when using native JWT auth
 export MB_JETTY_SSL_Keystore="/root/.crossdata/keyStore.jks"
 export MB_JETTY_SSL_Keystore_Password="$VAR_SSL_Keystore_Password"
 export MB_JETTY_SSL_Truststore="/root/.crossdata/trustStore.jks"
 export MB_JETTY_SSL_Truststore_Password="$VAR_SSL_Truststore_Password"
 
+# We run behind the proxy, so only bind to 127.0.0.1 so noone
+# can access the server from outside the container
+export MB_JETTY_HOST="127.0.0.1"
 
 export MB_EMOJI_IN_LOGS="false"
+
+# Authorization is metabase native or managed by the proxy?
+if [ "$USE_GOSEC_SSO_AUTH" == "true" ]; then
+    # we need to set the auth headers that the oauth-proxy will send us down
+    # note that the header map in metabase is always lowercase
+    export MB_USER_HEADER="x-dcos-oauth-user"
+    export MB_GROUP_HEADER="x-dcos-oauth-groups"
+fi
+
+
 # fin Stratio
 
 export HTTP_CLIENT="curl --insecure -f -L -o"
@@ -156,4 +162,4 @@ INFO "Using these JAVA_OPTS: ${JAVA_OPTS}"
 
 INFO "exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar"
 
-exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar
+exec java $JAVA_OPTS -jar /app/target/uberjar/metabase.jar

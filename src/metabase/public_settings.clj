@@ -261,4 +261,9 @@
    :timezones             common/timezones
    :types                 (types/types->parents :type/*)
    :entities              (types/types->parents :entity/*)
-   :version               config/mb-version-info})
+   :version               config/mb-version-info
+   ;; < STRATIO - we need to pass this property to the front so we redirect to dcos-oauth proxy for logout
+   :stratio_proxy_auth    (config/config-bool :use-gosec-sso-auth)
+   :marathonlb_vhost      (config/config-str :marathon-app-label-haproxy-1-path)
+   ;; STRATIO >
+   })
