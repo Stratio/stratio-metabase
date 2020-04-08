@@ -1,1 +1,0 @@
-[{:dependencies {com.amazon.redshift/redshift-jdbc42-no-awssdk {:vsn "1.2.32.1056", :native-prefix nil}}, :native-path "target/uberjar/native"} {:native-path "target/uberjar/native", :dependencies {com.amazon.redshift/redshift-jdbc42-no-awssdk {:vsn "1.2.32.1056", :native-prefix nil, :native? false}}}]

@@ -1,6 +1,7 @@
 \#*\#
 .\#*
 /target
+**/target
 /modules/drivers/crossdata/target
 /classes
 /checkouts
