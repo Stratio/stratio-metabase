@@ -4,7 +4,7 @@
 
 * Pending changelog
 
-## 0.37.0-518ff9f (Built: April 06, 2020 | Pre-release)
+## 0.37.0-518ff9f (Built: April 06, 2020 | Released: April 07, 2020)
 
 * Allow Pgbouncer connection
 * Integrate with SSO Login
