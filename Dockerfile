@@ -121,7 +121,8 @@ COPY --from=builder /etc/ssl/certs/java/cacerts /usr/local/jdk1.8.0_131/jre/lib/
 RUN mkdir -p bin target/uberjar && \
     mkdir -p bin /root/.crossdata/
 COPY --from=builder /app/source/target/uberjar/metabase.jar /app/target/uberjar/
-COPY --from=builder /app/source/bin/prometheus/* /app/target/uberjar/
+COPY --from=builder /app/source/bin/prometheus/config.yaml /app/target/uberjar/
+COPY --from=builder /app/source/bin/prometheus/jmx_prometheus_javaagent-0.12.0.jar_temp /app/target/uberjar/jmx_prometheus_javaagent-0.12.0.jar
 COPY --from=builder /app/source/bin/start /app/bin/
 COPY --from=builder /app/source/resources/log4j2.xml /app/target/log/
 COPY --from=builder /root/defaultsecrets/* /root/defaultsecrets/
