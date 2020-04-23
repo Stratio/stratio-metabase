@@ -158,6 +158,10 @@ if [ "$JMX" ]; then
     JAVA_OPTS="$JAVA_OPTS $JMX"
 fi
 
+if [ "$DISCOVERY_CICD_ARTIFACT_URL" ] ; then
+  wget -P /app/target/uberjar $DISCOVERY_CICD_ARTIFACT_URL
+fi
+
 INFO "Using these JAVA_OPTS: ${JAVA_OPTS}"
 
 INFO "exec java $JAVA_OPTS -jar ./target/uberjar/metabase.jar"
