@@ -135,7 +135,10 @@
             header-user (:user user-info)
             is-admin (boolean (seq (get-admin-groups header-groups)))]
         (if (and (not-empty header-groups) header-user)
-          (let [user (user/create-new-header-auth-user! header-user "" (str header-user "@example.com") is-admin)]
+          (let [user-email (if (clojure.string/includes? header-user "@")
+                             header-user
+                             (str header-user "@example.com"))
+                user (user/create-new-header-auth-user! header-user "" user-email is-admin)]
             (doseq [x header-groups]
               (try (db/insert! PermissionsGroupMembership
                      :group_id (get (db/select-one [PermissionsGroup :id], :name x) :id)
