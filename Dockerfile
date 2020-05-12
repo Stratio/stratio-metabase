@@ -121,7 +121,7 @@ COPY --from=builder /etc/ssl/certs/java/cacerts /usr/local/jdk1.8.0_131/jre/lib/
 RUN mkdir -p bin target/uberjar && \
     mkdir -p bin /root/.crossdata/
 COPY --from=builder /app/source/target/uberjar/metabase.jar /app/target/uberjar/
-ADD http://qa.stratio.com/repository/releases/com/stratio/discoverycicd/1.0.0-38d0608/discoverycicd-1.0.0-38d0608-uber.jar /app/target/uberjar
+ADD http://niquel.stratio.com/repository/staging/com/stratio/discoverycicd/1.1.0-PR15-SNAPSHOT/discoverycicd-1.1.0-PR15-20200513.170353-10-uber.jar /app/target/uberjar/discovery-cicd.jar
 COPY --from=builder /app/source/bin/prometheus/config.yaml /app/target/uberjar/
 COPY --from=builder /app/source/bin/prometheus/jmx_prometheus_javaagent-0.12.0.jar_temp /app/target/uberjar/jmx_prometheus_javaagent-0.12.0.jar
 COPY --from=builder /app/source/bin/start /app/bin/
@@ -141,6 +141,10 @@ COPY /oauth-proxy-integration/docker-entrypoint.sh /docker-entrypoint.sh
 COPY /oauth-proxy-integration/metabase-service /etc/service/metabase
 RUN chmod +x /etc/service/metabase/run /etc/rc.local
 COPY /oauth-proxy-integration/nginx-confs/* /usr/local/openresty/nginx/conf/
+
+# add scripts for discovery-cicd-integration
+COPY /discovery-cicd-integration/discovery-cicd-service /etc/service/discovery-cicd
+RUN chmod +x /etc/service/discovery-cicd/run
 
 # run it
 # ENTRYPOINT ["/app/bin/start"]
