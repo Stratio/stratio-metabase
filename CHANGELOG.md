@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.37.2 (upcoming)
+* Integration of discovery-cicd (shell interface)
+
+
 ## 0.37.1 (April 13, 2020)
 * Fix: allow group with users containing "@" character
 
