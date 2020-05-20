@@ -70,4 +70,15 @@ http {
         #### If you need to specify more locations, please do it here ####
 
     }
+
+    # This server is needed for health check purposes
+    server {
+        listen 3009;
+
+        location "/api/health" {
+            set $uid '-';
+            proxy_pass http://127.0.0.1:3000;
+        }
+    }
+
 }

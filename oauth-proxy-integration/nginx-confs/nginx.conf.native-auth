@@ -20,4 +20,14 @@ http {
             proxy_pass http://127.0.0.1:8087;
         }
     }
+
+    # This server is needed for health check purposes
+    server {
+        listen 3009;
+
+        location "/api/health" {
+            proxy_pass http://127.0.0.1:3000;
+        }
+    }
+
 }
