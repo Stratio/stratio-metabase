@@ -2,7 +2,9 @@
 
 ## 0.38.0 (upcoming)
 
-* Pending changelog
+* Import/Export for collections
+* Prometheus metrics
+* Change HealthCheck path to /api/health
 
 ## 0.37.0-518ff9f (Built: April 06, 2020 | Released: April 07, 2020)
 
