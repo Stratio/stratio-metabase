@@ -142,10 +142,6 @@
    [toucan "1.14.0" :exclusions [org.clojure/java.jdbc honeysql]]     ; Model layer, hydration, and DB utilities
    [weavejester/dependency "0.2.1"]]                                  ; Dependency graphs and topological sorting
 
-  ;; < STRARIO - add stratio repo to be able to download XD dependency
-  :repositories [["stratio" "http://niquel.stratio.com/repository/public"]]
-  ;; STRATIO >
-
   :main ^:skip-aot metabase.core
 
   ;; TODO - WHAT DOES THIS DO?
