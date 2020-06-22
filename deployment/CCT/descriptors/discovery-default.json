@@ -607,7 +607,7 @@
                 "type": "integer",
                 "required": true,
                 "readOnly": false,
-                "application": true,
+                "application": false,
                 "level": 1,
                 "internalName": "PROXY_READ_TIMEOUT",
                 "title": "Proxy read timeout (seconds)",
