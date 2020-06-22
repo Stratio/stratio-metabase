@@ -2,7 +2,7 @@
 
 ## 0.39.0 (upcoming)
 
-* Pending changelog
+* Make proxies timeout configurable
 
 ## 0.38.0-04ad956 (Built: May 28, 2020 | Released: May 28, 2020)
 
