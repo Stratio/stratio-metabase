@@ -886,15 +886,15 @@
               "percentageMaxHeap": {
                 "description": "Memory percentage to be the max heap for JVM",
                 "type": "integer",
-                "minimum": 1,
-                "maximum": 90,
+                "minimum": 40,
+                "maximum": 95,
                 "required": true,
                 "readOnly": false,
                 "application": false,
                 "level": 1,
                 "internalName": "PERCENTAGE_MAX_HEAP_JVM",
                 "title": "Memory percentage for JVM max heap",
-                "default": 70
+                "default": 80
               }
             },
             "required": []
