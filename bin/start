@@ -152,6 +152,12 @@ JAVA_OPTS="$JAVA_OPTS --XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimi
 
 if [ -n "$MAX_HEAP" ]; then
     JAVA_OPTS="$JAVA_OPTS -Xmx$MAX_HEAP"
+elif [ -n "$PERCENTAGE_MAX_HEAP_JVM" ]; then
+    current_memory=$MARATHON_APP_RESOURCE_MEM
+    percentage=$PERCENTAGE_MAX_HEAP_JVM
+    float_memory=$((current_memory*percentage))
+    INT_MEMORY_MB=${float_memory%.*}
+    JAVA_OPTS="$JAVA_OPTS -Xmx${INT_MEMORY_MB}m"
 fi
 
 if [ "$JMX" ]; then

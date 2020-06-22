@@ -894,7 +894,7 @@
                 "level": 1,
                 "internalName": "PERCENTAGE_MAX_HEAP_JVM",
                 "title": "Memory percentage for JVM max heap",
-                "default": 40
+                "default": 70
               }
             },
             "required": []
