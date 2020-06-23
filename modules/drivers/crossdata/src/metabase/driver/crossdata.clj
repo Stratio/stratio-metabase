@@ -48,7 +48,7 @@
 (defmethod sql-jdbc.conn/connection-details->spec :crossdata [_ {:keys [host port dbname user ssl-option]
                                                                  :or {host "localhost", port 13422, dbname "", user "crossdata-1"}
                                                                  :as details}]
-  (println "sql-jdbc.conn/connection-details->spec. Host:" host "port:" port " details:" details)
+  (log/debug "sql-jdbc.conn/connection-details->spec. Host:" host " port:" port " details:" details)
   (-> (merge {:classname "com.stratio.jdbc.core.jdbc4.StratioDriver"
               :subprotocol "crossdata"
               :subname (if ssl-option
