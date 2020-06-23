@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.38.0 (May 28, 2020)
+## 0.38.1 (upcoming)
+
+* Make proxies timeout configurable
+
+## 0.38.0-04ad956 (Built: May 28, 2020 | Released: May 28, 2020)
 
 * Import/Export for collections
 * Prometheus metrics

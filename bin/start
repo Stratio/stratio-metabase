@@ -152,6 +152,9 @@ JAVA_OPTS="$JAVA_OPTS --XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimi
 
 if [ -n "$MAX_HEAP" ]; then
     JAVA_OPTS="$JAVA_OPTS -Xmx$MAX_HEAP"
+elif [ -n "$PERCENTAGE_MAX_HEAP_JVM" ]; then
+    HEAP_IN_MB=$(awk '{printf("%.0f\n", $1*$2/100)}' <<<"$PERCENTAGE_MAX_HEAP_JVM $MARATHON_APP_RESOURCE_MEM")
+    JAVA_OPTS="$JAVA_OPTS -Xmx${HEAP_IN_MB}m"
 fi
 
 if [ "$JMX" ]; then
