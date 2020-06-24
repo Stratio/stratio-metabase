@@ -21,7 +21,7 @@ driver:
       - placeholder: localhost
     - merge:
         - port
-        - placeholder: 13422
+        - default: 8000
     - merge:
         - dbname
         - placeholder: crossdata
