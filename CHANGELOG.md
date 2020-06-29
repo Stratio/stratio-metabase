@@ -3,6 +3,7 @@
 ## 0.39.0 (upcoming)
 
 * Make proxies timeout configurable
+* Bump import/export artifact version to 1.2.0-e81eb29
 
 ## 0.38.0-04ad956 (Built: May 28, 2020 | Released: May 28, 2020)
 
