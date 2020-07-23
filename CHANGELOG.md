@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.38.2 (upcoming)
+
+* Bump import/export artifact version to 1.2.1-1570d16 (fix parentId query param)
+
 ## 0.38.1 (June 29, 2020)
 
 * Make proxies timeout configurable
