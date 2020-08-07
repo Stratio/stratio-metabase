@@ -17,7 +17,7 @@ import io.gatling.http.Predef._
 
 class Stab10Users48HoursLowActivityPostgreSQL extends Simulation with Common with Test_10Users
     with Test_48HoursDuration with Test_Concurrent15SecondsUsersIncrement
-    with Test_StabilityLowLoad with Test_PostgreSQLQuery {
+    with Test_StabilityLowLoad with Test_PrintResponse {
 
   val executionName: String = "Launch PostgreSQL QUERY (10 users - 48 hours - low activity)"
 
@@ -46,7 +46,12 @@ class Stab10Users48HoursLowActivityPostgreSQL extends Simulation with Common wit
               .post(queryEndpoint)
               .body(body)
               .headers(commonHeaders)
+              .check(bodyString.saveAs("RESPONSE_DATA"))
               .check(status.is(checkStatus))
+          ).exec(session => {
+            if (verbosity.nonEmpty) printResult(session)
+            session
+          }
           ).pause(pauseTime)
         }
       }

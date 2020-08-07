@@ -11,6 +11,7 @@ package com.stratio.performance.common
 
 trait CommonQuery {
 
-  val query: String
+  val query: String = System.getProperty("QUERY", "").replace("\\\"", "\"")
+    .stripPrefix("\"").stripSuffix("\"")
 
 }

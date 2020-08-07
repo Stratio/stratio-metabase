@@ -17,7 +17,7 @@ import io.gatling.http.Predef._
 
 class Perf10Users30MinutesLowActivityCrossdata extends Simulation with Common with Test_10Users
     with Test_30MinutesDuration with Test_Concurrent15SecondsUsersIncrement with Test_LowLoad
-    with Test_CrossdataQuery {
+    with Test_PrintResponse {
 
   val executionName: String = "Launch Crossdata QUERY (10 users - 30 minutes - low activity)"
 
@@ -46,7 +46,12 @@ class Perf10Users30MinutesLowActivityCrossdata extends Simulation with Common wi
               .post(queryEndpoint)
               .body(body)
               .headers(commonHeaders)
+              .check(bodyString.saveAs("RESPONSE_DATA"))
               .check(status.is(checkStatus))
+          ).exec(session => {
+            if (verbosity.nonEmpty) printResult(session)
+            session
+          }
           ).pause(pauseTime)
         }
       }

@@ -7,12 +7,12 @@
  * without express written authorization from Stratio Big Data Inc., Sucursal en España.
  */
 
-package com.stratio.performance.configurations
+package com.stratio.performance.common
 
-import com.stratio.performance.common.Common
+import scala.concurrent.duration._
 
-trait Test_HBaseQuery extends Common {
+trait CommonPrintResponse {
 
-  override val query: String = "{\"database\":1,\"type\":\"query\",\"query\":{\"source_table\":1,\"filter\":[\"<\",[\"field-id\",31],36]},\"parameters\":[]}"
+  val verbosity: String
 
 }
