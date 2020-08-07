@@ -35,11 +35,6 @@ class Perf10Users30MinutesLowActivityPostgreSQL extends Simulation with Common w
 
   val body: Body = StringBody(query)
 
-  println(baseURL)
-  println(queryEndpoint)
-  println(commonHeaders)
-  println(query)
-
   val start = System.currentTimeMillis
 
   val scenarioBuilder = scenario(scenarioName)
