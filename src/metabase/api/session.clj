@@ -125,6 +125,9 @@
                                        (clojure.core/re-pattern (str (public-settings/group-header-delimiter))))))))
 
 ;; STRATIO
+(def dummy-email-domain "@example.com")
+
+;; STRATIO
 (defn- group-login
   "Find a matching `Group` if one exists. Create user, assign group and return a new Session for them, or `nil` if they couldn't be authenticated."
   [username password headers]
@@ -137,7 +140,7 @@
         (if (and (not-empty header-groups) header-user)
           (let [user-email (if (clojure.string/includes? header-user "@")
                              header-user
-                             (str header-user "@example.com"))
+                             (str header-user dummy-email-domain))
                 user (user/create-new-header-auth-user! header-user "" user-email is-admin)]
             (doseq [x header-groups]
               (try (db/insert! PermissionsGroupMembership

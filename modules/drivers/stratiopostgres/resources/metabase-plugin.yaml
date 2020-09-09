@@ -1,0 +1,33 @@
+info:
+  name: Custom Stratio PostgreSQL Driver
+  version: 1.0.0-SNAPSHOT
+  description: Postgres driver that can be configured to set a variable in the connection with the name/email of the current metabse logged user.
+driver:
+  name: stratiopostgres
+  display-name: Stratio PostgreSQL
+  lazy-load: true
+  parent: postgres
+  connection-properties:
+    - name: add-user-var
+      display-name: Set a variable containing the current logged user in all queries?
+      type: boolean
+      default: true
+
+    - name: user-var-name
+      display-name: Name of the variable to be set with the current logged user (must contain a dot .)
+      default: customvar.user_id
+
+    - host
+    - port
+    - dbname
+    - user
+    - password
+
+    - merge:
+      - additional-options
+      - placeholder: ssl=true&sslmode=verify-full&sslcert=/root/kms/discovery.pem&sslkey=/root/kms/discovery.pk8&sslrootcert=/root/kms/root.pem&prepareThreshold=0
+
+  connection-properties-include-tunnel-config: true
+init:
+  - step: load-namespace
+    namespace: metabase.driver.stratiopostgres
