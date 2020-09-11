@@ -197,7 +197,7 @@
 ;; These two funcions below are the only things in the copy/pasted code from sql-jdbc.execute that we change.
 ;; Basically we just add the set-user-var! call in the transaction
 (defn- run-query-without-timezone [driver _ connection query]
-  (log/debug "execute.clj->run-query-without-timezone query:" query)
+  (log/debug "stratiopostgres.clj->run-query-without-timezone query:" query)
   (do-in-transaction connection (fn [transaction-connection]
                                   (set-user-var! transaction-connection)
                                   (run-query driver
