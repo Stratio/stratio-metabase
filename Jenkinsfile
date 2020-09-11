@@ -2,26 +2,21 @@
 
 hose {
     EMAIL = 'rocket'
-    DEVTIMEOUT = 300
-    RELEASETIMEOUT = 200
-    PKGMODULES = ['dist']
-    PKGMODULESNAMES = ['discovery']
-    DEBARCH = 'all'
-    MAVEN_THREADSPERCORE = 1
-    EXPOSED_PORTS = [9090,10000,11000]
+    MODULE = 'discovery'
+    REPOSITORY = 'discovery'
+    SLACKTEAM = 'data-governance'
+    BUILDTOOL = 'make'
+    DEVTIMEOUT = 120
+    RELEASETIMEOUT = 80
+    BUILDTOOLVERSION = '3.5.0'
     NEW_VERSIONING = 'true'
-    LABEL_CONTROL = 'true'
-    ANCHORE_TEST = 'true'
-    BUILDTOOLVERSION = '3.6.2'
-
     ATTIMEOUT = 90
     INSTALLTIMEOUT = 90
     ANCHORE_POLICY = 'discovery'
-
     PKGMODULESNAMES = ['discovery']
 
     DEV = { config ->
-            doDocker(conf: config, skipOnPR: false)
+        doDocker(conf: config, skipOnPR: false)
     }
 
     INSTALLSERVICES = [
@@ -56,7 +51,7 @@ hose {
             |""".stripMargin().stripIndent()
 
         def PATHVMWARE = stringToMap(pempathvmware)
-        def PATHVMWAREINSTALL = doReplaceTokens(INSTALLPARAMETERS.replaceAll(/\n/, ' '), PATHVMWARE) 
+        def PATHVMWAREINSTALL = doReplaceTokens(INSTALLPARAMETERS.replaceAll(/\n/, ' '), PATHVMWARE)
 
         if (config.INSTALLPARAMETERS.contains('GROUPS_DISCOVERY')) {
           if (params.ENVIRONMENT.contains('HETZNER_CLUSTER')) {
