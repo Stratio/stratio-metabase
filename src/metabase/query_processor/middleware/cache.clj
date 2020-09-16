@@ -13,6 +13,7 @@
 
    Refer to `metabase.query-processor.middleware.cache-backend.interface` for more details about how the cache
   backends themselves."
+  (:import [com.stratio.metabase.executionfactory QueryExecutionFactory])
   (:require [clojure.tools.logging :as log]
             [metabase
              [config :as config]
