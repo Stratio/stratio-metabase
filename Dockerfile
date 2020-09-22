@@ -67,7 +67,7 @@ RUN keytool -noprompt -import -trustcacerts -alias aws-rds \
 # ###################
 
 # FROM adoptopenjdk/openjdk11:alpine-jre as runner
-FROM qa.stratio.com/stratio/oauth-base:0.1.0-ff962c7 as runner
+FROM qa.int.stratio.com/stratio/oauth-base:0.1.0-ff962c7 as runner
 
 WORKDIR /app
 
