@@ -15,8 +15,6 @@ hose {
     ANCHORE_POLICY = 'discovery'
     PKGMODULESNAMES = ['discovery']
 
-    ANCHORE_TEST = 'true'
-
     DEV = { config ->
         doDocker(conf: config, skipOnPR: false)
     }
