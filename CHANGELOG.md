@@ -6,6 +6,7 @@
 * Bump import/export artifact version to 1.2.0-e81eb29
 * Improve fault tolerance on Crossdata driver describe-table
 * Add custom postgres driver to set variable in query with the current logged user
+* Bump nippy dependency version to 3.0.0
 
 ## 0.38.0-04ad956 (Built: May 28, 2020 | Released: May 28, 2020)
 
