@@ -8,10 +8,10 @@
   <description>Metabase Community Edition</description>
   <url>https://metabase.com/</url>
   <scm>
-    <url>https://github.com/Stratio/discovery</url>
-    <connection>scm:git:git://github.com/Stratio/discovery.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/Stratio/discovery.git</developerConnection>
-    <tag>03e7c44ee50c1581b037fe9936253a57562c3432</tag>
+    <url>https://github.com/Frannie-Ludmilla/discovery</url>
+    <connection>scm:git:git://github.com/Frannie-Ludmilla/discovery.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/Frannie-Ludmilla/discovery.git</developerConnection>
+    <tag>0ea036eeb201ea3333561bc2d88852b1edf803f6</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -44,6 +44,16 @@
     <repository>
       <id>clojars</id>
       <url>https://repo.clojars.org/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>stratio</id>
+      <url>https://niquel.stratio.com:1443/repository/public</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
@@ -283,6 +293,17 @@
       <version>1.4.197</version>
     </dependency>
     <dependency>
+      <groupId>com.stratio.crossdata.driver</groupId>
+      <artifactId>stratio-crossdata-jdbc4</artifactId>
+      <version>2.17.0-07b9b70</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>jackson-core</artifactId>
+          <groupId>com.fasterxml.jackson.core</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>com.mattbertolini</groupId>
       <artifactId>liquibase-slf4j</artifactId>
       <version>2.0.0</version>
@@ -290,7 +311,7 @@
     <dependency>
       <groupId>com.taoensso</groupId>
       <artifactId>nippy</artifactId>
-      <version>2.14.0</version>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -502,30 +523,6 @@
       <groupId>potemkin</groupId>
       <artifactId>potemkin</artifactId>
       <version>0.4.5</version>
-    </dependency>
-    <dependency>
-      <groupId>com.stratio.crossdata.driver</groupId>
-      <artifactId>stratio-crossdata-jdbc4</artifactId>
-      <version>2.17.0-07b9b70</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>clojure</artifactId>
-          <groupId>org.clojure</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>bcpkix-jdk15on</artifactId>
-          <groupId>org.bouncycastle</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>bcprov-jdk15on</artifactId>
-          <groupId>org.bouncycastle</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.stratio.metabase</groupId>
-      <artifactId>local-query-execution-factory</artifactId>
-      <version>0.2</version>
     </dependency>
     <dependency>
       <groupId>prismatic</groupId>
