@@ -99,7 +99,7 @@
             <AppenderRef ref="stderrCentralizedJSONLogging"/>
         </Root>
 
-	<Logger name="metabase.driver" level="${env:DRIVER_LOG_LEVEL:-ERROR}" additivity="false">
+	<Logger name="metabase.driver" level="${env:DRIVER_LOG_LEVEL:-DEBUG}" additivity="false">
             <AppenderRef ref="stdoutAsync"/>
             <AppenderRef ref="stderrCentralizedJSONLogging"/>
 	</Logger>

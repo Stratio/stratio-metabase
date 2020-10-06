@@ -5,6 +5,9 @@
       [clojure
        [set :as set]
        [string :as str]]
+      [metabase.api
+       [common :as api]
+       [session :refer [dummy-email-domain]]]
       [metabase.util :as u]
       [honeysql
        [core :as hsql]
@@ -157,21 +160,33 @@
   [_ _ connection query]
   (run-query query connection))
 
+(defn- current-user-name []
+  (-> @api/*current-user*
+      (get :email "")
+      (str/replace (re-pattern (str dummy-email-domain "$")) "")
+      not-empty))
+
 (defmethod driver/execute-query :crossdata
   [driver {:keys [database settings], query :native, :as outer-query}]
-
+  (println "FRAA these are the settings " settings " while this is the database" database "and driver" driver "and keys settings" query)
   (log/debug "query:" query " outer-query:" outer-query)
-  (let [query (-> (assoc query
+  (let [user (current-user-name)
+        impersonation (if (true? (get-in keys [:impersonate] false))
+                        (str "EXECUTE AS " user " ")
+                        "")]
+  (let [
+        query (-> (assoc query
                          :remark (qputil/query->remark outer-query)
                          :query  (if (seq (:params query))
                                    (unprepare/unprepare driver (cons (:query query) (:params query)))
                                    (:query query))
                          :max-rows (mbql.u/query->max-rows-limit outer-query))
                   (dissoc :params))]
+    (println "FRAAA" (get-in keys [:impersonate] false)  (get-in settings [:impersonate] false) impersonation query )
     (sql-jdbc.execute/do-with-try-catch
      (fn []
        (let [db-connection (sql-jdbc.conn/db->pooled-connection-spec database)]
-         (run-query-without-timezone driver settings db-connection query)))))
+         (run-query-without-timezone driver settings db-connection query))))))
   )
 
 (defmethod driver/supports? [:crossdata :basic-aggregations]              [_ _] true)
