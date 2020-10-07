@@ -78,6 +78,13 @@
    :type         :boolean
    :default      false})
 
+(def default-impersonation-details
+  "Map of the db impersonate details field, useful for `connection-properties` implementations"
+  {:name         "impersonate"
+   :display-name (deferred-tru "Connect with Discovery login user?")
+   :type         :boolean
+   :default      false})
+
 (def default-additional-options-details
   "Map of the db `additional-options` details field, useful for `connection-properties` implementations. Should assoc a
   `:placeholder` key"

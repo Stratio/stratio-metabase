@@ -20,6 +20,7 @@
        [table :refer [Table]]]
       [metabase.driver.sql.query-processor :as sql.qp]
       [metabase.query-processor
+       [interface :as qp.i]
        [store :as qp.store]
        [util :as qputil]]
       [metabase.mbql.util :as mbql.u]
@@ -50,10 +51,10 @@
 
 
 ;; Connection to Crossdata database
-(defmethod sql-jdbc.conn/connection-details->spec :crossdata [_ {:keys [host port dbname user ssl-option]
+(defmethod sql-jdbc.conn/connection-details->spec :crossdata [_ {:keys [host port dbname user ssl-option impersonate]
                                                                  :or {host "localhost", port 13422, dbname "", user "crossdata-1"}
                                                                  :as details}]
-  (log/debug "sql-jdbc.conn/connection-details->spec. Host:" host " port:" port " details:" details)
+  (log/debug "sql-jdbc.conn/connection-details->spec. Host:" host " port:" port " details:" details " impersonate:" impersonate)
   (-> (merge {:classname "com.stratio.jdbc.core.jdbc4.StratioDriver"
               :subprotocol "crossdata"
               :subname (if ssl-option
@@ -166,14 +167,15 @@
       (str/replace (re-pattern (str dummy-email-domain "$")) "")
       not-empty))
 
+(defn- is-impersonate-enabled []
+  (let [details (:details (qp.store/database))]
+    (if-let [impersonate-value (get-in details [:impersonate] false)]
+      impersonate-value
+      false)))
+
 (defmethod driver/execute-query :crossdata
   [driver {:keys [database settings], query :native, :as outer-query}]
-  (println "FRAA these are the settings " settings " while this is the database" database "and driver" driver "and keys settings" query)
   (log/debug "query:" query " outer-query:" outer-query)
-  (let [user (current-user-name)
-        impersonation (if (true? (get-in keys [:impersonate] false))
-                        (str "EXECUTE AS " user " ")
-                        "")]
   (let [
         query (-> (assoc query
                          :remark (qputil/query->remark outer-query)
@@ -182,12 +184,20 @@
                                    (:query query))
                          :max-rows (mbql.u/query->max-rows-limit outer-query))
                   (dissoc :params))]
-    (println "FRAAA" (get-in keys [:impersonate] false)  (get-in settings [:impersonate] false) impersonation query )
     (sql-jdbc.execute/do-with-try-catch
      (fn []
        (let [db-connection (sql-jdbc.conn/db->pooled-connection-spec database)]
-         (run-query-without-timezone driver settings db-connection query))))))
-  )
+         (let [user     (current-user-name)
+               impersonate (is-impersonate-enabled)]
+           (let [query (-> (assoc query
+                           :query (if impersonate
+                                    (:query (str "EXECUTE AS " user " " query))
+                                    (:query query)
+                                    )))]
+             (do
+               (println "FRAAAA impersonate" impersonate ", query: " query ",user: " user )
+               (run-query-without-timezone driver settings db-connection query)))))))))
+
 
 (defmethod driver/supports? [:crossdata :basic-aggregations]              [_ _] true)
 (defmethod driver/supports? [:crossdata :binning]                         [_ _] true)
