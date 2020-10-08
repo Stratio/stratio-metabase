@@ -155,6 +155,7 @@
     <orderEntry type="library" name="Maven: potemkin:potemkin:0.4.5" level="project" />
     <orderEntry type="library" name="Maven: clj-tuple:clj-tuple:0.2.2" level="project" />
     <orderEntry type="library" name="Maven: riddley:riddley:0.1.12" level="project" />
+    <orderEntry type="library" name="Maven: com.stratio.jdbc:stratio-crossdata-jdbc4:2.14.4-1830fff" level="project" />
     <orderEntry type="library" name="Maven: org.scala-lang:scala-library:2.11.8" level="project" />
     <orderEntry type="library" name="Maven: com.stratio.metabase:local-query-execution-factory:0.2" level="project" />
     <orderEntry type="library" name="Maven: prismatic:schema:1.1.11" level="project" />
