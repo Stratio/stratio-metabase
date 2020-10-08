@@ -188,15 +188,14 @@
      (fn []
        (let [db-connection (sql-jdbc.conn/db->pooled-connection-spec database)]
          (let [user     (current-user-name)
-               impersonate (is-impersonate-enabled)]
-           (let [query (-> (assoc query
-                           :query (if impersonate
-                                    (:query (str "EXECUTE AS " user " " query))
-                                    (:query query)
-                                    )))]
+               impersonate (is-impersonate-enabled)
+               sql (:query query)
+               impersonated-sql (str "EXECUTE AS " user " " sql)
+               query (assoc query :query
+                                  (if (and impersonate (not (str/blank? user))) impersonated-sql sql))]
              (do
-               (println "FRAAAA impersonate" impersonate ", query: " query ",user: " user )
-               (run-query-without-timezone driver settings db-connection query)))))))))
+               (log/debug "Impersonation as user " user " for DB set to " impersonate ". Current query: " query)
+               (run-query-without-timezone driver settings db-connection query))))))))
 
 
 (defmethod driver/supports? [:crossdata :basic-aggregations]              [_ _] true)
