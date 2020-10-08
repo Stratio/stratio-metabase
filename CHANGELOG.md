@@ -2,7 +2,7 @@
 
 ## 0.40.0 (upcoming)
 
-* Pending changelog
+* Bump version of discovery-cicd artifact to 1.3.0-cae6686 (responses with errors)
 
 ## 0.39.0-f6c1d05 (Built: September 23, 2020 | Released: September 25, 2020)
 
