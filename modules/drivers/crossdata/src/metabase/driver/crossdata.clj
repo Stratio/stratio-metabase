@@ -162,10 +162,11 @@
   (run-query query connection))
 
 (defn- current-user-name []
-  (-> @api/*current-user*
-      (get :email "")
-      (str/replace (re-pattern (str dummy-email-domain "$")) "")
-      not-empty))
+  (let [current-user @api/*current-user*
+        user-first-name (get current-user :first_name)
+        user-from-mail (-> (get current-user :email) (str/replace (re-pattern (str dummy-email-domain "$")) ""))
+        ]
+    (first (filter (complement str/blank?) [user-first-name user-from-mail]))))
 
 (defn- is-impersonate-enabled []
   (let [details (:details (qp.store/database))]

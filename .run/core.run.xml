@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="core" type="ClojureScriptRunConfiguration" factoryName="Clojure Script" singleton="true">
+    <module name="metabase-core" />
+    <setting name="path" value="" />
+    <setting name="namespace" value="metabase.core" />
+    <setting name="execution" value="LEININGEN" />
+    <setting name="profiles" value="with-include-drivers-middleware" />
+    <setting name="aliases" value="" />
+    <setting name="vmparams" value="" />
+    <setting name="params" value="" />
+    <setting name="workDir" value="$PROJECT_DIR$" />
+    <shortenClasspath name="NONE" />
+    <method v="2" />
+  </configuration>
+</component>
