@@ -161,14 +161,16 @@
   [_ _ connection query]
   (run-query query connection))
 
-(defn- current-user-name []
-  (let [current-user @api/*current-user*
-        user-first-name (get current-user :first_name)
-        user-from-mail (-> (get current-user :email) (str/replace (re-pattern (str dummy-email-domain "$")) ""))
-        ]
-    (first (filter (complement str/blank?) [user-first-name user-from-mail]))))
+(defn- user-from-email []
+       (-> @api/*current-user*
+           (get :email "")
+           (str/replace (re-pattern (str dummy-email-domain "$")) "")
+           not-empty))
 
-(defn- is-impersonate-enabled []
+(defn- current-user-name []
+       (or (:first_name @api/*current-user*) (user-from-email)))
+
+(defn- impersonate-enabled? []
   (let [details (:details (qp.store/database))]
     (if-let [impersonate-value (get-in details [:impersonate] false)]
       impersonate-value
@@ -189,7 +191,7 @@
      (fn []
        (let [db-connection (sql-jdbc.conn/db->pooled-connection-spec database)]
          (let [user     (current-user-name)
-               impersonate (is-impersonate-enabled)
+               impersonate (impersonate-enabled?)
                sql (:query query)
                impersonated-sql (str "EXECUTE AS " user " " sql)
                query (assoc query :query
