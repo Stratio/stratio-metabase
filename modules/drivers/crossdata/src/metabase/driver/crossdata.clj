@@ -195,7 +195,7 @@
                sql (:query query)
                impersonated-sql (str "EXECUTE AS " user " " sql)
                query (assoc query :query
-                                  (if (and impersonate (not (str/blank? user))) impersonated-sql sql))]
+                                  (if (and impersonate user) impersonated-sql sql))]
              (do
                (log/debug "Impersonation as user " user " for DB set to " impersonate ". Current query: " query)
                (run-query-without-timezone driver settings db-connection query))))))))
