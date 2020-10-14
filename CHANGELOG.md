@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.39.1 (upcoming)
+
+* Restoring impersonation in queries related to Crossdata databases and tables
+
 ## 0.39.0 (September 23, 2020)
 
 * Make proxies timeout configurable
