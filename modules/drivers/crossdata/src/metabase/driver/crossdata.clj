@@ -171,10 +171,10 @@
        (or (:first_name @api/*current-user*) (user-from-email)))
 
 (defn- impersonate-enabled? []
-  (let [details (:details (qp.store/database))]
-    (if-let [impersonate-value (get-in details [:impersonate] false)]
-      impersonate-value
-      false)))
+       (-> (qp.store/database)
+           :details
+           :impersonate
+           boolean))
 
 (defmethod driver/execute-query :crossdata
   [driver {:keys [database settings], query :native, :as outer-query}]
