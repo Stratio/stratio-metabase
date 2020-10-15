@@ -1,0 +1,108 @@
+{
+  "id": "crossdata-1-discovery-qa",
+  "name": "crossdata-1-discovery-qa",
+  "users": [
+  ],
+  "groups": [],
+  "services": [
+    {
+      "type": "crossdata2",
+      "instancesAcl": [
+        {
+          "instances": [
+            {
+              "name": "crossdata-1"
+            }
+          ],
+          "acls": [
+            {
+              "resourceType": "datastore",
+              "name": "*",
+              "recursive": true,
+              "actions": [
+                "Write",
+                "Bind",
+                "Manage",
+                "Audit",
+                "ViewPolicies"
+              ],
+              "allActions": [
+                "Write",
+                "Bind",
+                "Manage",
+                "Audit",
+                "ViewPolicies"
+              ]
+            },
+            {
+              "resourceType": "database",
+              "name": "*",
+              "recursive": true,
+              "actions": [
+                "Read",
+                "Write",
+                "Create",
+                "Delete",
+                "Manage",
+                "Audit",
+                "ViewPolicies"
+              ],
+              "allActions": [
+                "Read",
+                "Write",
+                "Create",
+                "Delete",
+                "Manage",
+                "Audit",
+                "ViewPolicies"
+              ]
+            },
+            {
+              "resourceType": "udf",
+              "name": "*",
+              "recursive": true,
+              "actions": [
+                "Read"
+              ],
+              "allActions": [
+                "Read"
+              ]
+            },
+            {
+              "resourceType": "table",
+              "name": "*",
+              "recursive": true,
+              "actions": [
+                "Read",
+                "Write",
+                "Other",
+                "Manage",
+                "Audit",
+                "ViewPolicies"
+              ],
+              "allActions": [
+                "Read",
+                "Write",
+                "Other",
+                "Manage",
+                "Audit",
+                "ViewPolicies"
+              ]
+            },
+            {
+              "resourceType": "impersonator",
+              "name": "*",
+              "recursive": true,
+              "actions": [
+                "Other"
+              ],
+              "allActions": [
+                "Other"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

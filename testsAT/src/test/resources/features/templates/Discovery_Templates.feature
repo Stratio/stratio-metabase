@@ -8,8 +8,8 @@ Feature: Discovery scenario templates
   Scenario: Take publicAgentFQDN
     Given I set sso token using host '!{EOS_ACCESS_POINT}' with user '${DCOS_USER}' and password '${DCOS_PASSWORD}' and tenant 'NONE'
     Then I get host ip for task '.*marathonlb.*' in service with id '/marathonlb' from CCT and save the value in environment variable 'publicAgentIP'
-    Then I open a ssh connection to '!{publicAgentIP}' with user '${REMOTE_USER}' using pem file '${PEM_FILE_PATH}'
-    And I run 'hostname' in the ssh connection with exit status '0' and save the value in environment variable 'publicAgentFQDN'
+    Then I open a ssh connection to '!{publicAgentIP}' with user '!{CLUSTER_SSH_USER}' using pem file '!{CLUSTER_SSH_PEM_PATH}'
+    And I run 'hostname -f' in the ssh connection with exit status '0' and save the value in environment variable 'publicAgentFQDN'
 
   Scenario: Get Postgres IP
     Given I set sso token using host '!{EOS_ACCESS_POINT}' with user '${DCOS_USER}' and password '${DCOS_PASSWORD}' and tenant 'NONE'
