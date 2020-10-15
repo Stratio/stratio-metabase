@@ -5,6 +5,9 @@
       [clojure
        [set :as set]
        [string :as str]]
+      [metabase.api
+       [common :as api]
+       [session :refer [dummy-email-domain]]]
       [metabase.util :as u]
       [honeysql
        [core :as hsql]
@@ -17,6 +20,7 @@
        [table :refer [Table]]]
       [metabase.driver.sql.query-processor :as sql.qp]
       [metabase.query-processor
+       [interface :as qp.i]
        [store :as qp.store]
        [util :as qputil]]
       [metabase.mbql.util :as mbql.u]
@@ -47,10 +51,10 @@
 
 
 ;; Connection to Crossdata database
-(defmethod sql-jdbc.conn/connection-details->spec :crossdata [_ {:keys [host port dbname user ssl-option]
+(defmethod sql-jdbc.conn/connection-details->spec :crossdata [_ {:keys [host port dbname user ssl-option impersonate]
                                                                  :or {host "localhost", port 13422, dbname "", user "crossdata-1"}
                                                                  :as details}]
-  (log/debug "sql-jdbc.conn/connection-details->spec. Host:" host " port:" port " details:" details)
+  (log/debug "sql-jdbc.conn/connection-details->spec. Host:" host " port:" port " details:" details " impersonate:" impersonate)
   (-> (merge {:classname "com.stratio.jdbc.core.jdbc4.StratioDriver"
               :subprotocol "crossdata"
               :subname (if ssl-option
@@ -157,11 +161,26 @@
   [_ _ connection query]
   (run-query query connection))
 
+(defn- user-from-email []
+       (-> @api/*current-user*
+           (get :email "")
+           (str/replace (re-pattern (str dummy-email-domain "$")) "")
+           not-empty))
+
+(defn- current-user-name []
+       (or (:first_name @api/*current-user*) (user-from-email)))
+
+(defn- impersonate-enabled? []
+       (-> (qp.store/database)
+           :details
+           :impersonate
+           boolean))
+
 (defmethod driver/execute-query :crossdata
   [driver {:keys [database settings], query :native, :as outer-query}]
-
   (log/debug "query:" query " outer-query:" outer-query)
-  (let [query (-> (assoc query
+  (let [
+        query (-> (assoc query
                          :remark (qputil/query->remark outer-query)
                          :query  (if (seq (:params query))
                                    (unprepare/unprepare driver (cons (:query query) (:params query)))
@@ -171,8 +190,16 @@
     (sql-jdbc.execute/do-with-try-catch
      (fn []
        (let [db-connection (sql-jdbc.conn/db->pooled-connection-spec database)]
-         (run-query-without-timezone driver settings db-connection query)))))
-  )
+         (let [user     (current-user-name)
+               impersonate (impersonate-enabled?)
+               sql (:query query)
+               impersonated-sql (str "EXECUTE AS " user " " sql)
+               query (assoc query :query
+                                  (if (and impersonate user) impersonated-sql sql))]
+             (do
+               (log/debug "Impersonation as user " user " for DB set to " impersonate ". Current query: " query)
+               (run-query-without-timezone driver settings db-connection query))))))))
+
 
 (defmethod driver/supports? [:crossdata :basic-aggregations]              [_ _] true)
 (defmethod driver/supports? [:crossdata :binning]                         [_ _] true)
