@@ -3,6 +3,7 @@
 ## 0.40.0 (upcoming)
 
 * Bump version of discovery-cicd artifact to 1.3.0-cae6686 (responses with errors)
+* Cherrypick restoring Crossdata impersonation
 
 ## 0.39.1 (upcoming)
 
