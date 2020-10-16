@@ -3,13 +3,9 @@
 ## 0.40.0 (upcoming)
 
 * Bump version of discovery-cicd artifact to 1.3.0-cae6686 (responses with errors)
-* Cherrypick restoring Crossdata impersonation
-
-## 0.39.1 (upcoming)
-
 * Restoring impersonation in queries related to Crossdata databases and tables
 
-## 0.39.0 (September 23, 2020)
+## 0.39.0-f6c1d05 (Built: September 23, 2020 | Released: September 25, 2020)
 
 * Make proxies timeout configurable
 * Bump import/export artifact version to 1.2.0-e81eb29
