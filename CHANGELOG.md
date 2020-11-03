@@ -4,6 +4,7 @@
 
 * Bump version of discovery-cicd artifact to 1.3.0-cae6686 (responses with errors)
 * Restoring impersonation in queries related to Crossdata databases and tables
+* Update Crossdata JDBC driver to 2.19.0-809dcaf version
 
 ## 0.39.0-f6c1d05 (Built: September 23, 2020 | Released: September 25, 2020)
 

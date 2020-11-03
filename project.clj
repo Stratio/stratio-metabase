@@ -83,7 +83,7 @@
    [com.h2database/h2 "1.4.197"]                                      ; embedded SQL database
    ;; < STRATIO
    [com.stratio.crossdata.driver/stratio-crossdata-jdbc4              ; adding crossdata jdbc makes the logs work.
-     "2.17.0-07b9b70"                                                 ; TODO: we should just depend on whatever makes the logs work...
+     "2.19.0-809dcaf"                                                 ; TODO: we should just depend on whatever makes the logs work...
      :exclusions [com.fasterxml.jackson.core/jackson-core]]
    ;; STRATIO >
    [com.mattbertolini/liquibase-slf4j "2.0.0"]                        ; Java Migrations lib logging. We don't actually use this AFAIK (?)
