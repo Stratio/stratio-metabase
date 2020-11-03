@@ -3,6 +3,7 @@
 ## 0.39.1 (upcoming)
 
 * Restoring impersonation in queries related to Crossdata databases and tables
+* Bump import/export artifact version to 1.2.1-1570d16 (fix parentId query param)
 
 ## 0.39.0 (September 23, 2020)
 
