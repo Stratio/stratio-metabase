@@ -12,6 +12,7 @@ hose {
     NEW_VERSIONING = 'true'
     ATTIMEOUT = 90
     INSTALLTIMEOUT = 90
+    ANCHORE_TEST = false
     ANCHORE_POLICY = 'discovery'
     PKGMODULESNAMES = ['discovery']
 
