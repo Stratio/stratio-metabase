@@ -6,6 +6,11 @@
 * Restoring impersonation in queries related to Crossdata databases and tables
 * Update Crossdata JDBC driver to 2.19.0-809dcaf version
 
+## 0.39.1
+
+* Bump import/export artifact version to 1.2.1-1570d16 (fix parentId query param)
+* Fix vulnerabilities
+
 ## 0.39.0-f6c1d05 (Built: September 23, 2020 | Released: September 25, 2020)
 
 * Make proxies timeout configurable
