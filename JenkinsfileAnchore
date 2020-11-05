@@ -10,7 +10,7 @@ hose {
     BUILDTOOLVERSION = '3.5.0'
     NEW_VERSIONING = 'true'
     ATTIMEOUT = 90
-    INSTALLTIMEOUT = 90
+    INSTALLTIMEOUT = 120
     ANCHORE_TEST = true
     ANCHORE_POLICY = 'discovery'
     PKGMODULESNAMES = ['discovery']
