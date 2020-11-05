@@ -5,7 +5,7 @@
   [[com.stratio.crossdata.driver/stratio-crossdata-jdbc4 "2.19.0-809dcaf"
     :exclusions [com.fasterxml.jackson.core/jackson-core]]]
 
-  :repositories [["stratio" "https://niquel.stratio.com:1443/repository/public"]]
+  :repositories [["stratio" "https://niquel.int.stratio.com:1443/repository/public"]]
 
   :profiles
   {:provided
