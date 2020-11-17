@@ -1,4 +1,7 @@
 #!/bin/sh
 exec 2>&1
 
-java -jar /app/target/uberjar/discovery-cicd.jar server
+#java -jar /app/target/uberjar/discovery-cicd.jar server
+java -Dconfig.resource=/dev.conf -jar /app/target/uberjar/discovery-cicd.jar server
+
+java -Dconfig.resource=/dev.conf -jar /app/target/uberjar/discovery-cicd.jar server
