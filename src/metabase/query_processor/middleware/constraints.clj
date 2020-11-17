@@ -10,10 +10,35 @@
   "General maximum number of rows to return from an API query."
   10000)
 
+(def ^:private max-results-stratio
+  "General maximum number of rows to return from an API query."
+  (or (try (let [s (System/getenv "STRATIO_ABSOLUTE_MAX_RESULTS")] (Long/valueOf s)) (catch Exception _))
+      1048576)
+  )
+
+(def ^:private max-results-bare-rows-ui-stratio
+  "Maximum number of rows to return specifically on :rows type queries via the API."
+  (or (try (let [s (System/getenv "STRATIO_ABSOLUTE_MAX_RESULTS_THRESHOLD")] (Long/valueOf s)) (catch Exception _))
+      2000)
+  )
+
 (def default-query-constraints
   "Default map of constraints that we apply on dataset queries executed by the api."
   {:max-results           max-results
    :max-results-bare-rows max-results-bare-rows})
+
+(def defined-stratio-constraints?
+  "Boolean to retrieve if any of the environment variables are set to true"
+  (or (some? (System/getenv "STRATIO_ABSOLUTE_MAX_RESULTS_THRESHOLD"))
+      (some? (System/getenv "STRATIO_ABSOLUTE_MAX_RESULTS")))
+  )
+
+(def default-query-constraints-stratio
+  "Default map of constraints that we apply on dataset queries executed by the api."
+  (if defined-stratio-constraints?
+  {:max-results           max-results-stratio
+   :max-results-bare-rows max-results-bare-rows-ui-stratio}
+  {}))
 
 (defn- ensure-valid-constraints
   "`:max-results-bare-rows` must be less than or equal to `:max-results`, so if someone sets `:max-results` but not

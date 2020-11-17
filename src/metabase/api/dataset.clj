@@ -154,6 +154,7 @@
        (-> query
            (dissoc :constraints)
            (m/dissoc-in [:middleware :add-default-userland-constraints?])
+           (assoc :constraints constraints/default-query-constraints-stratio)
            (assoc-in [:middleware :skip-results-metadata?] true))
        {:executed-by api/*current-user-id*, :context (export-format->context export-format)}))))
 
