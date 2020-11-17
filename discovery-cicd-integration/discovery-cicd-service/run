@@ -2,6 +2,6 @@
 exec 2>&1
 
 #java -jar /app/target/uberjar/discovery-cicd.jar server
-java -Dconfig.resource=/dev.conf -jar /app/target/uberjar/discovery-cicd.jar server
+#java -Dconfig.file=/app/bin/docker/serving-config/application.conf -jar /app/target/uberjar/discovery-cicd.jar server
 
 java -Dconfig.resource=/dev.conf -jar /app/target/uberjar/discovery-cicd.jar server
