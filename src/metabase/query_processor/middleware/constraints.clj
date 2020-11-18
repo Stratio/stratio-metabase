@@ -13,13 +13,7 @@
 (def ^:private max-results-stratio
   "General maximum number of rows to return from an API query."
   (or (try (let [s (System/getenv "STRATIO_ABSOLUTE_MAX_RESULTS")] (Long/valueOf s)) (catch Exception _))
-      1048576)
-  )
-
-(def ^:private max-results-bare-rows-ui-stratio
-  "Maximum number of rows to return specifically on :rows type queries via the API."
-  (or (try (let [s (System/getenv "STRATIO_ABSOLUTE_MAX_RESULTS_THRESHOLD")] (Long/valueOf s)) (catch Exception _))
-      2000)
+      metabase.query-processor.interface/absolute-max-results)
   )
 
 (def default-query-constraints
@@ -28,16 +22,16 @@
    :max-results-bare-rows max-results-bare-rows})
 
 (def defined-stratio-constraints?
-  "Boolean to retrieve if any of the environment variables are set to true"
-  (or (some? (System/getenv "STRATIO_ABSOLUTE_MAX_RESULTS_THRESHOLD"))
-      (some? (System/getenv "STRATIO_ABSOLUTE_MAX_RESULTS")))
+  "Check if a limit is set via environment variables"
+      (some? (System/getenv "STRATIO_ABSOLUTE_MAX_RESULTS"))
   )
 
 (def default-query-constraints-stratio
-  "Default map of constraints that we apply on dataset queries executed by the api."
+  "Default map of constraints that we apply on dataset queries executed by the api.
+  The keywords max-results and max-results-bare-rows can have the same value as shown in add-row-count-and-status"
   (if defined-stratio-constraints?
   {:max-results           max-results-stratio
-   :max-results-bare-rows max-results-bare-rows-ui-stratio}
+   :max-results-bare-rows max-results-stratio}
   {}))
 
 (defn- ensure-valid-constraints
