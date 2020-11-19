@@ -1,6 +1,5 @@
 #!/bin/sh
 exec 2>&1
 
-#java ${DISCOVERY_CICD_JAVA_OPTIONS} -jar /app/target/uberjar/discovery-cicd.jar server
-java -Dakka.http.server.request-timeout=5ms -Dakka.http.server.idle-timeout=5ms -jar /app/target/uberjar/discovery-cicd.jar server
+java ${DISCOVERY_CICD_JAVA_OPTIONS} -jar /app/target/uberjar/discovery-cicd.jar server
 
