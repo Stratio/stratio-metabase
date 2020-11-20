@@ -17,6 +17,9 @@
              [async :as qp.async]
              [util :as qputil]]
             [metabase.query-processor.middleware.constraints :as constraints]
+            ;; STRATIO
+            [metabase.stratio.constraints :as stratio-constraints]
+            ;; STRATIO
             [metabase.util
              [date :as du]
              [export :as ex]
@@ -154,6 +157,9 @@
        (-> query
            (dissoc :constraints)
            (m/dissoc-in [:middleware :add-default-userland-constraints?])
+           ;; STRATIO
+           (stratio-constraints/add-query-constraints-stratio)
+           ;; STRATIO
            (assoc-in [:middleware :skip-results-metadata?] true))
        {:executed-by api/*current-user-id*, :context (export-format->context export-format)}))))
 
