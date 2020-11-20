@@ -1,4 +1,4 @@
 #!/bin/sh
 exec 2>&1
 
-java -jar /app/target/uberjar/discovery-cicd.jar server
+java ${DISCOVERY_CICD_JAVA_OPTIONS} -jar /app/target/uberjar/discovery-cicd.jar server
