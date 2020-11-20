@@ -28,7 +28,7 @@
    "strip-and-compress"                ["with-profile" "+strip-and-compress" "run"]}
 
   ;; < STRATIO - we need this repository so we can depend on crossdata-jdbc
-  :repositories [["stratio" "https://niquel.stratio.com:1443/repository/public"]]
+  :repositories [["stratio" "https://niquel.int.stratio.com:1443/repository/public"]]
   ;; STRATIO >
 
   ;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
