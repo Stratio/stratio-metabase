@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.39.2 (Upcoming)
+* [ROCK-3110] Limit download records via variable
+* Bump import/export artifact version to 1.3.0-5ad831f (add timeout configuration and clean empty string descriptions in cards)
+
+
 ## 0.39.1 (November 04, 2020)
 
 * Restoring impersonation in queries related to Crossdata databases and tables
