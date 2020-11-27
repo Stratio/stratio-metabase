@@ -6,7 +6,7 @@
 * Update Crossdata JDBC driver to 2.19.0-809dcaf version
 * Fix vulnerabilities: Upgraded libfreetype6 library of Docker image (oauth-base)
 * [ROCK-3110] Limit download records via variable
-* Bump import/export artifact version to 1.3.0-5ad831f (add timeout configuration and clean empty string descriptions in cards)
+* Bump import/export artifact version to 1.3.0-5ad831f
 
 ## 0.39.0-f6c1d05 (Built: September 23, 2020 | Released: September 25, 2020)
 
