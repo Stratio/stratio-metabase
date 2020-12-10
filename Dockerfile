@@ -77,7 +77,7 @@ ENV LC_CTYPE en_US.UTF-8
 # dependencies
 RUN apt-get update \
   &&  apt-get install -y ttf-dejavu fontconfig wget \
-  && apt-get --only-upgrade install libfreetype6 \
+  && apt-get --only-upgrade install -y libfreetype6 libssl1.1 libssl1.0.0 openssl\
   && apt-get -qq clean \
   && rm -rf /var/lib/apt/lists/*
 
