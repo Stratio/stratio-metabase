@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>metabase-core</groupId>
   <artifactId>metabase-core</artifactId>
@@ -11,7 +12,7 @@
     <url>https://github.com/Stratio/discovery</url>
     <connection>scm:git:git://github.com/Stratio/discovery.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/Stratio/discovery.git</developerConnection>
-    <tag>03e7c44ee50c1581b037fe9936253a57562c3432</tag>
+    <tag>80cc831c9a495e22f1e73085b1a480dfb55027f0</tag>
   </scm>
   <build>
     <sourceDirectory>src</sourceDirectory>
@@ -44,6 +45,16 @@
     <repository>
       <id>clojars</id>
       <url>https://repo.clojars.org/</url>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+    </repository>
+    <repository>
+      <id>stratio</id>
+      <url>https://niquel.int.stratio.com:1443/repository/public</url>
       <snapshots>
         <enabled>true</enabled>
       </snapshots>
@@ -283,6 +294,17 @@
       <version>1.4.197</version>
     </dependency>
     <dependency>
+      <groupId>com.stratio.crossdata.driver</groupId>
+      <artifactId>stratio-crossdata-jdbc4</artifactId>
+      <version>2.19.0-809dcaf</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>jackson-core</artifactId>
+          <groupId>com.fasterxml.jackson.core</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
       <groupId>com.mattbertolini</groupId>
       <artifactId>liquibase-slf4j</artifactId>
       <version>2.0.0</version>
@@ -290,7 +312,7 @@
     <dependency>
       <groupId>com.taoensso</groupId>
       <artifactId>nippy</artifactId>
-      <version>2.14.0</version>
+      <version>3.0.0</version>
     </dependency>
     <dependency>
       <groupId>commons-codec</groupId>
@@ -502,30 +524,6 @@
       <groupId>potemkin</groupId>
       <artifactId>potemkin</artifactId>
       <version>0.4.5</version>
-    </dependency>
-    <dependency>
-      <groupId>com.stratio.crossdata.driver</groupId>
-      <artifactId>stratio-crossdata-jdbc4</artifactId>
-      <version>2.19.0-809dcaf</version>
-      <exclusions>
-        <exclusion>
-          <artifactId>clojure</artifactId>
-          <groupId>org.clojure</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>bcpkix-jdk15on</artifactId>
-          <groupId>org.bouncycastle</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>bcprov-jdk15on</artifactId>
-          <groupId>org.bouncycastle</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>com.stratio.metabase</groupId>
-      <artifactId>local-query-execution-factory</artifactId>
-      <version>0.2</version>
     </dependency>
     <dependency>
       <groupId>prismatic</groupId>
