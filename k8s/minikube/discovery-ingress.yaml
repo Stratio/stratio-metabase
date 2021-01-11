@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
+kind: Ingress
+metadata:
+  name: discovery-ingress
+  namespace: ns-discovery
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+spec:
+  rules:
+  - host: public.kubernetes.stratio.com
+    http:
+      paths:
+      - path: /discovery(/|$)(.*)
+        backend:
+          serviceName: discovery-demo
+          servicePort: 3000

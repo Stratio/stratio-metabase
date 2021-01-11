@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: discovery-config
+  namespace: ns-discovery
+data:
+  # Metabase
+  #MB_DB_FILE: "/tmp/metabase.db"
+  MB_DB_SSL: "false"
+  MB_DB_TYPE: "postgres"
+  MB_DB_HOST: "10.0.2.2"
+  MB_DB_PORT: "5432"
+  MB_DB_DBNAME: "discovery"
+  MB_DB_USER: "discovery"
+  MB_JDBC_PARAMETERS: "prepareThreshold=0"
+  MB_INIT_ADMIN_MAIL: "demo@stratio.com"
+  MB_INIT_ADMIN_PASSWORD: "123456"
+
+
+  #Logs
+  API_LOG_LEVEL: "INFO"
+  DRIVER_LOG_LEVEL: "INFO"
+  FIELDVALUES_LOG_LEVEL: "INFO"
+  MIDDLEWARE_LOG_LEVEL: "INFO"
+  MCHANGE_LOG_LEVEL: "INFO"
+  SERVICE_LOG_LEVEL: "INFO"
+  METABASE_LOG_LEVEL: "INFO"
+  SYNC_LOG_LEVEL: "INFO"
+  QUERYPROCESSORPERMISIONS_LOG_LEVEL: "INFO"
