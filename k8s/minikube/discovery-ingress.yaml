@@ -13,4 +13,4 @@ spec:
       - path: /discovery(/|$)(.*)
         backend:
           serviceName: discovery-demo
-          servicePort: 3000
+          servicePort: 443

@@ -1,0 +1,32 @@
+worker_processes  1;
+
+error_log /dev/stderr $NGINX_ERROR_LOG_LEVEL;
+
+events {
+    worker_connections 1024;
+}
+
+http {
+    server {
+        listen 443;
+
+        location / {
+            proxy_pass http://127.0.0.1:3000;
+            proxy_read_timeout ${PROXY_READ_TIMEOUT}s;
+        }
+
+        location /discovery-cicd {
+            proxy_pass http://127.0.0.1:8087;
+        }
+    }
+
+    # This server is needed for health check purposes
+    server {
+        listen 3009;
+
+        location "/api/health" {
+            proxy_pass http://127.0.0.1:3000;
+        }
+    }
+
+}

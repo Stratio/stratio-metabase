@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: discovery-demo
-          image: 'qa.int.stratio.com/stratio/discovery:0.40.0-SNAPSHOT'
+          image: 'qa.int.stratio.com:8443/stratio/discovery:0.40.0-PR252-SNAPSHOT'
           imagePullPolicy: IfNotPresent # (other values: Always, Never)
           resources:
             requests:
@@ -27,18 +27,9 @@ spec:
               memory: 2Gi
             limits:
               cpu: '1'
-              memory: 2Gi
-          #env:
-            # The Kubernetes API discovery will use this service name to look for
-            # nodes with this value in the 'app' label.
-            # This can be customized with the 'pod-label-selector' setting.
-          #  - name: AKKA_CLUSTER_BOOTSTRAP_SERVICE_NAME
-          #    valueFrom:
-          #      fieldRef:
-          #        apiVersion: v1
-          #        fieldPath: "metadata.labels['cluster-name']"
+              memory: 2Gi          
           command: ["/bin/bash"]
-          args: ["/app/bin/start"]
+          args: ["docker-entrypoint.sh"]
           envFrom:
             - configMapRef:
                 name: discovery-config
@@ -48,12 +39,15 @@ spec:
             privileged: false
           ports:
             - name: discoveryapi
-              containerPort: 3000
+              containerPort: 443
+              protocol: TCP
+            - name: discoveryhealth
+              containerPort: 3009
               protocol: TCP
           #livenessProbe:
           #  httpGet:
           #    path: /api/health
-          #    port: discoveryapi
+          #    port: discoveryapihealth
           #    scheme: HTTP
           #  periodSeconds: 30
           #  timeoutSeconds: 15
@@ -62,7 +56,7 @@ spec:
           #readinessProbe:
           #  httpGet:
           #    path: /api/health
-          #    port: discoveryapi
+          #    port: discoveryapihealth
           #    scheme: HTTP
           #  periodSeconds: 15
           #  timeoutSeconds: 15

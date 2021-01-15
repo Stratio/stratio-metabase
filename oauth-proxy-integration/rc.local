@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-
+if [ ! $DISCOVERY_DEVELOPMENT_MODE ]; then
 # Datio compatibility
 if [[ "$TENANT_NAME" != "" ]]; then
     DISCOVERY_INSTANCE_NAME="$TENANT_NAME"
@@ -23,3 +23,4 @@ else
 fi
 
 source /etc/rc.local.base
+fi

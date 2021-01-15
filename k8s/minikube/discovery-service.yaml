@@ -8,8 +8,8 @@ spec:
   ports:
   - name: rocketapi
     protocol: TCP
-    port: 3000
-    targetPort: 3000
+    port: 443
+    targetPort: 443
     nodePort: 30009
   selector: #in order to connect to discovery backend
     k8s-app: discovery-demo # other labels can be used => name: discovery-demo (app: discovery-demo)

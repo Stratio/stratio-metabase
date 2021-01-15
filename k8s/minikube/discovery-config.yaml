@@ -4,6 +4,9 @@ metadata:
   name: discovery-config
   namespace: ns-discovery
 data:
+  # Environment
+  DISCOVERY_DEVELOPMENT_MODE: "true"
+
   # Metabase
   #MB_DB_FILE: "/tmp/metabase.db"
   MB_DB_SSL: "false"
@@ -13,9 +16,20 @@ data:
   MB_DB_DBNAME: "discovery"
   MB_DB_USER: "discovery"
   MB_JDBC_PARAMETERS: "prepareThreshold=0"
+  MB_INIT_ADMIN_USER: "demo"
   MB_INIT_ADMIN_MAIL: "demo@stratio.com"
   MB_INIT_ADMIN_PASSWORD: "123456"
 
+  # NGINX
+  PROXY_READ_TIMEOUT: "120"
+
+  # SSO
+  USE_GOSEC_SSO_AUTH: "false"
+  #SSO_URI: "",
+
+  # Security
+  #VAULT_HOST: ""
+  #VAULT_PORT: "8200",
 
   #Logs
   API_LOG_LEVEL: "INFO"
@@ -27,3 +41,8 @@ data:
   METABASE_LOG_LEVEL: "INFO"
   SYNC_LOG_LEVEL: "INFO"
   QUERYPROCESSORPERMISIONS_LOG_LEVEL: "INFO"
+  NGINX_ERROR_LOG_LEVEL: "debug"
+
+  # Discovery CI/CD
+  DISCOVERY_CICD_AKKA_REQUEST_TIMEOUT: "30s"
+  DISCOVERY_CICD_API_METABASE_TIMEOUT: "20s"
