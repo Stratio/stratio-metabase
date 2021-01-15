@@ -27,9 +27,9 @@ spec:
               memory: 2Gi
             limits:
               cpu: '1'
-              memory: 2Gi          
-          command: ["/bin/bash"]
-          args: ["docker-entrypoint.sh"]
+              memory: 2Gi
+          #command: ["/bin/bash"]
+          #args: ["docker-entrypoint.sh"]
           envFrom:
             - configMapRef:
                 name: discovery-config

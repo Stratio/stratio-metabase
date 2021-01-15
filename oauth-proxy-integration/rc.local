@@ -1,26 +1,28 @@
 #!/bin/bash -e
 
 if [ ! $DISCOVERY_DEVELOPMENT_MODE ]; then
-# Datio compatibility
-if [[ "$TENANT_NAME" != "" ]]; then
-    DISCOVERY_INSTANCE_NAME="$TENANT_NAME"
-fi
+  # Datio compatibility
+  if [[ "$TENANT_NAME" != "" ]]; then
+      DISCOVERY_INSTANCE_NAME="$TENANT_NAME"
+  fi
 
-# set up env variable that oauth-base rc.local uses to download secrets
-CONV_MARATHON_APP_ID=$DISCOVERY_INSTANCE_NAME
-OAUTH_COOKIE_PREFIX=${DISCOVERY_INSTANCE_NAME:-$OAUTH_COOKIE_PREFIX}
-export CONV_MARATHON_APP_ID
-export OAUTH_COOKIE_PREFIX
+  # set up env variable that oauth-base rc.local uses to download secrets
+  CONV_MARATHON_APP_ID=$DISCOVERY_INSTANCE_NAME
+  OAUTH_COOKIE_PREFIX=${DISCOVERY_INSTANCE_NAME:-$OAUTH_COOKIE_PREFIX}
+  export CONV_MARATHON_APP_ID
+  export OAUTH_COOKIE_PREFIX
 
-# we use a different env. variable to not make it confusing when someone uses the "native JWT auth"
-# only if varible is defined and set to true do we use dcos-oauth
-if [[ "$USE_GOSEC_SSO_AUTH" != "true" ]]; then
-    # we usgin native authentication so we disable dcos-oauth
-    export JWT_VALIDATION_DISABLED="true"
+  # we use a different env. variable to not make it confusing when someone uses the "native JWT auth"
+  # only if varible is defined and set to true do we use dcos-oauth
+  if [[ "$USE_GOSEC_SSO_AUTH" != "true" ]]; then
+      # we usgin native authentication so we disable dcos-oauth
+      export JWT_VALIDATION_DISABLED="true"
+  else
+      # we are delegating authentication in dcos-oauth
+      export JWT_VALIDATION_DISABLED="false"
+  fi
+
+  source /etc/rc.local.base
 else
-    # we are delegating authentication in dcos-oauth
-    export JWT_VALIDATION_DISABLED="false"
-fi
-
-source /etc/rc.local.base
+  source /docker-entrypoint.sh
 fi
