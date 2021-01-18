@@ -51,6 +51,7 @@ spec:
               scheme: HTTP
             periodSeconds: 30
             timeoutSeconds: 15
+            initialDelaySeconds: 30
             successThreshold: 1
             failureThreshold: 10 # TODO enable startupProbe & set failureThreshold to 3
           readinessProbe:
@@ -60,6 +61,7 @@ spec:
               scheme: HTTP
             periodSeconds: 15
             timeoutSeconds: 15
+            initialDelaySeconds: 30
             successThreshold: 1
             failureThreshold: 10 # TODO enable startupProbe & set failureThreshold to 3
       restartPolicy: Always

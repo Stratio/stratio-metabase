@@ -8,9 +8,11 @@ data:
   DISCOVERY_DEVELOPMENT_MODE: "true"
 
   # Metabase
-  #MB_DB_FILE: "/tmp/metabase.db"
+  #MB_DB_FILE: "/tmp/metabase.db"  
   MB_DB_SSL: "false"
   MB_DB_TYPE: "postgres"
+  # TODO: Used MB_DB_HOST and MB_DB_PORT
+  #MB_DB_URL: "10.0.2.2:5432"  
   MB_DB_HOST: "10.0.2.2"
   MB_DB_PORT: "5432"
   MB_DB_DBNAME: "discovery"
@@ -23,13 +25,15 @@ data:
   # NGINX
   PROXY_READ_TIMEOUT: "120"
 
-  # SSO
+  # TODO: SSO
   USE_GOSEC_SSO_AUTH: "false"
-  #SSO_URI: "",
+  #SSO_URI: ""
 
-  # Security
+  # TODO: Security
   #VAULT_HOST: ""
-  #VAULT_PORT: "8200",
+  #VAULT_PORT: ""
+  #APPROLENAME: ""
+  #CALICO_NETWORK: ""
 
   #Logs
   API_LOG_LEVEL: "INFO"
@@ -46,3 +50,13 @@ data:
   # Discovery CI/CD
   DISCOVERY_CICD_AKKA_REQUEST_TIMEOUT: "30s"
   DISCOVERY_CICD_API_METABASE_TIMEOUT: "20s"
+  #DISCOVERY_CICD_JAVA_OPTIONS: ""
+
+
+  # TODO: Others:
+  #DISCOVERY_POSTGRES_SERVICE_ID: ""
+  #DISCOVERY_INSTANCE_NAME: ""
+  #SERVICE_URL: ""
+  #NETWORK_SEGMENTATION: ""
+  #USE_DYNAMIC_AUTHENTICATION: ""
+  #STRATIO_ABSOLUTE_MAX_RESULTS: ""
