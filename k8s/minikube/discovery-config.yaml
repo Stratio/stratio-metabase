@@ -8,13 +8,10 @@ data:
   DISCOVERY_DEVELOPMENT_MODE: "true"
 
   # Metabase
-  #MB_DB_FILE: "/tmp/metabase.db"  
+  MB_DB_FILE: "/tmp/metabase.db"
   MB_DB_SSL: "false"
   MB_DB_TYPE: "postgres"
-  # TODO: Used MB_DB_HOST and MB_DB_PORT
-  #MB_DB_URL: "10.0.2.2:5432"  
-  MB_DB_HOST: "10.0.2.2"
-  MB_DB_PORT: "5432"
+  MB_DB_URL: "10.0.2.2:5432"
   MB_DB_DBNAME: "discovery"
   MB_DB_USER: "discovery"
   MB_JDBC_PARAMETERS: "prepareThreshold=0"

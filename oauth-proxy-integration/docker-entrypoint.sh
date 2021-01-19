@@ -23,8 +23,11 @@ else
     envsubst '\$NGINX_ERROR_LOG_LEVEL \$PROXY_READ_TIMEOUT' < ${nginx_conf_dir}/nginx.conf.sso-auth > ${nginx_conf_dir}/nginx.conf
 fi
 
+source /usr/local/lib/b-log.sh
+
 if [ ! $DISCOVERY_DEVELOPMENT_MODE ]; then
   source /usr/local/lib/kms_utils.sh
-  source /usr/local/lib/b-log.sh
   source /root/kms/secrets.sh
+else
+  source /root/kms/psql-connection.sh
 fi
