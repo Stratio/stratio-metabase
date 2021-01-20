@@ -11,7 +11,10 @@ data:
   MB_DB_FILE: "/tmp/metabase.db"
   MB_DB_SSL: "false"
   MB_DB_TYPE: "postgres"
-  MB_DB_URL: "postgreseos-primary.eos-core:5432"
+  # TODO: Pinpoint to EOS's postgres
+  #MB_DB_URL: "postgreseos-primary.eos-core:5432"
+  # temporal postgres without TLS
+  MB_DB_URL: "discovery-postgres.ns-discovery:5432"
   MB_DB_DBNAME: "discovery"
   MB_DB_USER: "discovery"
   MB_JDBC_PARAMETERS: "prepareThreshold=0"

@@ -1,0 +1,36 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: discovery-postgres
+  namespace: ns-discovery
+  labels:
+    k8s-app: discovery-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: discovery-postgres
+  template:
+    metadata:
+      name: discovery-postgres
+      labels:
+        k8s-app: discovery-postgres
+        cluster-name: discovery-postgres
+    spec:
+      containers:
+        - name: discovery-postgres
+          image: 'postgres:9.6'
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: trust
+          ports:
+            - containerPort: 5432
+              protocol: TCP
+          #volumeMounts:
+          #  - mountPath: /var/lib/postgresql/data
+          #    name: postgredb
+      #volumes:
+      #  - name: postgredb
+      #    persistentVolumeClaim:
+      #      claimName: postgres-discovery-claim
