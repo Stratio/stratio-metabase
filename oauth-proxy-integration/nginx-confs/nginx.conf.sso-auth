@@ -57,6 +57,7 @@ http {
             proxy_set_header  X-DCOS-OAUTH-GROUPS $groups;
             proxy_set_header  X-DCOS-OAUTH-TENANT $tenant;
 
+            proxy_read_timeout ${PROXY_READ_TIMEOUT}s;
             proxy_pass http://127.0.0.1:8087;
         }
 

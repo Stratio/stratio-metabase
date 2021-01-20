@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.39.3 (upcoming)
+
+* [ROCK-3900] Make nginx timeout for discovery-cicd configurable
+
 ## 0.39.2 (November 20, 2020)
 * [ROCK-3110] Limit download records via variable
 * Bump import/export artifact version to 1.3.0-5ad831f (add timeout configuration and clean empty string descriptions in cards)
