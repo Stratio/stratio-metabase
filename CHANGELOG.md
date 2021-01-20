@@ -7,6 +7,7 @@
 * Fix vulnerabilities: Upgraded libfreetype6 library of Docker image (oauth-base)
 * [ROCK-3110] Limit download records via variable
 * Bump import/export artifact version to 1.3.0-5ad831f
+* [ROCK-3762] Support deploy discovery into k8s (without security and SSO)
 
 ## 0.39.0-f6c1d05 (Built: September 23, 2020 | Released: September 25, 2020)
 
