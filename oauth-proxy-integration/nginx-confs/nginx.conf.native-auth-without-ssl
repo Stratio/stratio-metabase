@@ -23,6 +23,7 @@ http {
 
         location /discovery-cicd {
             proxy_pass http://127.0.0.1:8087;
+            proxy_read_timeout ${PROXY_READ_TIMEOUT}s;
         }
     }
 
