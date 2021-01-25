@@ -55,7 +55,8 @@ kubectl apply -f discovery-service.yaml
 
 The hostname and path used to expose Discovery are define by the [Ingress descriptor](./rocket-ingress.yml)
 The default Rocket URL is http://public.whiskey.kubernetes.stratio.com/discovery/
-Add public.whiskey.kubernetes.stratio.com to /etc/hosts, using the address returned by the 'kubectl get nodes -o wide' command in nodes with role NONE.
+You must define inside your /etc/hosts a resolution for the address "public.whiskey.kubernetes.stratio.com".
+Execute 'kubectl get nodes -o wide' and map the above-said address to the INTERNAL-IP of any of the returned nodes whose role is NONE.
 
 ```shell
 kubectl apply -f discovery-ingress.yaml

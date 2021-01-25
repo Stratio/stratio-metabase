@@ -71,7 +71,7 @@ TODO
 
    To create an image of hdfs exposing hadoop config files you may run these commands:
 
-   if minikube is deployed with virtualbox, is mandatory to deploy hdfs inside the cluster, you need to change de default docker server before
+   if minikube is deployed with virtualbox, is mandatory to deploy hdfs inside the cluster, you need to change the default docker server before
    ```shell
    eval $(minikube docker-env)
    ```
