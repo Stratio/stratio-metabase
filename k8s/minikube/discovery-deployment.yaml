@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: discovery-demo
-          image: 'qa.int.stratio.com:8443/stratio/discovery:0.40.0-PR252-SNAPSHOT'
+          image: 'qa.int.stratio.com/stratio/discovery:0.40.0-SNAPSHOT'
           imagePullPolicy: IfNotPresent # (other values: Always, Never)
           resources:
             requests:
