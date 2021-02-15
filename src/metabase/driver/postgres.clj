@@ -306,11 +306,13 @@
                       (if (string? port)
                         (Integer/parseInt port)
                         port)))
-      ;; remove :ssl in case it's false; DB will still try (& fail) to connect if the key is there
-      (dissoc :ssl)
-      (merge (if ssl?
-               ssl-params
-               disable-ssl-params))
+      ;; < STRATIO - do not change ssl options passed in connection string
+      ;; ;; remove :ssl in case it's false; DB will still try (& fail) to connect if the key is there
+      ;; (dissoc :ssl)
+      ;; (merge (if ssl?
+      ;;          ssl-params
+      ;;          disable-ssl-params))
+      ;; STRATIO />
       (set/rename-keys {:dbname :db})
       db.spec/postgres
       (sql-jdbc.common/handle-additional-options details-map)))
