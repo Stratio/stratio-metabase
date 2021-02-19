@@ -10,6 +10,9 @@
             [metabase.server.middleware.security :as mw.security]
             [metabase.server.middleware.session :as mw.session]
             [metabase.server.middleware.ssl :as mw.ssl]
+            ;; < STRATIO - auto login from headers info
+            [metabase.stratio.auth :as st.auth]
+            ;; STRATIO />
             [metabase.server.routes :as routes]
             [ring.middleware.cookies :refer [wrap-cookies]]
             [ring.middleware.gzip :refer [wrap-gzip]]
@@ -33,6 +36,9 @@
    #'mw.misc/maybe-set-site-url              ; set the value of `site-url` if it hasn't been set yet
    #'mw.session/bind-current-user            ; Binds *current-user* and *current-user-id* if :metabase-user-id is non-nil
    #'mw.session/wrap-current-user-info       ; looks for :metabase-session-id and sets :metabase-user-id and other info if Session ID is valid
+   ;; < STRATIO - auto login from headers info
+   st.auth/auto-login                        ; if we cannot find a session-id look for user info in headers and create user and session
+   ;; STRATIO />
    #'mw.session/wrap-session-id              ; looks for a Metabase Session ID and assoc as :metabase-session-id
    #'mw.auth/wrap-api-key                    ; looks for a Metabase API Key on the request and assocs as :metabase-api-key
    #'wrap-cookies                            ; Parses cookies in the request map and assocs as :cookies
