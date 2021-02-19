@@ -91,9 +91,6 @@ COPY --from=builder /app/source/src                     /app/source/src
 COPY --from=builder /app/source/enterprise/backend/src  /app/source/enterprise/backend/src
 COPY --from=builder /app/source/backend/mbql            /app/source/backend/mbql
 
-# Copy lein command to strip and compress driver jars
-COPY --from=builder /app/source/lein-commands           /app/source/lein-commands
-
 # Copy metabase build and start scripts
 COPY --from=builder /app/source/bin  /app/source/bin
 
