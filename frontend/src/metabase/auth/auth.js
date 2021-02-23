@@ -7,6 +7,9 @@ import {
 import { push } from "react-router-redux";
 
 import MetabaseAnalytics from "metabase/lib/analytics";
+// < STRATIO - auto login from headers info (sso proxy integration)
+import MetabaseSettings from "metabase/lib/settings";
+// STRATIO />
 import { clearGoogleAuthCredentials } from "metabase/lib/auth";
 
 import { refreshSiteSettings } from "metabase/redux/settings";
@@ -75,7 +78,15 @@ export const logout = createThunkAction(LOGOUT, function() {
 
     MetabaseAnalytics.trackEvent("Auth", "Logout");
 
-    dispatch(push("/auth/login"));
+
+    // < STRATIO - auto login from headers info (sso proxy integration)
+    // we must redirect to the sso proxy logout
+    if (MetabaseSettings.get("gosec-sso-enabled", false)) {
+      dispatch(push("logout"));
+    } else {
+      dispatch (push("/auth/login"));
+    }
+    // STRATIO />
 
     // refresh to ensure all application state is cleared
     window.location.reload();
