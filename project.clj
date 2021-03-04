@@ -78,8 +78,14 @@
    ;; fork to address #13102 - see upstream PR: https://github.com/dm3/clojure.java-time/pull/60
    ;; TODO: switch back to the upstream once a version is released with the above patch
    [robdaemon/clojure.java-time "0.3.3-SNAPSHOT"]                     ; Java 8 java.time wrapper
+   ;; < STRATIO - fix vulnerabilities (bump quartz to 2.3.2)
+   ;; [clojurewerkz/quartzite "2.1.0"                                    ; scheduling library
+   ;;  :exclusions [c3p0]]
    [clojurewerkz/quartzite "2.1.0"                                    ; scheduling library
-    :exclusions [c3p0]]
+    :exclusions [c3p0
+                 org.quartz-scheduler/quartz]]
+   [org.quartz-scheduler/quartz "2.3.2"]
+   ;; STRATIO />
    [colorize "0.1.1" :exclusions [org.clojure/clojure]]               ; string output with ANSI color codes (for logging)
    [com.cemerick/friend "0.2.3"                                       ; auth library
     :exclusions [commons-codec
@@ -93,7 +99,10 @@
    [com.draines/postal "2.0.3"]                                       ; SMTP library
    [com.google.guava/guava "28.2-jre"]                                ; dep for BigQuery, Spark, and GA. Require here rather than letting different dep versions stomp on each other — see comments on #9697
    [com.h2database/h2 "1.4.197"]                                      ; embedded SQL database
-   [com.taoensso/nippy "2.14.0"]                                      ; Fast serialization (i.e., GZIP) library for Clojure
+   ;; < STRATIO - bump nippy to 3.0.0 due to vulnerability
+   ;; [com.taoensso/nippy "2.14.0"]                                      ; Fast serialization (i.e., GZIP) library for Clojure
+   [com.taoensso/nippy "3.0.0"]                                      ; Fast serialization (i.e., GZIP) library for Clojure
+   ;; STRATIO >
    [commons-codec/commons-codec "1.15"]                               ; Apache Commons -- useful codec util fns
    [commons-io/commons-io "2.8.0"]                                    ; Apache Commons -- useful IO util fns
    [commons-validator/commons-validator "1.6"                         ; Apache Commons -- useful validation util fns
@@ -118,7 +127,10 @@
     :exclusions [org.apache.commons/commons-compress]]
    [medley "1.3.0"]                                                   ; lightweight lib of useful functions
    [metabase/connection-pool "1.1.1"]                                 ; simple wrapper around C3P0. JDBC connection pools
-   [metabase/saml20-clj "2.0.0"]                                      ; EE SAML integration
+   ;; < STRATIO - fix vulnerabilities (cryptacular)
+   ;; we can delete since it is only used in EE version
+   ;; [metabase/saml20-clj "2.0.0"]                                      ; EE SAML integration
+   ;;  STRATIO />
    [metabase/throttle "1.0.2"]                                        ; Tools for throttling access to API endpoints and other code pathways
    [net.cgrand/macrovich "0.2.1"]                                     ; utils for writing macros for both Clojure & ClojureScript
    [net.redhogs.cronparser/cron-parser-core "3.4"                     ; describe Cron schedule in human-readable language

@@ -106,7 +106,12 @@
     ;; Connection, wrap it in a delegating proxy wrapper that makes `.close()` a no-op but forwards all other methods.
     ;; Now that would be a useful macro!
     (some-> @@#'db/default-db-connection jdbc/get-connection))
-  (shutdown [_]))
+  (shutdown [_])
+  ;; <STRATIO - bumping quartz to fix vulnerabilities forces us to implement this method
+  ;; of the ConnectionProvider interface (in old quartz version it was not called)
+  (initialize [_])
+  ;; STRATIO >
+  )
 
 (when-not *compile-files*
   (System/setProperty "org.quartz.dataSource.db.connectionProvider.class" (.getName ConnectionProvider)))
