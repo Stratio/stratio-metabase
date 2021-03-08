@@ -145,13 +145,25 @@
         (respond {:status 403, :body "Email login is disabled"})
         (handler request respond raise)))))
 
+(defn- add-username-response-header
+  [response]
+  (update response :headers merge {"Metabase-User" (get @api/*current-user* :first_name "-")}))
+
+(defn- wrap-with-username-header
+  "Middleware to add a reponse header with the current user name (to be used by the nginx access log)"
+  [handler]
+  (fn [request respond raise]
+    (handler request (comp respond add-username-response-header) raise)))
+
 (defn auto-login
   [handler]
   (if-not st.config/should-auto-login?
-    handler
+    (-> handler
+        wrap-with-username-header)
     (-> handler
         wrap-with-auto-login-session
-        forbid-email-login)))
+        forbid-email-login
+        wrap-with-username-header)))
 
 (defn- editing-user-name?
   [{:keys [:uri :request-method :body]}]
@@ -160,7 +172,7 @@
         (apply not= (map :last_name  [@api/*current-user* body])))))
 
 (defn forbid-editing-username
-  "Midlware that checks if we are dealing with a request to change the user name. If that is the case we
+  "Middleware that checks if we are dealing with a request to change the user name. If that is the case we
   respond with forbidden. Must be placed after *current-user* is bind and after the json body is processed"
   [handler]
   (if-not st.config/should-auto-login?
