@@ -9,8 +9,7 @@ events {
 http {
 
     log_format main $EXTRA_NGINX_LOG_PROPERTIES '$time_iso8601 AUDIT $uid 1 nginx access_log'
-                    ' {"@message":"$remote_addr - $remote_user [$time_local] $request'
-                    ' $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for $response_body"}';
+                    ' {"@message":"$response_message"}';
 
     access_log /dev/stdout main;
 
@@ -34,12 +33,16 @@ http {
     init_by_lua_block {
         auth = require "auth".init()
         jwt  = require "resty.jwt"
+        aes  = require "resty.aes"
+
+        -- local DATA_AUDIT_ENCRYPTION_KEY_PASS = os.getenv("DATA_AUDIT_ENCRYPTION_KEY_PASS")
+        -- local DATA_AUDIT_ENCRYPTION_IV_PASS = os.getenv("DATA_AUDIT_ENCRYPTION_IV_PASS")
 
         function set_response_body()
             local response_body = string.sub(ngx.arg[1], 1, -1)
             ngx.ctx.buffered = (ngx.ctx.buffered or "") .. response_body
             if ngx.arg[2] then
-                ngx.var.response_body = ngx.ctx.buffered
+                ngx.var.response_message = ngx.var.remote_addr .. "-" .. ngx.var.remote_user .. "[" .. ngx.var.time_local .. "]" .. ngx.var.request .. ngx.var.status .. ngx.var.body_bytes_sent .. ngx.var.http_referer .. ngx.var.http_user_agent .. ngx.var.http_x_forwarded_for .. ngx.ctx.buffered
             end
         end
 
@@ -87,6 +90,7 @@ http {
                 auth.validate_jwt_or_login();
             }
             set $response_body 'redacted binary data';
+            set $response_message '$remote_addr - $remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for $response_body'
 
             proxy_set_header  X-DCOS-OAUTH-USER $uid;
             proxy_set_header  X-DCOS-OAUTH-GROUPS $groups;
@@ -104,6 +108,7 @@ http {
                 set_user_from_embed_token_payload(ngx.var.token_payload)
             }
             set $response_body 'redacted binary data';
+            set $response_message '$remote_addr - $remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for $response_body'
 
             proxy_read_timeout ${PROXY_READ_TIMEOUT}s;
             proxy_pass http://127.0.0.1:3000;

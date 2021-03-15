@@ -29,7 +29,7 @@ else
         source /root/kms/tls-config.sh
 	      source /root/kms/truststore-config.sh
         source /root/kms/psql-connection.sh
-        source /root/kms/encrypt-passwords.sh
+        #source /root/kms/encrypt-passwords.sh
 	      cp /root/kms/secrets/* /root/.crossdata/
         if [ $? != 0 ]; then
             ERROR "login using dynamic authentication failed!"
@@ -40,7 +40,7 @@ else
         source /root/kms/tls-config.sh
 	      source /root/kms/truststore-config.sh
         source /root/kms/psql-connection.sh
-        source /root/kms/encrypt-passwords.sh
+        #source /root/kms/encrypt-passwords.sh
 	      cp /root/kms/secrets/* /root/.crossdata/
         if [ $? != 0 ]; then
             ERROR "VAULT TOKEN"
