@@ -9,9 +9,15 @@ events {
 http {
 
     log_format main $EXTRA_NGINX_LOG_PROPERTIES '$time_iso8601 AUDIT $uid 1 nginx access_log'
+                        ' {"@message":"$remote_addr - $remote_user [$time_local] $request'
+                        ' $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for $response_body"}';
+
+    log_format secured $EXTRA_NGINX_LOG_PROPERTIES '$time_iso8601 AUDIT $uid 1 nginx access_log'
                     ' {"@message":"$response_message"}';
 
     access_log /dev/stdout main;
+
+    access_log /dev/stdout secured if=$log_audit;
 
     gzip_types
         text/css
@@ -62,6 +68,8 @@ http {
         set $tenant '';
         set $err '';
         set $response_body '-';
+        set $response_message '*******';
+        set $log_audit false;
 
 
         location / {
@@ -71,6 +79,7 @@ http {
                 auth.validate_jwt_or_login();
             }
             body_filter_by_lua_block {
+                ngx.var.log_audit = true
                 set_response_body()
             }
 
@@ -90,7 +99,6 @@ http {
                 auth.validate_jwt_or_login();
             }
             set $response_body 'redacted binary data';
-            set $response_message '$remote_addr - $remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for $response_body'
 
             proxy_set_header  X-DCOS-OAUTH-USER $uid;
             proxy_set_header  X-DCOS-OAUTH-GROUPS $groups;
@@ -108,7 +116,6 @@ http {
                 set_user_from_embed_token_payload(ngx.var.token_payload)
             }
             set $response_body 'redacted binary data';
-            set $response_message '$remote_addr - $remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for $response_body'
 
             proxy_read_timeout ${PROXY_READ_TIMEOUT}s;
             proxy_pass http://127.0.0.1:3000;
@@ -122,6 +129,7 @@ http {
             # 1 -> dashboard or card; 2 -> header; 3 -> payload; 4 -> signature
             set $token_payload $3;
             body_filter_by_lua_block {
+                ngx.var.log_audit = true
                 set_user_from_embed_token_payload(ngx.var.token_payload)
                 set_response_body()
             }
