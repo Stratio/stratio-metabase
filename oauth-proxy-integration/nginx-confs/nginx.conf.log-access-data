@@ -9,15 +9,9 @@ events {
 http {
 
     log_format main $EXTRA_NGINX_LOG_PROPERTIES '$time_iso8601 AUDIT $uid 1 nginx access_log'
-                        ' {"@message":"$remote_addr - $remote_user [$time_local] $request'
-                        ' $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for $response_body"}';
-
-    log_format secured $EXTRA_NGINX_LOG_PROPERTIES '$time_iso8601 AUDIT $uid 1 nginx access_log'
                     ' {"@message":"$response_message"}';
 
     access_log /dev/stdout main;
-
-    access_log /dev/stdout secured if=$log_audit;
 
     gzip_types
         text/css
@@ -48,7 +42,8 @@ http {
             local response_body = string.sub(ngx.arg[1], 1, -1)
             ngx.ctx.buffered = (ngx.ctx.buffered or "") .. response_body
             if ngx.arg[2] then
-                ngx.var.response_message = ngx.var.remote_addr .. "-" .. ngx.var.remote_user .. "[" .. ngx.var.time_local .. "]" .. ngx.var.request .. ngx.var.status .. ngx.var.body_bytes_sent .. ngx.var.http_referer .. ngx.var.http_user_agent .. ngx.var.http_x_forwarded_for .. ngx.ctx.buffered
+                ngx.var.response_body = ngx.ctx.buffered
+                ngx.var.response_message = "WITH RESPONSE BODY" .. (ngx.var.remote_addr or "") .. " - " .. (ngx.var.remote_user or "") .. " [" .. (ngx.var.time_local or "") .. "] " .. (ngx.var.request or "") .. " " .. (ngx.var.status or "") .. " " .. (ngx.var.body_bytes_sent or "") .. " " .. (ngx.var.http_referer or "") .. " " .. (ngx.var.http_user_agent or "") .. " " .. (ngx.var.http_x_forwarded_for or "") .. " " .. (ngx.var.response_body or "")
             end
         end
 
@@ -68,8 +63,7 @@ http {
         set $tenant '';
         set $err '';
         set $response_body '-';
-        set $response_message '*******';
-        set $log_audit false;
+        set $response_message '$remote_addr - $remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for $response_body';
 
 
         location / {
@@ -79,7 +73,6 @@ http {
                 auth.validate_jwt_or_login();
             }
             body_filter_by_lua_block {
-                ngx.var.log_audit = true
                 set_response_body()
             }
 
@@ -98,7 +91,7 @@ http {
             access_by_lua_block {
                 auth.validate_jwt_or_login();
             }
-            set $response_body 'redacted binary data';
+            set $response_message '$remote_addr - $remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for redacted binary data';
 
             proxy_set_header  X-DCOS-OAUTH-USER $uid;
             proxy_set_header  X-DCOS-OAUTH-GROUPS $groups;
@@ -115,7 +108,7 @@ http {
             body_filter_by_lua_block {
                 set_user_from_embed_token_payload(ngx.var.token_payload)
             }
-            set $response_body 'redacted binary data';
+            set $response_message '$remote_addr - $remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for redacted binary data';
 
             proxy_read_timeout ${PROXY_READ_TIMEOUT}s;
             proxy_pass http://127.0.0.1:3000;
@@ -129,7 +122,6 @@ http {
             # 1 -> dashboard or card; 2 -> header; 3 -> payload; 4 -> signature
             set $token_payload $3;
             body_filter_by_lua_block {
-                ngx.var.log_audit = true
                 set_user_from_embed_token_payload(ngx.var.token_payload)
                 set_response_body()
             }
@@ -180,6 +172,7 @@ http {
     # TODO: once we open the health location these might not be needed
     server {
         listen 3009;
+        set $response_message '$remote_addr - $remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for';
 
         location "/api/health" {
             proxy_pass http://127.0.0.1:3000;
