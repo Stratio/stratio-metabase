@@ -38,6 +38,9 @@ http {
 
         local DATA_AUDIT_ENCRYPTION_KEY_PASS = os.getenv("DATA_AUDIT_ENCRYPTION_KEY_PASS")
         local DATA_AUDIT_ENCRYPTION_IV_PASS = os.getenv("DATA_AUDIT_ENCRYPTION_IV_PASS")
+        local HEADER_ENCRYPT_TRUE = '{encrypted=true, text='
+        local HEADER_ENCRYPT_FALSE = '{encrypted=false, text='
+        local FOOTER_ENCRYPT_MESSAGE = '}'
 
         function encrypt_response_message()
             local response_body = string.sub(ngx.arg[1], 1, -1)
@@ -55,14 +58,14 @@ http {
                 local aes_256_cbc_with_iv, aes_error = aes:new(DATA_AUDIT_ENCRYPTION_KEY_PASS, nil, aes.cipher(256,"cbc"), {iv=DATA_AUDIT_ENCRYPTION_IV_PASS})
                 if aes_error then
                     ngx.log(ngx.ERR,"AES error:" .. aes_error)
-                    ngx.var.response_message = 'Encryption failed'
+                    ngx.var.response_message = HEADER_ENCRYPT_FALSE .. 'Encryption failed' .. FOOTER_ENCRYPT_MESSAGE
                 else
                     local encrypted_response_message, encrypt_error = aes_256_cbc_with_iv:encrypt(response_message_without_encrypt)
                     if encrypt_error then
                         ngx.log(ngx.ERR,"Encryption error:" .. encrypt_error)
-                        ngx.var.response_message = 'Encryption failed'
+                        ngx.var.response_message = HEADER_ENCRYPT_FALSE .. 'Encryption failed' .. FOOTER_ENCRYPT_MESSAGE
                     else
-                        ngx.var.response_message = b64.encode_base64url(encrypted_response_message)
+                        ngx.var.response_message = HEADER_ENCRYPT_TRUE .. b64.encode_base64url(encrypted_response_message) .. FOOTER_ENCRYPT_MESSAGE
                     end
                 end
             end

@@ -10,6 +10,7 @@
 * [ROCK-3762] Support deploy discovery into k8s (without security and SSO)
 * [ROCK-3933] Open public endpoints in sso proxy
 * [ROCK-3933] Option to log data accessed by users
+* [ROCK-4293] Encrypt responses of data audit
 
 ## 0.39.0-f6c1d05 (Built: September 23, 2020 | Released: September 25, 2020)
 
