@@ -52,10 +52,19 @@ http {
                 local response_message_without_encrypt = (ngx.var.remote_addr or "") .. " - " .. (ngx.var.remote_user or "") .. " [" .. (ngx.var.time_local or "") .. "] " .. (ngx.var.request or "") .. " " .. (ngx.var.status or "") .. " " .. (ngx.var.body_bytes_sent or "") .. " " .. (ngx.var.http_referer or "") .. " " .. (ngx.var.http_user_agent or "") .. " " .. (ngx.var.http_x_forwarded_for or "") .. " " .. (final_response_body or "")
 
                 -- AES 256 CBC with IV and no SALT
-                local aes_256_cbc_with_iv = assert(aes:new(DATA_AUDIT_ENCRYPTION_KEY_PASS, nil, aes.cipher(256,"cbc"), {iv=DATA_AUDIT_ENCRYPTION_IV_PASS}))
-                local encrypted_response_message = aes_256_cbc_with_iv:encrypt(response_message_without_encrypt)
-
-                ngx.var.response_message = b64.encode_base64url(encrypted_response_message)
+                local aes_256_cbc_with_iv, aes_error = aes:new(DATA_AUDIT_ENCRYPTION_KEY_PASS, nil, aes.cipher(256,"cbc"), {iv=DATA_AUDIT_ENCRYPTION_IV_PASS})
+                if aes_error then
+                    ngx.log(ngx.ERR,"AES error:" .. aes_error)
+                    ngx.var.response_message = 'Encryption failed'
+                else
+                    local encrypted_response_message, encrypt_error = aes_256_cbc_with_iv:encrypt(response_message_without_encrypt)
+                    if encrypt_error then
+                        ngx.log(ngx.ERR,"Encryption error:" .. encrypt_error)
+                        ngx.var.response_message = 'Encryption failed'
+                    else
+                        ngx.var.response_message = b64.encode_base64url(encrypted_response_message)
+                    end
+                end
             end
         end
 
