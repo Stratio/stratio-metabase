@@ -37,18 +37,21 @@ http {
         b64  = require "ngx.base64"
 
         local DATA_AUDIT_ENCRYPTION_KEY_PASS = os.getenv("DATA_AUDIT_ENCRYPTION_KEY_PASS")
-        ngx.log(ngx.DEBUG,"DATA_AUDIT_ENCRYPTION_KEY_PASS-->" .. DATA_AUDIT_ENCRYPTION_KEY_PASS)
         local DATA_AUDIT_ENCRYPTION_IV_PASS = os.getenv("DATA_AUDIT_ENCRYPTION_IV_PASS")
-        ngx.log(ngx.DEBUG,"DATA_AUDIT_ENCRYPTION_IV_PASS-->" .. DATA_AUDIT_ENCRYPTION_IV_PASS)
 
-        function set_response_body()
+        function encrypt_response_message()
             local response_body = string.sub(ngx.arg[1], 1, -1)
             ngx.ctx.buffered = (ngx.ctx.buffered or "") .. response_body
             if ngx.arg[2] then
-                local final_response_body = ngx.ctx.buffered
+                local final_response_body
+                if ngx.var.isBinary == "true" then
+                    final_response_body = 'redacted binary data'
+                else
+                    final_response_body = ngx.ctx.buffered
+                end
                 local response_message_without_encrypt = (ngx.var.remote_addr or "") .. " - " .. (ngx.var.remote_user or "") .. " [" .. (ngx.var.time_local or "") .. "] " .. (ngx.var.request or "") .. " " .. (ngx.var.status or "") .. " " .. (ngx.var.body_bytes_sent or "") .. " " .. (ngx.var.http_referer or "") .. " " .. (ngx.var.http_user_agent or "") .. " " .. (ngx.var.http_x_forwarded_for or "") .. " " .. (final_response_body or "")
 
-               -- AES 256 CBC with IV and no SALT
+                -- AES 256 CBC with IV and no SALT
                 local aes_256_cbc_with_iv = assert(aes:new(DATA_AUDIT_ENCRYPTION_KEY_PASS, nil, aes.cipher(256,"cbc"), {iv=DATA_AUDIT_ENCRYPTION_IV_PASS}))
                 local encrypted_response_message = aes_256_cbc_with_iv:encrypt(response_message_without_encrypt)
 
@@ -72,6 +75,7 @@ http {
         set $tenant '';
         set $err '';
         set $response_body '-';
+        set $isBinary false;
         set $response_message '$remote_addr - $remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for $response_body';
 
 
@@ -82,7 +86,7 @@ http {
                 auth.validate_jwt_or_login();
             }
             body_filter_by_lua_block {
-                set_response_body()
+                encrypt_response_message()
             }
 
             proxy_set_header  X-DCOS-OAUTH-USER $uid;
@@ -100,8 +104,10 @@ http {
             access_by_lua_block {
                 auth.validate_jwt_or_login();
             }
-            set $response_message '$remote_addr - $remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for redacted binary data';
-
+            body_filter_by_lua_block {
+                ngx.var.isBinary = true
+                encrypt_response_message()
+            }
             proxy_set_header  X-DCOS-OAUTH-USER $uid;
             proxy_set_header  X-DCOS-OAUTH-GROUPS $groups;
             proxy_set_header  X-DCOS-OAUTH-TENANT $tenant;
@@ -116,9 +122,9 @@ http {
             set $token_payload $3;
             body_filter_by_lua_block {
                 set_user_from_embed_token_payload(ngx.var.token_payload)
+                ngx.var.isBinary = true
+                encrypt_response_message()
             }
-            set $response_message '$remote_addr - $remote_user [$time_local] $request $status $body_bytes_sent $http_referer $http_user_agent $http_x_forwarded_for redacted binary data';
-
             proxy_read_timeout ${PROXY_READ_TIMEOUT}s;
             proxy_pass http://127.0.0.1:3000;
         }
@@ -132,7 +138,7 @@ http {
             set $token_payload $3;
             body_filter_by_lua_block {
                 set_user_from_embed_token_payload(ngx.var.token_payload)
-                set_response_body()
+                encrypt_response_message()
             }
 
             # we do not want to recived gzipped data from the backend since the logged body will be nonsense
