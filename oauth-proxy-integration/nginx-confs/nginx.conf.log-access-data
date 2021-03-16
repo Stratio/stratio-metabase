@@ -34,19 +34,25 @@ http {
         auth = require "auth".init()
         jwt  = require "resty.jwt"
         aes  = require "resty.aes"
+        b64  = require "ngx.base64"
 
         local DATA_AUDIT_ENCRYPTION_KEY_PASS = os.getenv("DATA_AUDIT_ENCRYPTION_KEY_PASS")
+        ngx.log(ngx.DEBUG,"DATA_AUDIT_ENCRYPTION_KEY_PASS-->" .. DATA_AUDIT_ENCRYPTION_KEY_PASS)
         local DATA_AUDIT_ENCRYPTION_IV_PASS = os.getenv("DATA_AUDIT_ENCRYPTION_IV_PASS")
+        ngx.log(ngx.DEBUG,"DATA_AUDIT_ENCRYPTION_IV_PASS-->" .. DATA_AUDIT_ENCRYPTION_IV_PASS)
 
         function set_response_body()
             local response_body = string.sub(ngx.arg[1], 1, -1)
             ngx.ctx.buffered = (ngx.ctx.buffered or "") .. response_body
             if ngx.arg[2] then
-                ngx.var.response_body = ngx.ctx.buffered
-                ngx.var.response_message = (ngx.var.remote_addr or "") .. " - " .. (ngx.var.remote_user or "") .. " [" .. (ngx.var.time_local or "") .. "] " .. (ngx.var.request or "") .. " " .. (ngx.var.status or "") .. " " .. (ngx.var.body_bytes_sent or "") .. " " .. (ngx.var.http_referer or "") .. " " .. (ngx.var.http_user_agent or "") .. " " .. (ngx.var.http_x_forwarded_for or "") .. " " .. (ngx.var.response_body or "")
-                -- Trazas
-                ngx.log(ngx.DEBUG,"DATA_AUDIT_ENCRYPTION_KEY_PASS-->" .. DATA_AUDIT_ENCRYPTION_KEY_PASS)
-                ngx.log(ngx.DEBUG,"DATA_AUDIT_ENCRYPTION_IV_PASS-->" .. DATA_AUDIT_ENCRYPTION_IV_PASS)
+                local final_response_body = ngx.ctx.buffered
+                local response_message_without_encrypt = (ngx.var.remote_addr or "") .. " - " .. (ngx.var.remote_user or "") .. " [" .. (ngx.var.time_local or "") .. "] " .. (ngx.var.request or "") .. " " .. (ngx.var.status or "") .. " " .. (ngx.var.body_bytes_sent or "") .. " " .. (ngx.var.http_referer or "") .. " " .. (ngx.var.http_user_agent or "") .. " " .. (ngx.var.http_x_forwarded_for or "") .. " " .. (final_response_body or "")
+
+               -- AES 256 CBC with IV and no SALT
+                local aes_256_cbc_with_iv = assert(aes:new(DATA_AUDIT_ENCRYPTION_KEY_PASS, nil, aes.cipher(256,"cbc"), {iv=DATA_AUDIT_ENCRYPTION_IV_PASS}))
+                local encrypted_response_message = aes_256_cbc_with_iv:encrypt(response_message_without_encrypt)
+
+                ngx.var.response_message = b64.encode_base64url(encrypted_response_message)
             end
         end
 
