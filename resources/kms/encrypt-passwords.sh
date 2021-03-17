@@ -1,8 +1,7 @@
 #!/bin/bash
 
-INFO "Obtaining passwords to encrypt data audit"
-
 if [[ "$LOG_ACCESS_DATA" = "true" ]]; then
+  INFO "Obtaining passwords to encrypt data audit"
   INFO "Log data audit enabled, getting encrypt passwords"
 
   # Get passwords to encrypt logs of data audit as $DATA_AUDIT_ENCRYPTION-KEY_PASS and $DATA_AUDIT_ENCRYPTION-IV_PASS
@@ -31,6 +30,7 @@ if [[ "$LOG_ACCESS_DATA" = "true" ]]; then
       ERROR "Encryption IV pass download failed"
       exit 1
   fi
+  INFO "Passwords to encrypt data audit: OK"
 fi
 
-INFO "Passwords to encrypt data audit: OK"
+
