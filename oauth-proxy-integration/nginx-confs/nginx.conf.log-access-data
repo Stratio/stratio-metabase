@@ -38,9 +38,9 @@ http {
 
         local DATA_AUDIT_ENCRYPTION_KEY_PASS = os.getenv("DATA_AUDIT_ENCRYPTION_KEY_PASS")
         local DATA_AUDIT_ENCRYPTION_IV_PASS = os.getenv("DATA_AUDIT_ENCRYPTION_IV_PASS")
-        local HEADER_ENCRYPT_TRUE = '{encrypted=true, text='
-        local HEADER_ENCRYPT_FALSE = '{encrypted=false, text='
-        local FOOTER_ENCRYPT_MESSAGE = '}'
+        local HEADER_ENCRYPT_TRUE = '{\'encrypted\':\'true\', \'text\':\''
+        local HEADER_ENCRYPT_FALSE = '{\'encrypted\':\'false\', \'text\':\''
+        local FOOTER_ENCRYPT_MESSAGE = '\'}'
 
         function encrypt_response_message()
             local response_body = string.sub(ngx.arg[1], 1, -1)
