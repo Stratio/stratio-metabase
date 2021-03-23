@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.40.0 (March 01, 2021)
+## 0.40.0 (March 23, 2021)
 
 * Restoring impersonation in queries related to Crossdata databases and tables
 * Update Crossdata JDBC driver to 2.19.0-809dcaf version
