@@ -13,6 +13,7 @@ hose {
     INSTALLTIMEOUT = 90
     PKGMODULESNAMES = ['discovery']
     FREESTYLE_BRANCHING = true
+    UPSTREAM_VERSION = '0.38.1'
 
     DEV = { config ->
         doDockers(
