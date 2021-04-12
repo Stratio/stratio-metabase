@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.38.1-0.1.0 (upcoming)
+## 0.38.1-0.1.0 (April 12, 2021)
 
 * Fork based on Metabase 0.38.1
 * Integration with Stratio Jenkins
