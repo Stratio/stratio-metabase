@@ -50,7 +50,7 @@
       {:first_name user
        :last_name ""
        :is_superuser (admin? groups)
-       :email (str user dummy-email-domain)
+       :email (u/lower-case-en (str user dummy-email-domain))
        :login_attributes {:groups groups}}
       {:error (str "User " user " not allowed")})))
 
@@ -155,6 +155,15 @@
   (fn [request respond raise]
     (handler request (comp respond add-username-response-header) raise)))
 
+(defn- delete-invalid-session-cookie
+  [handler]
+  (letfn [(delete-cookie-if-no-auth [response]
+            (if (= (:status response) 401)
+              (mw.session/clear-session-cookie response)
+              response))]
+    (fn [request respond raise]
+      (handler request (comp respond delete-cookie-if-no-auth) raise))))
+
 (defn auto-login
   [handler]
   (if-not st.config/should-auto-login?
@@ -163,7 +172,8 @@
     (-> handler
         wrap-with-auto-login-session
         forbid-email-login
-        wrap-with-username-header)))
+        wrap-with-username-header
+        delete-invalid-session-cookie)))
 
 (defn- editing-user-name?
   [{:keys [:uri :request-method :body]}]
