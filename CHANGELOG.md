@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.38.1-0.2.0 (upcoming)
+
+* Pending changelog
+
 ## 0.38.1-0.1.1 (April 28, 2021)
 
 * Fix: autologin for uppercase usernames
