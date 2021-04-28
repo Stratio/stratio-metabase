@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.38.1-0.1.1 (upcoming)
+## 0.38.1-0.1.1 (April 28, 2021)
 
 * Fix: autologin for uppercase usernames
 * Fix: delete invalid session cookie with 401s
