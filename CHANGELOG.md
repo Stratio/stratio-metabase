@@ -2,7 +2,7 @@
 
 ## 0.38.1-0.2.0 (upcoming)
 
-* Pending changelog
+* [ROCK-4533] Dynamic var telling if request is for DB syncing.
 
 ## 0.38.1-0.1.1 (April 28, 2021)
 
