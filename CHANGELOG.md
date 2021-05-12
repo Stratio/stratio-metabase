@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.38.1-0.1.1 (upcoming)
+## 0.38.1-0.2.0 (upcoming)
+
+* [ROCK-4533] Dynamic var telling if request is for DB syncing.
+
+## 0.38.1-0.1.1 (April 28, 2021)
 
 * Fix: autologin for uppercase usernames
 * Fix: delete invalid session cookie with 401s
