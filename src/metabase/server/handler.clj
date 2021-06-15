@@ -38,10 +38,10 @@
    #'wrap-params                             ; parses GET and POST params as :query-params/:form-params and both as :params
    #'mw.misc/maybe-set-site-url              ; set the value of `site-url` if it hasn't been set yet
    #'mw.session/bind-current-user            ; Binds *current-user* and *current-user-id* if :metabase-user-id is non-nil
-   #'mw.session/wrap-current-user-info       ; looks for :metabase-session-id and sets :metabase-user-id and other info if Session ID is valid
    ;; < STRATIO - add custom middleware
    #'st.mw/stratio-middleware                ; auto-login, forbid email login, add username in response header...
    ;; STRATIO />
+   #'mw.session/wrap-current-user-info       ; looks for :metabase-session-id and sets :metabase-user-id and other info if Session ID is valid
    #'mw.session/wrap-session-id              ; looks for a Metabase Session ID and assoc as :metabase-session-id
    #'mw.auth/wrap-api-key                    ; looks for a Metabase API Key on the request and assocs as :metabase-api-key
    #'wrap-cookies                            ; Parses cookies in the request map and assocs as :cookies
