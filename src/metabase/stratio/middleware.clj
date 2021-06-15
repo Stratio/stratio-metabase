@@ -24,8 +24,7 @@
 (defn- editing-user-name?
   [{:keys [:uri :request-method :body]}]
   (when (and (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put))
-    (or (apply not= (map :first_name [@api/*current-user* body]))
-        (apply not= (map :last_name  [@api/*current-user* body])))))
+    (apply not= (map :first_name [@api/*current-user* body]))))
 
 (defn- forbid-email-login
   "Midleware that checks for email login request and responds with 403 to those"
