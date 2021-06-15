@@ -1,5 +1,6 @@
 (ns metabase.stratio.middleware
   (:require
+   [clojure.string :as str]
    [clojure.tools.logging :as log]
    [metabase.api.common :as api]
    [metabase.server.middleware.session :as mw.session]
@@ -26,6 +27,13 @@
   (when (and (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put))
     (apply not= (map :first_name [@api/*current-user* body]))))
 
+(defn- add-session-to-request-and-response
+  [handler session]
+  (fn [request respond raise]
+    (handler (assoc request :metabase-session-id (-> session :id str))
+             #(respond (mw.session/set-session-cookie request % session))
+             raise)))
+
 (defn- forbid-email-login
   "Midleware that checks for email login request and responds with 403 to those"
   [handler]
@@ -34,25 +42,30 @@
       (respond {:status 403, :body "Email login is disabled"})
       (handler request respond raise))))
 
-(defn- wrap-with-auto-login-session
-  "Middleware that checks if the metabase session id has been included in the request (this is done
+(defn wrap-with-auto-login-session
+  "Middleware that checks if the metabase user id has been included in the request (this is done
   by a previous middleware). If it is not included we look for the user info in the requests headers
-  (either user/groups remoste headers or jwt token), create the user if needed, create the session,
-  add it to the request map and set the session cookie in the response."
+  (either user/groups remote headers or jwt token), create the user if needed, create the session,
+  add it to the request map, set the session cookie in the response, and add the user info by
+  calling the metabase middleware. "
   [handler]
-  (fn [{uri :uri, :as request} respond raise]
-    ;; if we are not requesting current user, or we already have a session-id, we do not autologin
-    (if (or (:metabase-session-id request) (not= uri "/api/user/current"))
+  (fn [{uri :uri :as request} respond raise]
+    (if (or (:metabase-user-id request) (not (str/starts-with? uri "/api")))
       (handler request respond raise)
       (let [{:keys [session first_name error]} (st.auth/create-session-from-headers! request)]
+        (log/debug "No user info found associated to session, trying to auto-login...")
         (if error
           (do
             (log/error "Could not perform auto-login. Error: " error)
             (handler request respond raise))
-          (let [wrap-request (assoc request :metabase-session-id (-> session :id str))
-                wrap-respond #(respond (mw.session/set-session-cookie request % session))]
+          (let [wrapped-handler (-> handler
+                                    mw.session/wrap-current-user-info
+                                    (add-session-to-request-and-response session))]
             (log/info "User" first_name "auto-logged-in through headers")
-            (handler wrap-request wrap-respond raise)))))))
+            (log/debug "Request triggering the auto-login:"
+                       (str/upper-case (name (:request-method request)))
+                       (:uri request))
+            (wrapped-handler request respond raise)))))))
 
 (defn- wrap-with-username-header
   "Middleware to add a reponse header with the current user name (to be used by the nginx access log)"
@@ -61,16 +74,6 @@
             (update response :headers merge {"Metabase-User" (get @api/*current-user* :first_name "-")}))]
     (fn [request respond raise]
       (handler request (comp respond add-username-response-header) raise))))
-
-(defn- delete-invalid-session-cookie
-  "Middleware that deletes the session cookie whenever the handler responds with a 401"
-  [handler]
-  (letfn [(delete-cookie-if-no-auth [response]
-            (if (= (:status response) 401)
-              (mw.session/clear-session-cookie response)
-              response))]
-    (fn [request respond raise]
-      (handler request (comp respond delete-cookie-if-no-auth) raise))))
 
 (defn- bind-is-sync-db-request-info
   "Middleware that binds the dynamic variable *is-sync-request* to true if
@@ -92,8 +95,7 @@
   [handler]
   (-> handler
       wrap-with-auto-login-session
-      forbid-email-login
-      delete-invalid-session-cookie))
+      forbid-email-login))
 
 (def stratio-middleware
   (if st.config/should-auto-login?
