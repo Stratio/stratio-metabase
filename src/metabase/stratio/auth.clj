@@ -47,7 +47,7 @@
       {:first_name user
        :last_name ""
        :is_superuser (admin? groups)
-       :email (u/lower-case-en (str user dummy-email-domain))
+       :email (if (u/email? user) user (u/lower-case-en (str user dummy-email-domain)))
        :login_attributes {:groups groups}}
       {:error (str "User " user " not allowed")})))
 
@@ -77,8 +77,8 @@
       (log/error "Could not create and sync groups. Error:" (st.util/stack-trace e)))))
 
 (defn- fetch-or-create-user!
-  [{email :email {groups :groups} :login_attributes, :as allowed-user}]
-  (or (if-let [user-in-db (db/select-one [User :id :last_login :is_superuser] :email email)]
+  [{first_name :first_name {groups :groups} :login_attributes, :as allowed-user}]
+  (or (if-let [user-in-db (db/select-one [User :id :last_login :is_superuser] :first_name first_name)]
         (do
           ;; Check if superuser status has changed and update if necessary
           (if (or (apply not= (map :is_superuser     [user-in-db allowed-user]))
