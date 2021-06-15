@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.38.1-0.2.0 (May 13, 2021)
+## 0.38.1-0.2.1 (upcoming)
 
 * [ROCK-XXXX] Fix: Allow emails as values of user header in auto-login
 
