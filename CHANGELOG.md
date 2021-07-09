@@ -1,6 +1,10 @@
 # Changelog
 
-## 0.38.1-0.2.1 (upcoming)
+## 0.38.1-0.2.2 (upcoming)
+
+* [ROCK-NA] Fix: Do not try to auto-login in public api endpoints
+
+## 0.38.1-0.2.1 (June 15, 2021)
 
 * [ROCK-4767] Fix: Allow emails as values of user header in auto-login
 * [ROCK-4767] Fix: Automatic auto-login with expired sessions

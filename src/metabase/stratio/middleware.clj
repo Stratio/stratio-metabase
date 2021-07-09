@@ -10,6 +10,9 @@
 
 (def ^:dynamic ^Boolean *is-sync-request?* false)
 
+(def public-api-endpoints
+  ["/api/embed" "/api/geojson" "/api/public" "/api/setup" "/api/util" "/api/session/properties" "/api/health"])
+
 (defn- email-login-request?
   [{:keys [:request-method :uri]}]
   (and (= uri "/api/session") (= request-method :post)))
@@ -42,6 +45,11 @@
       (respond {:status 403, :body "Email login is disabled"})
       (handler request respond raise))))
 
+(defn- public-endpoint?
+  [uri]
+  (or (not (str/starts-with? uri "/api"))
+      (some (partial str/starts-with? uri) public-api-endpoints)))
+
 (defn wrap-with-auto-login-session
   "Middleware that checks if the metabase user id has been included in the request (this is done
   by a previous middleware). If it is not included we look for the user info in the requests headers
@@ -50,7 +58,7 @@
   calling the metabase middleware. "
   [handler]
   (fn [{uri :uri :as request} respond raise]
-    (if (or (:metabase-user-id request) (not (str/starts-with? uri "/api")))
+    (if (or (:metabase-user-id request) (public-endpoint? uri))
       (handler request respond raise)
       (let [{:keys [session first_name error]} (st.auth/create-session-from-headers! request)]
         (log/debug "No user info found associated to session, trying to auto-login...")
