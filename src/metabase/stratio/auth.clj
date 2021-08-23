@@ -11,6 +11,7 @@
              [config :as st.config]
              [header-user-info :refer [http-headers->user-info]]
              [util :as st.util]]
+            [metabase.server.request.util :as request.u]
             [metabase.util :as u]
             [toucan.db :as db]
             [toucan.hydrate :refer [hydrate]])
@@ -71,8 +72,9 @@
           existing-group-ids   (->> group-names
                                     (map group-name->group-id)
                                     (filter some?))
-          user-group-ids       (concat existing-group-ids created-group-ids)]
-      (integrations/sync-group-memberships! user-id user-group-ids))
+          user-group-ids       (concat existing-group-ids created-group-ids)
+          all-metabase-groups  (db/select-ids PermissionsGroup)]
+      (integrations/sync-group-memberships! user-id user-group-ids all-metabase-groups false))
     (catch Exception e
       (log/error "Could not create and sync groups. Error:" (st.util/stack-trace e)))))
 
@@ -102,7 +104,7 @@
     (if (:error allowed-user)
       allowed-user
       (try
-        (let [session (session/create-session! :sso (fetch-or-create-user! allowed-user))]
+        (let [session (session/create-session! :sso (fetch-or-create-user! allowed-user) (request.u/device-info request))]
           (assoc allowed-user :session session))
         (catch Exception e
           {:error (st.util/stack-trace e)})))))
