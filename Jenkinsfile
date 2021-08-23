@@ -13,7 +13,7 @@ hose {
     INSTALLTIMEOUT = 90
     PKGMODULESNAMES = ['stratio-metabase-builder']
     FREESTYLE_BRANCHING = true
-    UPSTREAM_VERSION = '0.38.1'
+    UPSTREAM_VERSION = '0.40.2'
 
     DEV = { config ->
         doDockers(
