@@ -88,11 +88,13 @@ RUN /tmp/linux-install-1.10.1.708.sh
 # Copy local .m2 metabase-core to be able to build drivers
 COPY --from=builder /root/.m2/repository/metabase-core /root/.m2/repository/metabase-core
 
-# Copy metabase source files (needed to calculate checksum to skip rebuild of matabase-core and uberjar)
+# Copy metabase source files (needed to calculate checksum to skip rebuild of metabase-core and uberjar)
+# The files needed are those listed in the function (defn- metabase-source-paths [] ...)
+# in bin/build-drivers/src/build_drivers/checksum.clj
 COPY --from=builder /app/source/project.clj             /app/source/project.clj
 COPY --from=builder /app/source/src                     /app/source/src
 COPY --from=builder /app/source/enterprise/backend/src  /app/source/enterprise/backend/src
-COPY --from=builder /app/source/backend/mbql            /app/source/backend/mbql
+COPY --from=builder /app/source/shared/src              /app/source/shared/src
 
 # Copy metabase build and start scripts
 COPY --from=builder /app/source/bin  /app/source/bin
