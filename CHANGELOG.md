@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.38.1-0.2.3 (July 09, 2021)
+## 0.38.1-0.2.3 (upcoming)
 
 * [ROCK-NA] Fix: remove vulnerabilities (commons-compress)
 
