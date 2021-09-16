@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.38.1-0.2.3 (upcoming)
+
+* [ROCK-NA] Fix: remove vulnerabilities (commons-compress)
+
 ## 0.38.1-0.2.2 (July 09, 2021)
 
 * [ROCK-NA] Fix: Do not try to auto-login in public api endpoints

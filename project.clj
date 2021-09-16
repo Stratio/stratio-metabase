@@ -123,8 +123,11 @@
                  org.yaml/snakeyaml]]
    [javax.xml.bind/jaxb-api "2.4.0-b180830.0359"]                     ; add the `javax.xml.bind` classes which we're still using but were removed in Java 11
    [kixi/stats "0.4.4" :exclusions [org.clojure/data.avl]]            ; Various statistic measures implemented as transducers
+   ;; < STRATIO - fix vulnerabilities (common-compress)
+   ;; [me.raynes/fs "1.4.6"]
    [me.raynes/fs "1.4.6"                                              ; Filesystem tools
     :exclusions [org.apache.commons/commons-compress]]
+   ;; STRATIO />
    [medley "1.3.0"]                                                   ; lightweight lib of useful functions
    [metabase/connection-pool "1.1.1"]                                 ; simple wrapper around C3P0. JDBC connection pools
    ;; < STRATIO - fix vulnerabilities (cryptacular)
@@ -135,7 +138,7 @@
    [net.redhogs.cronparser/cron-parser-core "3.4"                     ; describe Cron schedule in human-readable language
     :exclusions [org.slf4j/slf4j-api joda-time]]                      ; exclude joda time 2.3 which has outdated timezone information
    [net.sf.cssbox/cssbox "4.12" :exclusions [org.slf4j/slf4j-api]]    ; HTML / CSS rendering
-   [org.apache.commons/commons-compress "1.20"]                       ; compression utils
+   [org.apache.commons/commons-compress "1.21"]                       ; compression utils
    [org.apache.commons/commons-lang3 "3.10"]                          ; helper methods for working with java.lang stuff
    [org.apache.logging.log4j/log4j-api "2.15.0"]                      ; apache logging framework
    [org.apache.logging.log4j/log4j-1.2-api "2.15.0"]                  ; add compatibility with log4j 1.2
