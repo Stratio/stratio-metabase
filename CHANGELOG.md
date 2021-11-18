@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.40.5-0.1.0 (upcoming)
+
+* [ROCK-5548] Upgrade metabase to 0.40.5
+
 ## 0.40.2-0.1.0 (August 27, 2021)
 
 * [ROCK-4939] Upgrade metabase to 0.40.2

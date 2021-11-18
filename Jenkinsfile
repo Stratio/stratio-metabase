@@ -8,7 +8,7 @@ hose {
     ATTIMEOUT = 90
     INSTALLTIMEOUT = 90
     FREESTYLE_BRANCHING = true
-    UPSTREAM_VERSION = '0.40.2'
+    UPSTREAM_VERSION = '0.40.5'
 
     DEV = { config ->
         doDockers(
