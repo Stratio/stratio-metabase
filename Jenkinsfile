@@ -1,20 +1,12 @@
-@Library('libpipelines@master') _
+@Library('libpipelines') _
 
 hose {
     EMAIL = 'rocket'
-    MODULE = 'discovery'
-    REPOSITORY = 'discovery'
-    SLACKTEAM = 'data-governance'
-    BUILDTOOL = 'make'
+    BUILDTOOL = 'docker'
     DEVTIMEOUT = 120
     RELEASETIMEOUT = 80
-    BUILDTOOLVERSION = '3.5.0'
-    NEW_VERSIONING = 'true'
     ATTIMEOUT = 90
     INSTALLTIMEOUT = 90
-    ANCHORE_TEST = false
-    ANCHORE_POLICY = 'discovery'
-    PKGMODULESNAMES = ['discovery']
 
     DEV = { config ->
         doDocker(conf: config, skipOnPR: false)
