@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.40.5-0.1.0-f532eb1 (Built: November 22, 2021 | Pre-release)
+
+* [ROCK-5548] Upgrade metabase to 0.40.5
+
 ## 0.40.2-0.2.0 (upcoming)
 
 * Pending changelog
