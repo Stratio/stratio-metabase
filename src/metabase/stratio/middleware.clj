@@ -8,8 +8,9 @@
    [metabase.stratio
     [auth :as st.auth]
     [config :as st.config]]
-   [toucan.db :as db]))
+   [toucan.db :as db])
 
+  (:import java.util.UUID))
 
 (def ^:dynamic ^Boolean *is-sync-request?* false)
 
@@ -27,6 +28,12 @@
     (= request-method :post)
     (or (re-matches #"/api/database/[0-9]+/sync_schema" uri)
         (re-matches #"/api/database/[0-9]+/rescan_values" uri)))))
+
+(defn- subscription-request?
+  [{:keys [:uri :request-method :body]}]
+  (and (str/starts-with? uri "/api/pulse")
+       (contains? #{:post :put} request-method)
+       (:dashboard_id body)))
 
 (defn- editing-user-name?
   "The username of an existing user should never be edited"
@@ -57,7 +64,7 @@
   (or (not (str/starts-with? uri "/api"))
       (some (partial str/starts-with? uri) public-api-endpoints)))
 
-(defn wrap-with-auto-login-session
+(defn- wrap-with-auto-login-session
   "Middleware that checks if the metabase user id has been included in the request (this is done
   by a previous middleware). If it is not included we look for the user info in the requests headers
   (either user/groups remote headers or jwt token), create the user if needed, create the session,
@@ -127,3 +134,20 @@
       (if (editing-user-name? request)
         (respond {:status 403 :body "Editing user first name is forbidden"})
         (handler request respond raise)))))
+
+(defn unique-subscription-names
+  "Middleware to add a unique name to dashboard subscriptions.
+  It intercepts POST and PUT requests to /api/pulse where dashboard_id is defined in the body (dashaboard subscriptions).
+  Since the body of these requests always set the pulse name equal to the associated dashboard name we do the following:
+  In create POST requests we replace this name by a random UUID.
+  In update PUT requests we remove the :name key from the body so the random UUID set during creation is not overwriten."
+  [handler]
+  (fn [request respond raise]
+    (if (subscription-request? request)
+      (handler (case (:request-method request)
+                     :post (assoc-in request [:body :name] (str (UUID/randomUUID)))
+                     :put (update request :body #(dissoc % :name))
+                     request)
+               respond
+               raise)
+      (handler request respond raise))))

@@ -32,8 +32,9 @@
    #'mw.log/log-api-call
    #'mw.browser/ensure-browser-id-cookie     ; add cookie to identify browser; add `:browser-id` to the request
    #'mw.security/add-security-headers        ; Add HTTP headers to API responses to prevent them from being cached
-   ;; < STRATIO - auto login from headers info
+   ;; < STRATIO - auto login from headers info and unique subscription names
    #'st.mw/forbid-editing-username           ; when auto-login enabled, respond with a 403 requests to edit user name
+   #'st.mw/unique-subscription-names         ; we intercept pulse requests to have unique names of dashboard subscriptions
    ;; STRATIO />
    #'mw.json/wrap-json-body                  ; extracts json POST body and makes it avaliable on request
    #'mw.json/wrap-streamed-json-response     ; middleware to automatically serialize suitable objects as JSON in responses
