@@ -63,7 +63,13 @@
     :exclusions [org.clojure/clojure
                  org.clojure/clojurescript]]                          ; fixed length queue implementation, used in log buffering
    [amalloy/ring-gzip-middleware "0.1.4"]                             ; Ring middleware to GZIP responses if client can handle it
-   [aleph "0.4.6" :exclusions [org.clojure/tools.logging]]            ; Async HTTP library; WebSockets
+   ;; < STRATIO - fix vulnerabilities GHSA-mm9x-g8pc-w292 & GHSA-cqqj-4p63-rrmm
+   ;; [aleph "0.4.6" :exclusions [org.clojure/tools.logging]]            ; Async HTTP library; WebSockets
+   [aleph "0.4.6"                                                     ; Async HTTP library; WebSockets
+    :exclusions [org.clojure/tools.logging
+                 netty/netty-handler]]
+   [io.netty/netty-handler "4.1.70.Final"]
+   ;; STRATIO />
    [bigml/histogram "4.1.3"]                                          ; Histogram data structure
    [buddy/buddy-core "1.5.0"                                          ; various cryptograhpic functions
     :exclusions [commons-codec
@@ -148,21 +154,29 @@
    [org.apache.logging.log4j/log4j-liquibase "2.13.3"]                ; liquibase logging via log4j 2
    [org.apache.logging.log4j/log4j-slf4j-impl "2.13.3"]               ; allows the slf4j API to work with log4j 2
    [org.apache.poi/poi "5.0.0"]                                       ; Work with Office documents (e.g. Excel spreadsheets) -- newer version than one specified by Docjure
-   ;; < STRATIO - fix vulnerabilites (bump batik to 1.14)
+   ;; < STRATIO - fix vulnerabilites (bump batik to 1.14) & GHSA-j8wc-gxx9-82hx (bump xmlsec to 2.2.3)
    ;; [org.apache.poi/poi-ooxml "5.0.0"
    ;;  :exclusions [org.bouncycastle/bcprov-jdk15on
    ;;               org.bouncycastle/bcpkix-jdk15on]]
    [org.apache.poi/poi-ooxml "5.0.0"
     :exclusions [org.bouncycastle/bcprov-jdk15on
                  org.bouncycastle/bcpkix-jdk15on
-                 org.apache.xmlgraphics/batik-all]]
+                 org.apache.xmlgraphics/batik-all
+                 org.apache.santuario/xmlsec]]
    [org.apache.xmlgraphics/batik-all "1.14"]
+   [org.apache.santuario/xmlsec "2.2.3"]
    ;; STRATIO />
-   [org.apache.sshd/sshd-core "2.4.0"]                                ; ssh tunneling and test server
+   ;; < STRATIO - fix vulnerabilites GHSA-9279-7hph-r3xw
+   ;; [org.apache.sshd/sshd-core "2.4.0"]                                ; ssh tunneling and test server
+   [org.apache.sshd/sshd-core "2.7.0"]                                ; ssh tunneling and test server
+   ;; STRATIO />
    [org.bouncycastle/bcprov-jdk15on "1.68"]                           ; Bouncy Castle crypto library -- explicit version of BC specified to resolve illegal reflective access errors
    [org.bouncycastle/bcpkix-jdk15on "1.68"]
    [org.clojars.pntblnk/clj-ldap "0.0.16"]                            ; LDAP client
-   [org.eclipse.jetty/jetty-server "9.4.32.v20200930"]                ; We require JDK 8 which allows us to run Jetty 9.4, ring-jetty-adapter runs on 1.7 which forces an older version
+   ;; < STRATIO - fix vulnerabilites GHSA-26vr-8j45-3r4w
+   ;; [org.eclipse.jetty/jetty-server "9.4.32.v20200930"]                ; We require JDK 8 which allows us to run Jetty 9.4, ring-jetty-adapter runs on 1.7 which forces an older version
+   [org.eclipse.jetty/jetty-server "9.4.39.v20210325"]                ; We require JDK 8 which allows us to run Jetty 9.4, ring-jetty-adapter runs on 1.7 which forces an older version
+   ;; STRATIO />
    [org.flatland/ordered "1.5.9"]                                     ; ordered maps & sets
    [org.graalvm.js/js "21.0.0.2"]                                     ; JavaScript engine
    [org.graalvm.js/js-scriptengine "21.0.0.2"]
@@ -173,7 +187,10 @@
    [org.slf4j/slf4j-api "1.7.30"]                                     ; abstraction for logging frameworks -- allows end user to plug in desired logging framework at deployment time
    [org.tcrawley/dynapath "1.1.0"]                                    ; Dynamically add Jars (e.g. Oracle or Vertica) to classpath
    [org.threeten/threeten-extra "1.5.0"]                               ; extra Java 8 java.time classes like DayOfMonth and Quarter
-   [org.yaml/snakeyaml "1.23"]                                        ; YAML parser (required by liquibase)
+   ;; < STRATIO - fix vulnerabilites GHSA-rvwf-54qp-4r6v
+   ;; [org.yaml/snakeyaml "1.23"]                                        ; YAML parser (required by liquibase)
+   [org.yaml/snakeyaml "1.26"]                                        ; YAML parser (required by liquibase)
+   ;; STRATIO />
    [potemkin "0.4.5" :exclusions [riddley]]                           ; utility macros & fns
    [pretty "1.0.5"]                                                   ; protocol for defining how custom types should be pretty printed
    [prismatic/schema "1.1.12"]                                        ; Data schema declaration and validation library

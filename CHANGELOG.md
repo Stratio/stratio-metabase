@@ -2,7 +2,7 @@
 
 ## 0.40.5-0.2.0 (upcoming)
 
-* Pending changelog
+* [ROCK-5578] Fix new vulnerabilities
 
 ## 0.40.5-0.1.0 (November 22, 2021)
 
