@@ -147,12 +147,20 @@
    [org.apache.commons/commons-compress "1.21"]                       ; compression utils
    ;; STRATIO />
    [org.apache.commons/commons-lang3 "3.10"]                          ; helper methods for working with java.lang stuff
-   [org.apache.logging.log4j/log4j-api "2.13.3"]                      ; apache logging framework
-   [org.apache.logging.log4j/log4j-1.2-api "2.13.3"]                  ; add compatibility with log4j 1.2
-   [org.apache.logging.log4j/log4j-core "2.13.3"]                     ; apache logging framework
-   [org.apache.logging.log4j/log4j-jcl "2.13.3"]                      ; allows the commons-logging API to work with log4j 2
-   [org.apache.logging.log4j/log4j-liquibase "2.13.3"]                ; liquibase logging via log4j 2
-   [org.apache.logging.log4j/log4j-slf4j-impl "2.13.3"]               ; allows the slf4j API to work with log4j 2
+   ;; < STRATIO - fix vulnerabilities GHSA-jfh8-c2jp-5v3q (bump log4j 2.13.3 -> 2.15.0)
+   ;; [org.apache.logging.log4j/log4j-api "2.13.3"]                      ; apache logging framework
+   ;; [org.apache.logging.log4j/log4j-1.2-api "2.13.3"]                  ; add compatibility with log4j 1.2
+   ;; [org.apache.logging.log4j/log4j-core "2.13.3"]                     ; apache logging framework
+   ;; [org.apache.logging.log4j/log4j-jcl "2.13.3"]                      ; allows the commons-logging API to work with log4j 2
+   ;; [org.apache.logging.log4j/log4j-liquibase "2.13.3"]                ; liquibase logging via log4j 2
+   ;; [org.apache.logging.log4j/log4j-slf4j-impl "2.13.3"]               ; allows the slf4j API to work with log4j 2
+   [org.apache.logging.log4j/log4j-api "2.15.0"]                      ; apache logging framework
+   [org.apache.logging.log4j/log4j-1.2-api "2.15.0"]                  ; add compatibility with log4j 1.2
+   [org.apache.logging.log4j/log4j-core "2.15.0"]                     ; apache logging framework
+   [org.apache.logging.log4j/log4j-jcl "2.15.0"]                      ; allows the commons-logging API to work with log4j 2
+   [org.apache.logging.log4j/log4j-liquibase "2.15.0"]                ; liquibase logging via log4j 2
+   [org.apache.logging.log4j/log4j-slf4j-impl "2.15.0"]               ; allows the slf4j API to work with log4j 2
+   ;; STRATIO />
    [org.apache.poi/poi "5.0.0"]                                       ; Work with Office documents (e.g. Excel spreadsheets) -- newer version than one specified by Docjure
    ;; < STRATIO - fix vulnerabilites (bump batik to 1.14) & GHSA-j8wc-gxx9-82hx (bump xmlsec to 2.2.3)
    ;; [org.apache.poi/poi-ooxml "5.0.0"
