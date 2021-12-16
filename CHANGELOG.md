@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.38.6-0.2.3 (upcoming)
+## 0.38.6-0.2.3 (December 16, 2021)
 
 * [ROCK-NA] Fix log4j: Upgrade metabase to 0.38.6
 
