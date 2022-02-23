@@ -25,6 +25,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y wget curl \
 # add the the source
 COPY . .
 
+# delete the sparksql and sqlite drivers that we do not include due to vulnerabilities
+RUN rm -rf modules/drivers/sparksql modules/drivers/sqlite
+
 # build the app
 RUN INTERACTIVE=false bin/build
 
