@@ -9,7 +9,9 @@
   metabase/presto-jdbc        {:local/root "presto-jdbc"}
   metabase/redshift           {:local/root "redshift"}
   metabase/snowflake          {:local/root "snowflake"}
-  metabase/sparksql           {:local/root "sparksql"}
-  metabase/sqlite             {:local/root "sqlite"}
+  ;; < STRATIO - delete sparksql and sqlite drivers that we do not include due to vulnerabilities
+  ;; metabase/sparksql           {:local/root "sparksql"}
+  ;; metabase/sqlite             {:local/root "sqlite"}
+  ;; STRATIO >
   metabase/sqlserver          {:local/root "sqlserver"}
   metabase/vertica            {:local/root "vertica"}}}
