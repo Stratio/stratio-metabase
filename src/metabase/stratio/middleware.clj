@@ -26,9 +26,10 @@
         (re-matches #"/api/database/[0-9]+/rescan_values" uri)))))
 
 (defn- editing-user-name?
+  "We check whether we can edit or not the username: you must be either a superuser or edit your own name"
   [{:keys [:uri :request-method :body]}]
   (when (and (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put))
-    (apply not= (map :first_name [@api/*current-user* body]))))
+    (and (not api/*is-superuser?*) (apply not= (map :first_name [@api/*current-user* body])))))
 
 (defn- add-session-to-request-and-response
   [handler session]
@@ -38,7 +39,7 @@
              raise)))
 
 (defn- forbid-email-login
-  "Midleware that checks for email login request and responds with 403 to those"
+  "Middleware that checks for email login request and responds with 403 to those"
   [handler]
   (fn [request respond raise]
     (if (email-login-request? request)
