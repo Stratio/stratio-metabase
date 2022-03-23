@@ -32,12 +32,14 @@
 (defn- editing-user-name?
   "The username of an existing user should never be edited"
   [{:keys [:uri :request-method :body]}]
-  (when (every-pred (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put) (api/*is-superuser?*))
-    (if-let [user-id-request (re-find #"[0-9]+" uri)]
-      (if-let [existing-username (db/select-field :first_name PermissionsGroupMembership :user_id (u/the-id user-id-request))]
-        (do
-          (log/info "Trying to change User-id" user-id-request "whose first-name in db is" existing-username "with" (:first_name body))
-          (apply not= (map existing-username (:first_name body))))))))
+  (when ((every-pred true?) (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put) (true? api/*is-superuser?*))
+    (if-some [user-id-request (re-find #"[0-9]+" uri)]
+      (do
+        (log/info "User-id req" user-id-request "with uri" uri)
+        (if-let [existing-username (db/select-field :first_name PermissionsGroupMembership :user_id (u/id user-id-request))]
+          (do
+            (log/info "Trying to change User-id" user-id-request "whose first-name in db is" existing-username "with" (:first_name body))
+            (not= existing-username (:first_name body))))))))
 
 (defn- add-session-to-request-and-response
   [handler session]
