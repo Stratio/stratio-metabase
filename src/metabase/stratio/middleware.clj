@@ -3,10 +3,14 @@
    [clojure.string :as str]
    [clojure.tools.logging :as log]
    [metabase.api.common :as api]
+   [metabase.models.permissions-group-membership :as perm-membership :refer [PermissionsGroupMembership]]
    [metabase.server.middleware.session :as mw.session]
    [metabase.stratio
     [auth :as st.auth]
-    [config :as st.config]]))
+    [config :as st.config]]
+   [metabase.util :as u]
+   [toucan.db :as db]))
+
 
 (def ^:dynamic ^Boolean *is-sync-request?* false)
 
@@ -26,10 +30,14 @@
         (re-matches #"/api/database/[0-9]+/rescan_values" uri)))))
 
 (defn- editing-user-name?
-  "We check whether we can edit or not the username: you must be either a superuser or edit your own name"
+  "The username of an existing user should never be edited"
   [{:keys [:uri :request-method :body]}]
-  (when (and (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put))
-    (and (not api/*is-superuser?*) (apply not= (map :first_name [@api/*current-user* body])))))
+  (when (every-pred (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put) (api/*is-superuser?*))
+    (if-let [user-id-request (re-find #"[0-9]+" uri)]
+      (if-let [existing-username (db/select-field :first_name PermissionsGroupMembership :user_id (u/the-id user-id-request))]
+        (do
+          (log/info "Trying to change User-id" user-id-request "whose first-name in db is" existing-username "with" (:first_name body))
+          (apply not= (map existing-username (:first_name body))))))))
 
 (defn- add-session-to-request-and-response
   [handler session]
