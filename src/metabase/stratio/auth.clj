@@ -20,7 +20,11 @@
 (def dummy-email-domain      (st.config/config-str :dummy-email-domain))
 (def create-and-sync-groups? (st.config/config-bool :create-and-sync-groups))
 (def admin-group             (st.config/config-str :admin-group))
-(def whitelist               (set (st.config/config-vector :allowed-groups)))
+(def whitelist               (-> :allowed-groups
+                                 st.config/config-vector
+                                 (conj admin-group)
+                                 ((partial remove empty?))
+                                 set))
 (def whitelist-enabled?      (st.config/config-bool :use-group-whitelist))
 (def whitelist-disabled?     (not whitelist-enabled?))
 
