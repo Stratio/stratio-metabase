@@ -2,7 +2,8 @@
 
 ## 0.42.2-0.1.0 (upcoming)
 
-* [ROCK-6000] Update metabse to 0.42
+* [ROCK-6000] Update metabase to 0.42
+* Add admin group to whitelist
 
 ## 0.40.7-0.1.0 (December 14, 2021)
 
