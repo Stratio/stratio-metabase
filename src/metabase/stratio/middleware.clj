@@ -3,7 +3,7 @@
    [clojure.string :as str]
    [clojure.tools.logging :as log]
    [metabase.api.common :as api]
-   [metabase.models.permissions-group-membership :as perm-membership :refer [PermissionsGroupMembership]]
+   [metabase.models.user :refer [User]]
    [metabase.server.middleware.session :as mw.session]
    [metabase.stratio
     [auth :as st.auth]
@@ -36,10 +36,12 @@
     (if-some [user-id-request (re-find #"[0-9]+" uri)]
       (do
         (log/info "User-id req" user-id-request "with uri" uri)
-        (if-let [existing-username (db/select-field :first_name PermissionsGroupMembership :user_id (u/id user-id-request))]
+        (let [[existing-username] (db/simple-select User {:select [:first_name]
+                                                           :where  [:= :id (Integer/parseInt user-id-request)]})]
           (do
-            (log/info "Trying to change User-id" user-id-request "whose first-name in db is" existing-username "with" (:first_name body))
-            (not= existing-username (:first_name body))))))))
+            (log/info "Trying to change User-id" user-id-request "whose first-name in db is" (:first_name existing-username) "with" (:first_name body) (type existing-username) (type (:first_name existing-username)))
+            (not= (:first_name existing-username) (:first_name body)))
+          )))))
 
 (defn- add-session-to-request-and-response
   [handler session]
