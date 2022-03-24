@@ -33,15 +33,12 @@
   "The username of an existing user should never be edited"
   [{:keys [:uri :request-method :body]}]
   (when (and (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put))
-    (if-some [user-id-request (re-find #"[0-9]+" uri)]
-      (do
-        (log/info "User-id req" user-id-request "with uri" uri)
-        (let [[existing-username] (db/simple-select User {:select [:first_name]
-                                                           :where  [:= :id (Integer/parseInt user-id-request)]})]
-          (do
-            (log/info "Trying to change User-id" user-id-request "whose first-name in db is" (:first_name existing-username) "with" (:first_name body) (type existing-username) (type (:first_name existing-username)))
-            (not= (:first_name existing-username) (:first_name body)))
-          )))))
+    (let [
+          user-id-request (Integer/parseInt (re-find #"[0-9]+" uri))
+          old-username (:first_name (first (db/simple-select User {:select [:first_name]
+                                                      :where  [:= :id user-id-request]})))
+          new-username (:first_name body)]
+      (not= old-username new-username))))
 
 (defn- add-session-to-request-and-response
   [handler session]
