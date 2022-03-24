@@ -32,7 +32,7 @@
 (defn- editing-user-name?
   "The username of an existing user should never be edited"
   [{:keys [:uri :request-method :body]}]
-  (when ((every-pred true?) (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put) (true? api/*is-superuser?*))
+  (when (and (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put))
     (if-some [user-id-request (re-find #"[0-9]+" uri)]
       (do
         (log/info "User-id req" user-id-request "with uri" uri)
