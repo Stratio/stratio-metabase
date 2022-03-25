@@ -9,6 +9,8 @@ hose {
     INSTALLTIMEOUT = 90
     FREESTYLE_BRANCHING = true
     UPSTREAM_VERSION = '0.40.7'
+    DEPLOYONPRS = true
+    ANCHORE_TEST = false
 
     DEV = { config ->
         doDockers(
