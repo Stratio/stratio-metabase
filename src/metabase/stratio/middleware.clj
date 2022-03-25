@@ -8,7 +8,6 @@
    [metabase.stratio
     [auth :as st.auth]
     [config :as st.config]]
-   [metabase.util :as u]
    [toucan.db :as db]))
 
 
@@ -33,12 +32,10 @@
   "The username of an existing user should never be edited"
   [{:keys [:uri :request-method :body]}]
   (when (and (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put))
-    (let [
-          user-id-request (Integer/parseInt (re-find #"[0-9]+" uri))
-          old-username (:first_name (first (db/simple-select User {:select [:first_name]
-                                                      :where  [:= :id user-id-request]})))
+    (let [user-id (Integer/parseInt (last (str/split uri #"/")))
+          old-username (db/select-one-field :first_name User :id user-id)
           new-username (:first_name body)]
-      (not= old-username new-username))))
+      (and old-username (not= old-username new-username)))))
 
 (defn- add-session-to-request-and-response
   [handler session]
@@ -128,5 +125,5 @@
     handler
     (fn [request respond raise]
       (if (editing-user-name? request)
-        (respond {:status 403 :body "Editing user name is forbidden"})
+        (respond {:status 403 :body "Editing user first name is forbidden"})
         (handler request respond raise)))))
