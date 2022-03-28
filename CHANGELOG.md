@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.42.2-0.1.1 (upcoming)
+
+* [ROCK-6310] Forbid first_name editing but allow superusers to edit user details
+
 ## 0.42.2-0.1.0 (2022-03-21)
 
 * [ROCK-6000] Update metabse to 0.42
