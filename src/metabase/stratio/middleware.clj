@@ -3,10 +3,13 @@
    [clojure.string :as str]
    [clojure.tools.logging :as log]
    [metabase.api.common :as api]
+   [metabase.models.user :refer [User]]
    [metabase.server.middleware.session :as mw.session]
    [metabase.stratio
     [auth :as st.auth]
-    [config :as st.config]]))
+    [config :as st.config]]
+   [toucan.db :as db]))
+
 
 (def ^:dynamic ^Boolean *is-sync-request?* false)
 
@@ -26,9 +29,13 @@
         (re-matches #"/api/database/[0-9]+/rescan_values" uri)))))
 
 (defn- editing-user-name?
+  "The username of an existing user should never be edited"
   [{:keys [:uri :request-method :body]}]
   (when (and (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put))
-    (apply not= (map :first_name [@api/*current-user* body]))))
+    (let [user-id (Integer/parseInt (last (str/split uri #"/")))
+          old-username (db/select-one-field :first_name User :id user-id)
+          new-username (:first_name body)]
+      (and old-username (not= old-username new-username)))))
 
 (defn- add-session-to-request-and-response
   [handler session]
@@ -38,7 +45,7 @@
              raise)))
 
 (defn- forbid-email-login
-  "Midleware that checks for email login request and responds with 403 to those"
+  "Middleware that checks for email login request and responds with 403 to those"
   [handler]
   (fn [request respond raise]
     (if (email-login-request? request)
@@ -118,5 +125,5 @@
     handler
     (fn [request respond raise]
       (if (editing-user-name? request)
-        (respond {:status 403 :body "Editing user name is forbidden"})
+        (respond {:status 403 :body "Editing user first name is forbidden"})
         (handler request respond raise)))))
