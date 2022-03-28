@@ -4,6 +4,7 @@
 
 * [ROCK-6000] Update metabase to 0.42
 * Add admin group to whitelist
+* [ROCK-6310] Forbid first_name editing but allow superusers to edit user details
 
 ## 0.40.7-0.1.0 (December 14, 2021)
 
