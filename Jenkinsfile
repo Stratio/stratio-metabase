@@ -7,7 +7,7 @@ hose {
     RELEASETIMEOUT = 80
     ATTIMEOUT = 90
     INSTALLTIMEOUT = 90
-    FREESTYLE_BRANCHING = true
+    VERSIONING_TYPE = "stratioVersion-3-3"
     UPSTREAM_VERSION = '0.42.2'
 
     DEV = { config ->
