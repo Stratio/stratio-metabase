@@ -159,6 +159,8 @@
   user-agent/user-agent                     {:mvn/version "0.1.0"}              ; User-Agent string parser, for Login History page & elsewhere
   weavejester/dependency                    {:mvn/version "0.2.1"}}             ; Dependency graphs and topological sorting
 
+  ;; dummy dependency for the Java source file(s)
+  metabase/java-deps {:local/root "java"}
  ;; !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
  ;; !!         PLEASE KEEP NEW DEPENDENCIES ABOVE ALPHABETICALLY ORGANIZED AND ADD COMMENTS EXPLAINING THEM.         !!
  ;; !!                            *PLEASE DO NOT* ADD NEW ONES TO THE BOTTOM OF THE LIST.                            !!
@@ -166,7 +168,7 @@
 
 
  :paths
- ["src" "shared/src" "resources"]
+ ["src" "shared/src" "resources" "java/target/classes"]
 
  :aliases
  {
