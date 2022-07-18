@@ -47,12 +47,15 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y curl git \
     && apt-get clean
 
 # Copy metabase java source code to (drivers build scripts seem to need it)
-COPY --from=builder /app/source/java /app/source/java
+# COPY --from=builder /app/source/java /app/source/java
 
 # Copy metabase build and start scripts
 COPY --from=builder /app/source/bin  /app/source/bin
 
-# add metabase uberjar
+# add metabase sources and uberjar
+COPY --from=builder /app/source/src                     /app/source/src
+
 COPY --from=builder /app/source/target/uberjar/metabase.jar /app/source/target/uberjar/metabase.jar
+
 
 # STRATIO />
