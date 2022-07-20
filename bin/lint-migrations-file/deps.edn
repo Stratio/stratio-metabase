@@ -2,7 +2,11 @@
 
  :deps
  {io.forward/yaml      {:mvn/version "1.0.9"}  ; Don't upgrade yet, new version doesn't support Java 8 (see https://github.com/owainlewis/yaml/issues/37)
-  org.flatland/ordered {:mvn/version "1.5.9"}} ; used by io.forward/yaml -- need the newer version
+  ;; < STRATIO - solve ambiguity while building driver (due to older version than the root deps.edn)
+  ;; org.flatland/ordered {:mvn/version "1.5.9"}}
+  org.flatland/ordered {:mvn/version "1.15.10"}} ; used by io.forward/yaml -- need the newer version
+ ;;  STRATIO >
+
 
  :aliases
  {:test {:extra-paths ["test"]

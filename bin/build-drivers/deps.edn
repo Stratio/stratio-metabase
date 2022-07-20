@@ -10,7 +10,15 @@
   io.forward/yaml                 {:mvn/version "1.0.9"} ; Don't upgrade yet, new version doesn't support Java 8 (see https://github.com/owainlewis/yaml/issues/37)
   io.github.clojure/tools.build   {:git/tag "v0.7.4" :git/sha "ac442da"}
   org.clojure/tools.deps.alpha    {:mvn/version "0.12.985"}
-  org.flatland/ordered            {:mvn/version "1.5.9"} ; used by io.forward/yaml -- need the newer version
+  ;; < STRATIO - solve ambiguity while building driver (due to older version than the root deps.edn)
+  ;; org.flatland/ordered            {:mvn/version "1.5.9"} ; used by io.forward/yaml -- need the newer version
+  ;; Conflicting data-reader mapping {:url #object[java.net.URL 0x134d26af "jar:file:/app/source/target/uberjar/metabase.jar!/data_readers.cljc"],
+  ;; :conflict ordered/map, :mappings {t #'metabase.util.date-2/parse, sql/call #'honeysql.types/read-sql-call, sql/param #'honeysql.types/read-sql-param,
+  ;; cheshire/json #'cheshire.core/generate-string, sql/regularize #'honeysql.format/regularize, sql/array #'honeysql.types/read-sql-array, locale #'metabase
+  ;; util.i18n.impl/locale, ordered/set #'flatland.ordered.set/into-ordered-set, amalloy/ring-buffer #'amalloy.ring-buffer/read-method, sql/inline
+  ;; #'honeysql.types/read-sql-inline, ordered/map #'flatland.ordered.map/ordered-map, sql/raw #'honeysql.types/read-sql-raw}}
+  org.flatland/ordered            {:mvn/version "1.15.10"} ; used by io.forward/yaml -- need the newer version
+  ;;  STRATIO >
   com.bhauman/spell-spec          {:mvn/version "0.1.1"} ; used to find misspellings in YAML files
   stencil/stencil                 {:mvn/version "0.5.0"}
   ;; local source
