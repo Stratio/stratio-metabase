@@ -9,6 +9,7 @@ hose {
     INSTALLTIMEOUT = 90
     FREESTYLE_BRANCHING = true
     UPSTREAM_VERSION = '0.42.2'
+    VERSIONING_TYPE = "stratioVersion-3-3"
 
     DEV = { config ->
         doDockers(
