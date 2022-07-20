@@ -53,7 +53,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y curl git \
 COPY --from=builder /app/source/bin  /app/source/bin
 
 # add metabase sources and uberjar
-COPY --from=builder /app/source/src                     /app/source/src
+#COPY --from=builder /app/source/src                     /app/source/src
 
 COPY --from=builder /app/source/target/uberjar/metabase.jar /app/source/target/uberjar/metabase.jar
 
