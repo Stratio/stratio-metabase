@@ -21,5 +21,9 @@ hose {
                 ]
             ]
         )
+
+        stage("Rebuild discovery"){
+            doRebuildJob(config,'Rocket/discovery', 'master', "", false, true, false)
+        }
     }
 }
