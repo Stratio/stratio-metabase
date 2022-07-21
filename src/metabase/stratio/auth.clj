@@ -78,7 +78,7 @@
                                     (filter some?))
           user-group-ids       (concat existing-group-ids created-group-ids)
           all-metabase-groups  (db/select-ids PermissionsGroup)]
-      (integrations/sync-group-memberships! user-id user-group-ids all-metabase-groups false))
+      (integrations/sync-group-memberships! user-id user-group-ids all-metabase-groups))
     (catch Exception e
       (log/error "Could not create and sync groups. Error:" (st.util/stack-trace e)))))
 
