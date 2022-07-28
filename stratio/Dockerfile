@@ -46,8 +46,8 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y curl git \
     && ./linux-install-1.10.3.1040.sh \
     && apt-get clean
 
-# Copy metabase java source code to (drivers build scripts seem to need it)
-COPY --from=builder /app/source/java /app/source/java
+# Starting from version 0.43.x it is not required to add metabase java source code /app/source/java
+# because drivers build scripts now do not seem to need it
 
 # Copy metabase build and start scripts
 COPY --from=builder /app/source/bin  /app/source/bin
