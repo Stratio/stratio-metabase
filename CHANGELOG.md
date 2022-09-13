@@ -4,6 +4,7 @@
 
 * [ROCK-7390] Update metabase to 0.43
 * [ROCK-6310] Forbid first_name editing but allow superusers to edit user details
+* [ROCK-8431] [ROCK-8438] Fix security vulnerabilities of H2 embedded database (CVE-2022-23221)
 
 ## 0.42.2-0.1.0 (2022-03-21)
 

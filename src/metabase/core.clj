@@ -128,12 +128,15 @@
       (events/publish-event! :install {}))
     (init-status/set-progress! 0.9)
 
+    ;; < STRATIO - do not load sample database on startup
     ;; deal with our sample database as needed
-    (if new-install?
+    ;; (if new-install?
       ;; add the sample database DB for fresh installs
-      (sample-data/add-sample-database!)
+      ;; (sample-data/add-sample-database!)
       ;; otherwise update if appropriate
-      (sample-data/update-sample-database-if-needed!)))
+      ;; (sample-data/update-sample-database-if-needed!))
+     )
+    ;; STRATIO />
 
   ;; start scheduler at end of init!
   (task/start-scheduler!)
