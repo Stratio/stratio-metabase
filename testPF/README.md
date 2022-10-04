@@ -71,6 +71,9 @@ Otherwise the query must be changed in the classes <i>Test_CrossdataQuery</i> an
 
 ### EXECUTING TESTS
 
+#### The project requires JDK 8
+TODO explicacion
+
 Each test has its own profile in order to be launched easily with maven; also each test store its results in their own folder (as can be seen in <i>pom.xml</i>).
 
 It's mandatory to provide the COOKIE variable to the maven command. You have to enter Discovery web interface and get it using the web browser development tools.
