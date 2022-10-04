@@ -72,7 +72,8 @@ Otherwise the query must be changed in the classes <i>Test_CrossdataQuery</i> an
 ### EXECUTING TESTS
 
 #### The project requires JDK 8
-TODO explicacion
+Option 1. Have JDK 8 as default on the system.
+Option 2. Execute test by previously adding JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64 before the command.
 
 Each test has its own profile in order to be launched easily with maven; also each test store its results in their own folder (as can be seen in <i>pom.xml</i>).
 
