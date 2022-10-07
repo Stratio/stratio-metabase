@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.43.4-0.1.0 (upcoming)
+## 0.43.4-0.1.0 (2022-10-07)
 
 * [ROCK-7390] Update metabase to 0.43
 * [ROCK-6310] Forbid first_name editing but allow superusers to edit user details
