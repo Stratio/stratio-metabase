@@ -1,7 +1,0 @@
-*.class
-*.log
-.idea
-*.iml
-target/
-pnf-*/
-test-perf/
