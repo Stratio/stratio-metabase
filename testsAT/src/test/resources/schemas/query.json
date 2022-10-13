@@ -1,9 +1,0 @@
-{
-  "native": {
-    "query": "INSERT INTO testxd VALUES(4,'test4') \n",
-    "template-tags": {}
-  },
-  "type": "native",
-  "database": 36,
-  "parameters": []
-}

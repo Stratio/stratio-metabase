@@ -1,8 +1,0 @@
-{
-  "database": 1,
-  "type": "query",
-  "query": {
-    "source_table": 1
-  },
-  "parameters": []
-}
