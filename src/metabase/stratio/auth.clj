@@ -39,10 +39,11 @@
   (contains? (set groups) admin-group))
 
 (defn- effective-groups
-  [groups]
-  (if whitelist-disabled?
-    (set groups)
-    (set/intersection (set groups) whitelist)))
+  [groups superuser?]
+  (cond-> (set groups)
+    whitelist-enabled? (set/intersection whitelist)
+    true               (disj group/admin-group-name)  ;; prevent a SSO "Administrators" group to trigger admin status
+    superuser?         (conj group/admin-group-name)))
 
 (defn- allowed-user
   [{:keys [user groups error]}]
@@ -83,21 +84,21 @@
       (log/error "Could not create and sync groups. Error:" (st.util/stack-trace e)))))
 
 (defn- fetch-or-create-user!
-  [{first_name :first_name {groups :groups} :login_attributes, :as allowed-user}]
+  [{first_name :first_name {groups :groups} :login_attributes superuser? :is_superuser, :as allowed-user}]
   (or (if-let [user-in-db (db/select-one [User :id :last_login :is_superuser] :first_name first_name)]
         (do
           ;; Check if superuser status has changed and update if necessary
           (if (or (apply not= (map :is_superuser     [user-in-db allowed-user]))
                   (apply not= (map :login_attributes [user-in-db allowed-user])))
             (db/update! User (:id user-in-db)
-                        :is_superuser     (:is_superuser allowed-user)
+                        :is_superuser     superuser?
                         :login_attributes (:login_attributes allowed-user)))
           (if create-and-sync-groups?
-            (create-and-sync-groups! (:id user-in-db) (effective-groups groups)))
+            (create-and-sync-groups! (:id user-in-db) (effective-groups groups superuser?)))
           user-in-db))
       (let [user-inserted (insert-new-user! allowed-user)]
         (if create-and-sync-groups?
-          (create-and-sync-groups! (:id user-inserted) (effective-groups groups)))
+          (create-and-sync-groups! (:id user-inserted) (effective-groups groups superuser?)))
         user-inserted)))
 
 (defn create-session-from-headers!
