@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.43.4-0.1.1 (upcoming)
+
+* [ROCK-8674] Sync correctly Administrators group
+
 ## 0.43.4-0.1.0 (2022-10-07)
 
 * [ROCK-7390] Update metabase to 0.43
