@@ -2,7 +2,7 @@
 
 ## 0.43.4-0.2.0 (upcoming)
 
-* Pending changelog
+* [ROCK-12172] Subscriptions with dashboard name in subject
 
 ## 0.43.4-0.1.1 (2022-10-24)
 
