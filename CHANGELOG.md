@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.43.4-0.2.0 (upcoming)
+
+* Pending changelog
+
 ## 0.43.4-0.1.1 (2022-10-24)
 
 * [ROCK-8674] Sync correctly Administrators group
