@@ -410,6 +410,11 @@
                       ;; This is usually already done by this step, in the `send-pulses` task which uses `retrieve-pulse`
                       ;; to fetch the Pulse.
                       pulse/hydrate-notification
-                      (merge (when channel-ids {:channel-ids channel-ids})))]
+                      (merge (when channel-ids {:channel-ids channel-ids}))
+                      ;; < STRATIO - Use dashboard name in email subscriptions: update pulse name with dashboard
+                      ;; name if there is dahsboard (i. e., pulse is a subscription). The "original" name we have
+                      ;; changed by an UUID in order to be able to do export/import operations in CICD.
+                      (assoc :name (or (:name dashboard) (:name pulse))))]
+                      ;; STRATIO >
     (when (not (:archived dashboard))
       (send-notifications! (pulse->notifications pulse dashboard)))))
