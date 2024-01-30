@@ -33,6 +33,9 @@
                :env {"PATH"       (env/env :path)
                      "HOME"       (env/env :user-home)
                      "WEBPACK_BUNDLE"   "production"
+                     ;; < STRATIO - fix frontend build
+                     "NODE_OPTIONS"      "--openssl-legacy-provider"
+                     ;; STRATIO >
                      "MB_EDITION" mb-edition}}
               "yarn" "build"))
       (u/step "Build static viz"
@@ -40,6 +43,9 @@
                :env {"PATH"       (env/env :path)
                      "HOME"       (env/env :user-home)
                      "WEBPACK_BUNDLE"   "production"
+                     ;; < STRATIO - fix frontend build
+                     "NODE_OPTIONS"      "--openssl-legacy-provider"
+                     ;; STRATIO >
                      "MB_EDITION" mb-edition}}
               "yarn" "build-static-viz"))
       (u/announce "Frontend built successfully."))))
