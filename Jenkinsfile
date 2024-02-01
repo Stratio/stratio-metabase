@@ -8,7 +8,7 @@ hose {
     ATTIMEOUT = 90
     INSTALLTIMEOUT = 90
     VERSIONING_TYPE = "stratioVersion-3-3"
-    UPSTREAM_VERSION = '0.43.4'
+    UPSTREAM_VERSION = '0.50.21'
 
     DEV = { config ->
         doDockers(

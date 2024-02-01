@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.50.21-0.1.0 (upcoming)
+
+* [ROCK-11848] Update metabase to 0.50
+
 ## 0.43.4-0.2.0 (2024-02-01)
 
 * [ROCK-12172] Subscriptions with dashboard name in subject
