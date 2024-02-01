@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.43.4-0.2.0 (upcoming)
+## 0.43.4-0.2.0 (2024-02-01)
 
 * [ROCK-12172] Subscriptions with dashboard name in subject
 
