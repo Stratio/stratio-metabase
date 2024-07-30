@@ -1,8 +1,10 @@
 (ns metabase.stratio.config
-  (:require [clojure.string :as str]
-            [metabase.config :as config]
-            [metabase.models.setting :refer [defsetting]]
-            [metabase.stratio.util :as st.util]))
+  (:require
+   [metabase.config :as config]
+   [metabase.models.setting :refer [defsetting]]
+   [metabase.stratio.util :as st.util]))
+
+(set! *warn-on-reflection* true)
 
 (def ^:private stratio-defaults
   {:authenticator "gosec-sso"
@@ -25,7 +27,6 @@
    :admin-group ""
    :create-and-sync-groups "true"})
 
-
 (defn config-str  [k] (or (config/config-str k) ((keyword k) stratio-defaults)))
 (defn config-int  [k] (some-> k config-str Integer/parseInt))
 (defn config-bool [k] (some-> k config-str Boolean/parseBoolean))
@@ -44,4 +45,5 @@
   :type        :boolean
   :default     gosec-sso?
   :visibility  :public
-  :setter      :none)
+  :setter      :none
+  :export?     false)

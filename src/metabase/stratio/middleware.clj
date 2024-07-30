@@ -1,27 +1,30 @@
 (ns metabase.stratio.middleware
   (:require
    [clojure.string :as str]
-   [clojure.tools.logging :as log]
+   [java-time.api :as t]
    [metabase.api.common :as api]
-   [metabase.models.user :refer [User]]
    [metabase.server.middleware.session :as mw.session]
-   [metabase.stratio
-    [auth :as st.auth]
-    [config :as st.config]]
-   [toucan.db :as db]))
+   [metabase.stratio.auth :as st.auth]
+   [metabase.stratio.config :as st.config]
+   [metabase.util :as u]
+   [metabase.util.log :as log]
+   [toucan2.core :as t2]))
 
+(set! *warn-on-reflection* true)
 
-(def ^:dynamic ^Boolean *is-sync-request?* false)
+(def ^:dynamic ^Boolean *is-sync-request?*
+  "Dynamic variable set by the sync endpoint to let us know if we are handling a sync database request"
+  false)
 
-(def public-api-endpoints
+(def ^:private public-api-endpoints
   ["/api/embed" "/api/geojson" "/api/public" "/api/setup" "/api/util" "/api/session/properties" "/api/health"])
 
 (defn- email-login-request?
-  [{:keys [:request-method :uri]}]
+  [{:keys [request-method uri]}]
   (and (= uri "/api/session") (= request-method :post)))
 
 (defn- sync-db-request?
-  [{:keys [:request-method :uri]}]
+  [{:keys [request-method uri]}]
   (boolean
    (and
     (= request-method :post)
@@ -30,18 +33,18 @@
 
 (defn- editing-user-name?
   "The username of an existing user should never be edited"
-  [{:keys [:uri :request-method :body]}]
+  [{:keys [uri request-method body]}]
   (when (and (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put))
     (let [user-id (Integer/parseInt (last (str/split uri #"/")))
-          old-username (db/select-one-field :first_name User :id user-id)
+          old-username (t2/select-one-fn :first_name :model/User :id user-id)
           new-username (:first_name body)]
       (and old-username (not= old-username new-username)))))
 
 (defn- add-session-to-request-and-response
   [handler session]
   (fn [request respond raise]
-    (handler (assoc request :metabase-session-id (-> session :id str))
-             #(respond (mw.session/set-session-cookie request % session))
+    (handler (assoc request :metabase-session-id (-> session :id str) :metabase-session-type :normal)
+             #(respond (mw.session/set-session-cookies request % session (t/zoned-date-time (t/zone-id "GMT"))))
              raise)))
 
 (defn- forbid-email-login
@@ -78,7 +81,7 @@
                                     (add-session-to-request-and-response session))]
             (log/info "User" first_name "auto-logged-in through headers")
             (log/debug "Request triggering the auto-login:"
-                       (str/upper-case (name (:request-method request)))
+                       (u/upper-case-en (name (:request-method request)))
                        (:uri request))
             (wrapped-handler request respond raise)))))))
 
@@ -113,6 +116,7 @@
       forbid-email-login))
 
 (def stratio-middleware
+  "Packs all needed middleware depending on login strategy"
   (if st.config/should-auto-login?
     (comp auto-login-middleware default-middleware)
     default-middleware))

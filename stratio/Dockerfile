@@ -12,9 +12,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 # installing Clojure and Clojure CLI
 RUN apt-get update && apt-get upgrade -y && apt-get install -y wget curl \
-    && curl -O https://download.clojure.org/install/linux-install-1.10.3.1040.sh \
-    && chmod +x linux-install-1.10.3.1040.sh \
-    && ./linux-install-1.10.3.1040.sh \
+    && curl -O https://download.clojure.org/install/linux-install-1.11.1.1262.sh \
+    && chmod +x linux-install-1.11.1.1262.sh \
+    && ./linux-install-1.11.1.1262.sh \
     # install Node LTS and Yarn from their repos
     && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
     && wget https://dl.yarnpkg.com/debian/pubkey.gpg && cat pubkey.gpg | apt-key add - \
@@ -25,12 +25,14 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y wget curl \
 # add the the source
 COPY . .
 
+# install frontend dependencies
+RUN yarn --frozen-lockfile
+
 # delete the sparksql and sqlite drivers that we do not include due to vulnerabilities
 RUN rm -rf modules/drivers/sparksql modules/drivers/sqlite
 
 # build the app
-RUN INTERACTIVE=false bin/build
-
+RUN INTERACTIVE=false MB_EDITION=oss bin/build.sh
 
 # < STRATIO - light builder
 
@@ -51,6 +53,10 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y curl git \
 
 # Copy metabase build and start scripts
 COPY --from=builder /app/source/bin  /app/source/bin
+
+# Copy metabase source code
+COPY --from=builder /app/source/src       /app/source/src
+COPY --from=builder /app/source/deps.edn  /app/source/deps.edn
 
 # add metabase uberjar
 COPY --from=builder /app/source/target/uberjar/metabase.jar /app/source/target/uberjar/metabase.jar

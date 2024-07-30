@@ -1,17 +1,17 @@
 (ns metabase.stratio.header-user-info
-  (:require [buddy.sign.jwt :as jwt]
-            [buddy.core.keys :as keys]
-            [buddy.core.codecs :as codecs]
-            [buddy.core.codecs.base64 :as b64]
-            [clj-http.client :as http]
-            [clj-time.core :as time]
-            [clojure.string :as str]
-            [cheshire.core :as json]
-            [metabase.config :as config]
-            [metabase.stratio
-             [config :as st.config]
-             [util :as st.util]]
-            [clojure.tools.logging :as log]))
+  (:require
+   [buddy.core.codecs :as codecs]
+   [buddy.core.codecs.base64 :as b64]
+   [buddy.core.keys :as keys]
+   [buddy.sign.jwt :as jwt]
+   [cheshire.core :as json]
+   [clj-http.client :as http]
+   [clojure.string :as str]
+   [metabase.config :as config]
+   [metabase.stratio.config :as st.config]
+   [metabase.stratio.util :as st.util]
+   [metabase.util :as u]
+   [metabase.util.log :as log]))
 
 (defn- split-token
   [token]
@@ -32,8 +32,8 @@
           header       (parse-data header-b64)
           alg          (:alg header)]
       (cond-> header
-        alg (assoc :alg (keyword (str/lower-case alg)))))
-    (catch com.fasterxml.jackson.core.JsonParseException e
+        alg (assoc :alg (keyword (u/lower-case-en alg)))))
+    (catch com.fasterxml.jackson.core.JsonParseException _
       (throw (ex-info "Message seems corrupt or manipulated."
                {:type :validation :cause :header})))))
 
@@ -46,7 +46,7 @@
 (defn- http-header->jwt-token
   [headers]
   (let [header-name       (st.config/config-str :jwt-header-name)
-        header-name-lower (str/lower-case header-name)]
+        header-name-lower (u/lower-case-en header-name)]
     (cond
       (contains? headers header-name)       (get headers header-name)
       (contains? headers header-name-lower) (get headers header-name-lower)
@@ -88,7 +88,7 @@
         pkey (let [info (-> token
                             (verify-token pkey)
                             (select-keys [username-claim groups-claim])
-                            (update-in [groups-claim] st.util/make-vector))
+                            (update groups-claim st.util/make-vector))
                    user-name (username-claim info)]
                (if (empty? user-name)
                  {:error "No username claim found in token"}

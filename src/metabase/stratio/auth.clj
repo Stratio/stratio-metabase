@@ -1,32 +1,27 @@
 (ns metabase.stratio.auth
-  (:require [clojure.set :as set]
-            [clojure.string :as str]
-            [clojure.tools.logging :as log]
-            [metabase.api.session :as session]
-            [metabase.integrations.common :as integrations]
-            [metabase.models
-             [permissions-group :as group :refer [PermissionsGroup]]
-             [user :as user :refer [User]]]
-            [metabase.stratio
-             [config :as st.config]
-             [header-user-info :refer [http-headers->user-info]]
-             [util :as st.util]]
-            [metabase.server.request.util :as request.u]
-            [metabase.util :as u]
-            [toucan.db :as db]
-            [toucan.hydrate :refer [hydrate]])
-  (:import java.util.UUID))
+  (:require
+   [clojure.set :as set]
+   [metabase.api.session :as api.session]
+   [metabase.integrations.common :as integrations]
+   [metabase.models.permissions-group :as perms-group]
+   [metabase.server.request.util :as req.util]
+   [metabase.stratio.config :as st.config]
+   [metabase.stratio.header-user-info :refer [http-headers->user-info]]
+   [metabase.stratio.util :as st.util]
+   [metabase.util :as u]
+   [metabase.util.log :as log]
+   [toucan2.core :as t2]))
 
-(def dummy-email-domain      (st.config/config-str :dummy-email-domain))
-(def create-and-sync-groups? (st.config/config-bool :create-and-sync-groups))
-(def admin-group             (st.config/config-str :admin-group))
-(def whitelist               (-> :allowed-groups
-                                 st.config/config-vector
-                                 (conj admin-group)
-                                 ((partial remove empty?))
-                                 set))
-(def whitelist-enabled?      (st.config/config-bool :use-group-whitelist))
-(def whitelist-disabled?     (not whitelist-enabled?))
+(def ^:private dummy-email-domain      (st.config/config-str :dummy-email-domain))
+(def ^:private create-and-sync-groups? (st.config/config-bool :create-and-sync-groups))
+(def ^:private admin-group             (st.config/config-str :admin-group))
+(def ^:private whitelist               (-> :allowed-groups
+                                           st.config/config-vector
+                                           (conj admin-group)
+                                           ((partial remove empty?))
+                                           set))
+(def ^:private whitelist-enabled?      (st.config/config-bool :use-group-whitelist))
+(def ^:private whitelist-disabled?     (not whitelist-enabled?))
 
 (defn- allowed?
   [groups]
@@ -42,8 +37,8 @@
   [groups superuser?]
   (cond-> (set groups)
     whitelist-enabled? (set/intersection whitelist)
-    true               (disj group/admin-group-name)  ;; prevent a SSO "Administrators" group to trigger admin status
-    superuser?         (conj group/admin-group-name)))
+    true               (disj perms-group/admin-group-name)  ;; prevent a SSO "Administrators" group to trigger admin status
+    superuser?         (conj perms-group/admin-group-name)))
 
 (defn- allowed-user
   [{:keys [user groups error]}]
@@ -60,13 +55,15 @@
 (defn- insert-new-user!
   "Creates a new user, defaulting the password when not provided"
   [new-user]
-  (db/insert! User (update new-user :password #(or % (str (UUID/randomUUID))))))
+  (t2/insert-returning-instance! :model/User (update new-user :password #(or % (str (random-uuid))))))
 
 (defn- group-name->group-id []
-  (db/select-field->id :name PermissionsGroup))
+  (t2/select-fn->pk :name :model/PermissionsGroup))
+
+(map (fn [x] {:a x}) [1 2 3])
 
 (defn- insert-groups! [group-names]
-  (db/insert-many! PermissionsGroup (map (fn [name] {:name name}) group-names)))
+  (t2/insert-returning-pks! :model/PermissionsGroup (map (fn [name] {:name name}) group-names)))
 
 (defn- create-and-sync-groups!
   [user-id group-names]
@@ -78,30 +75,31 @@
                                     (map group-name->group-id)
                                     (filter some?))
           user-group-ids       (concat existing-group-ids created-group-ids)
-          all-metabase-groups  (db/select-ids PermissionsGroup)]
+          all-metabase-groups  (t2/select-pks-set :model/PermissionsGroup)]
       (integrations/sync-group-memberships! user-id user-group-ids all-metabase-groups))
     (catch Exception e
       (log/error "Could not create and sync groups. Error:" (st.util/stack-trace e)))))
 
 (defn- fetch-or-create-user!
   [{first_name :first_name {groups :groups} :login_attributes superuser? :is_superuser, :as allowed-user}]
-  (or (if-let [user-in-db (db/select-one [User :id :last_login :is_superuser] :first_name first_name)]
-        (do
-          ;; Check if superuser status has changed and update if necessary
-          (if (or (apply not= (map :is_superuser     [user-in-db allowed-user]))
+  (or (when-let [user-in-db (t2/select-one :model/User :first_name first_name)]
+        ;; Check if superuser status has changed and update if necessary
+        (when (or (apply not= (map :is_superuser [user-in-db allowed-user]))
                   (apply not= (map :login_attributes [user-in-db allowed-user])))
-            (db/update! User (:id user-in-db)
-                        :is_superuser     superuser?
-                        :login_attributes (:login_attributes allowed-user)))
-          (if create-and-sync-groups?
-            (create-and-sync-groups! (:id user-in-db) (effective-groups groups superuser?)))
-          user-in-db))
+          (t2/update! :model/User (:id user-in-db) {:is_superuser superuser?
+                                                    :login_attributes (:login_attributes allowed-user)}))
+        (when create-and-sync-groups?
+          (create-and-sync-groups! (:id user-in-db) (effective-groups groups superuser?)))
+        user-in-db)
       (let [user-inserted (insert-new-user! allowed-user)]
-        (if create-and-sync-groups?
+        (when create-and-sync-groups?
           (create-and-sync-groups! (:id user-inserted) (effective-groups groups superuser?)))
         user-inserted)))
 
 (defn create-session-from-headers!
+  "Reads the SSO user info in the request (either as jwt or as plain headers) and returs a 'user' (a map with some
+  user-related keys, including a valid Metbase session in :session. If the user does not exists in the Metabse DB,
+  it is created, and optionally, their groups are also created and synced."
   [{headers :headers, :as request}]
   (let [user-info    (http-headers->user-info headers)
         allowed-user (allowed-user user-info)]
@@ -109,7 +107,7 @@
     (if (:error allowed-user)
       allowed-user
       (try
-        (let [session (session/create-session! :sso (fetch-or-create-user! allowed-user) (request.u/device-info request))]
+        (let [session (api.session/create-session! :sso (fetch-or-create-user! allowed-user) (req.util/device-info request))]
           (assoc allowed-user :session session))
         (catch Exception e
           {:error (st.util/stack-trace e)})))))
