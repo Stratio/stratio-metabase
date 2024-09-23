@@ -22,6 +22,7 @@
    :jwt-public-key-file "/etc/pki/jwt-public-key.pem"
    :jwt-insecure-request-pkey "false"
    :jwt-cookie-name "stratio-cookie"
+   :oauth2proxy-logout-url "localhost:3000/stratio-logout"
 
    ;; settings for authentication via headers
    :mb-user-header ""
@@ -52,6 +53,7 @@
 (def should-auto-login?        (contains? auto-login-authenticators authenticator))
 (def jwt?                      (= authenticator :jwt))
 (def gosec-sso?                (= authenticator :gosec-sso))
+(def oauth2proxy-logout-url    (config-str :oauth2proxy-logout-url))
 (def headers?                  (= authenticator :headers))
 (def jwt-cookie-name           (config-str :jwt-cookie-name))
 (def jwt-public-key            (delay
@@ -64,7 +66,7 @@
                                        (:body)
                                        (keys/str->public-key)))))
 
-;; We need to define a setting so it can reach frontend via MetabaseSettings object
+;; We need to define these as settings so they can reach frontend via MetabaseSettings object
 (defsetting gosec-sso-enabled
   "flag to tell the front end if we are behind the sso proxy so when logout redirect to proxy logout"
   :type        :boolean
@@ -72,3 +74,11 @@
   :visibility  :public
   :setter      :none
   :export?     false)
+
+(defsetting stratio-logout-url
+  "url to send the users to to finish sso logout"
+  :type       :string
+  :default    oauth2proxy-logout-url
+  :visibility :public
+  :setter     :none
+  :export?    false)

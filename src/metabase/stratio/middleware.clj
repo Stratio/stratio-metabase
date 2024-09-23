@@ -19,6 +19,9 @@
 (def ^:private public-api-endpoints
   ["/api/embed" "/api/geojson" "/api/public" "/api/setup" "/api/util" "/api/session/properties" "/api/health"])
 
+(def ^:private autologin-endpoints
+  ["/api/user/current"])
+
 (defn- email-login-request?
   [{:keys [request-method uri]}]
   (and (= uri "/api/session") (= request-method :post)))
@@ -60,6 +63,10 @@
   (or (not (str/starts-with? uri "/api"))
       (some (partial str/starts-with? uri) public-api-endpoints)))
 
+(defn- autologin-endpoint?
+  [uri]
+  (some (partial str/starts-with? uri) autologin-endpoints))
+
 (defn wrap-with-auto-login-session
   "Middleware that checks if the metabase user id has been included in the request (this is done
   by a previous middleware). If it is not included we look for the user info in the requests headers
@@ -68,7 +75,8 @@
   calling the metabase middleware. "
   [handler]
   (fn [{uri :uri :as request} respond raise]
-    (if (or (:metabase-user-id request) (public-endpoint? uri))
+    (if (or (:metabse-user-id request)
+             (not (autologin-endpoint? uri)))
       (handler request respond raise)
       (let [{:keys [session first_name error]} (st.auth/create-session-from-headers! request)]
         (log/debug "No user info found associated to session, trying to auto-login...")
