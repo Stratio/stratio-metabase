@@ -30,11 +30,11 @@
       (some whitelist groups)))
 
 (defn- tenant-allowed?
-  [user-tenant]
+  [user-tenants]
   (let [app-tenant (st.config/config-str :tenant)]
-    (or (not user-tenant)
+    (or (not (seq user-tenants))
         (not app-tenant)
-        (= user-tenant app-tenant))))
+        (contains? (set user-tenants) app-tenant))))
 
 (defn- admin?
   [groups]
@@ -48,10 +48,10 @@
     superuser?         (conj perms-group/admin-group-name)))
 
 (defn- allowed-user
-  [{:keys [user groups email tenant error]}]
+  [{:keys [user groups email tenants error]}]
   (if error
     {:error error}
-    (if (and (allowed? groups) (tenant-allowed? tenant))
+    (if (and (allowed? groups) (tenant-allowed? tenants))
       {:first_name user
        :last_name ""
        :is_superuser (admin? groups)

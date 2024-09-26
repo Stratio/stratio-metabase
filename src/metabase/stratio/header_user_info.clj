@@ -73,32 +73,33 @@
 
 
 (defn- http-request->user-info-jwt
-  "Gets user info map {:user username, :groups [group1 ... groupN], :email email, :tenant tenant}
-    from jwt token in headers or in cookie. The :email and :tenant may not be present in the jwt.
+  "Gets user info map {:user username, :groups [group1 ... groupN], :email email, :tenants [tenant1 ... tenantN]}
+    from jwt token in headers or in cookie. The :email and :tenants keys may not be present in the jwt.
     If some error happens a map with an :error key is returned."
   [request]
   (log/debug "Getting user info from JWT token")
   (try
-    (let [username-claim (st.config/config-kw :jwt-username-claim)
-          groups-claim   (st.config/config-kw :jwt-groups-claim)
-          email-claim    (st.config/config-kw :jwt-email-claim)
-          tenant-claim   (st.config/config-kw :jwt-tenant-claim)
-          token          (http-request->jwt-token request)
-          pkey           @st.config/jwt-public-key]
+    (let [username-claim  (st.config/config-kw :jwt-username-claim)
+          groups-claim    (st.config/config-kw :jwt-groups-claim)
+          email-claim     (st.config/config-kw :jwt-email-claim)
+          tenants-claim   (st.config/config-kw :jwt-tenants-claim)
+          token           (http-request->jwt-token request)
+          pkey            @st.config/jwt-public-key]
       (cond
         (not token) {:error "Could not obtain jwt token from request headers"}
         (not pkey) {:error "Could not obtain verification key for jwt token"}
         pkey (let [info (-> token
                             (verify-token pkey)
-                            (select-keys [username-claim groups-claim email-claim tenant-claim])
-                            (update-in [groups-claim] st.util/ensure-vector))
+                            (select-keys [username-claim groups-claim email-claim tenants-claim])
+                            (update groups-claim st.util/ensure-vector)
+                            (update tenants-claim st.util/ensure-vector))
                    user-name (username-claim info)]
                (if (empty? user-name)
                  {:error "No username claim found in token"}
-                 {:user   user-name
-                  :groups (groups-claim info)
-                  :email  (email-claim  info)
-                  :tenant (tenant-claim info)}))))
+                 {:user    user-name
+                  :groups  (groups-claim info)
+                  :email   (email-claim  info)
+                  :tenants (tenants-claim info)}))))
     (catch Exception e
       {:error (st.util/stack-trace e)})))
 

@@ -15,7 +15,7 @@
    :jwt-header-name "X-USER-TOKEN"
    :jwt-username-claim "sub"
    :jwt-groups-claim "groups"
-   :jwt-tenant-claim "tenant"
+   :jwt-tenants-claim "tenants"
    :jwt-email-claim "mail"
    :jwt-public-key-location "url"
    :jwt-public-key-endpoint ""
