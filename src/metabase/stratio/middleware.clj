@@ -20,7 +20,7 @@
   ["/api/embed" "/api/geojson" "/api/public" "/api/setup" "/api/util" "/api/session/properties" "/api/health"])
 
 (def ^:private autologin-endpoints
-  ["/api/user/current"])
+  ["/api/user/current" "/api/session/properties"])
 
 (defn- email-login-request?
   [{:keys [request-method uri]}]

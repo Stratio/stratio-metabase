@@ -237,7 +237,8 @@
                                      metabase.shared.util.namespaces
                                      metabase.shared.util.time}                                     ; TODO -- consolidate these into a real API namespace.
     metabase.stratio               #{metbase.stratio
-                                     metabase.stratio.middleware}
+                                     metabase.stratio.middleware
+                                     metabase.stratio.config}
     metabase.sync                  #{metabase.sync
                                      metabase.sync.analyze
                                      metabase.sync.concurrent
