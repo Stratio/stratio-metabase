@@ -68,6 +68,9 @@ import {
   IsAuthenticated,
   IsNotAuthenticated,
 } from "./route-guards";
+// < STRATIO - login via headers/jwt - we need this below to get our gosec-sso-enabled setting
+import { getSetting } from "./selectors/settings";
+// < STRATIO
 import { getApplicationName } from "./selectors/whitelabel";
 
 export const getRoutes = store => {
@@ -115,7 +118,25 @@ export const getRoutes = store => {
         <Route path="/auth">
           <IndexRedirect to="/auth/login" />
           <Route component={IsNotAuthenticated}>
-            <Route path="login" title={t`Login`} component={Login} />
+            <Route
+              path="login"
+              title={t`Login`}
+              component={Login}
+              // < STRATIO - login via headers/jwt - reload page when sent to auth/login so that oauthredirect or autologin kicks in
+              onEnter={(nextState, replace) => {
+                const gosecSSOEnabled = getSetting(
+                  store.getState(),
+                  "gosec-sso-enabled",
+                );
+                const hasBeenRedirected =
+                  nextState.location.action === "REPLACE" ||
+                  nextState.location.action === "PUSH";
+                if (gosecSSOEnabled && hasBeenRedirected) {
+                  window.location.reload();
+                }
+              }}
+              // STRATIO >
+            />
             <Route path="login/:provider" title={t`Login`} component={Login} />
           </Route>
           <Route path="logout" component={Logout} />

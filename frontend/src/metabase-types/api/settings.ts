@@ -318,6 +318,10 @@ interface PublicSettings {
   "token-features": TokenFeatures;
   version: Version;
   "version-info-last-checked": string | null;
+  // < STRATIO - auto login from headers/jwt
+  "gosec-sso-enabled": boolean;
+  "stratio-logout-url": string;
+  // STRATIO >
 }
 
 export type UserSettings = {

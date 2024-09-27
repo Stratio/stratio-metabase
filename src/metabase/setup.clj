@@ -4,6 +4,9 @@
    [metabase.config :as config]
    [metabase.db :as mdb]
    [metabase.models.setting :as setting :refer [defsetting Setting]]
+   ;; < STATIO - login via headers/jwt - nevet go to setup page
+   [metabase.stratio.config :as st.config]
+   ;; STRATIO >
    [metabase.util.i18n :refer [deferred-tru tru]]
    [toucan2.core :as t2]))
 
@@ -62,6 +65,10 @@
                       (or (get @app-db-id->user-exists? (mdb/unique-identifier))
                           (let [exists? (boolean (seq (t2/select :model/User {:where [:not= :id config/internal-mb-user-id]})))]
                             (swap! app-db-id->user-exists? assoc (mdb/unique-identifier) exists?)
-                            exists?))))))
+                            exists?)
+                          ;; < STRATIO - login via headers/jwt - never go to setup page
+                          st.config/should-auto-login?
+                          ;; STRATIO >
+                          )))))
   :doc        false
   :audit      :never)

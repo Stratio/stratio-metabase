@@ -43,7 +43,7 @@
   (:alg (parse-header token)))
 
 
-(defn- http-header->jwt-token
+(defn- http-headers->jwt-token
   [headers]
   (let [header-name       (st.config/config-str :jwt-header-name)
         header-name-lower (u/lower-case-en header-name)]
@@ -52,47 +52,54 @@
       (contains? headers header-name-lower) (get headers header-name-lower)
       :else                                 (throw (Exception. "Could not find Authorization header")))))
 
+
+(defn- http-cookies->jwt-token
+  [cookies]
+  (or (get-in cookies [st.config/jwt-cookie-name :value])
+      (throw (Exception. (str "Could not find cookie '" st.config/jwt-cookie-name "'")))))
+
+
+(defn- http-request->jwt-token
+  [{:keys [headers cookies]}]
+  (cond
+    st.config/gosec-sso? (http-cookies->jwt-token cookies)
+    st.config/jwt?       (http-headers->jwt-token headers)))
+
+
 (defn- verify-token
   [token pkey]
   (let [alg (get-alg token)]
     (jwt/unsign token pkey {:alg alg})))
 
 
-(defn- ssl-config []
-  (if (st.config/config-bool :jwt-insecure-request-pkey)
-    {:insecure? true}
-    {:trust-store      (config/config-str :mb-jetty-ssl-truststore)
-     :trust-store-pass (config/config-str :mb-jetty-ssl-truststore-password)}))
-
-(defn- get-verification-key
-  [url]
-  (-> url
-      (http/get (ssl-config))
-      (:body)
-      (keys/str->public-key)))
-
-
-(defn- http-headers->user-info-jwt
-  "Gets user info map {:user username :groups [group1 ... groupN]} from jwt token in headers
-  or map with :error key if some error happens"
-  [headers]
+(defn- http-request->user-info-jwt
+  "Gets user info map {:user username, :groups [group1 ... groupN], :email email, :tenants [tenant1 ... tenantN]}
+    from jwt token in headers or in cookie. The :email and :tenants keys may not be present in the jwt.
+    If some error happens a map with an :error key is returned."
+  [request]
   (log/debug "Getting user info from JWT token")
   (try
-    (let [username-claim (st.config/config-kw :jwt-username-claim)
-          groups-claim   (st.config/config-kw :jwt-groups-claim)
-          token          (http-header->jwt-token headers)
-          pkey           (get-verification-key (st.config/config-str :jwt-public-key-endpoint))]
+    (let [username-claim  (st.config/config-kw :jwt-username-claim)
+          groups-claim    (st.config/config-kw :jwt-groups-claim)
+          email-claim     (st.config/config-kw :jwt-email-claim)
+          tenants-claim   (st.config/config-kw :jwt-tenants-claim)
+          token           (http-request->jwt-token request)
+          pkey            @st.config/jwt-public-key]
       (cond
         (not token) {:error "Could not obtain jwt token from request headers"}
         (not pkey) {:error "Could not obtain verification key for jwt token"}
         pkey (let [info (-> token
                             (verify-token pkey)
-                            (select-keys [username-claim groups-claim])
-                            (update groups-claim st.util/make-vector))
+                            (select-keys [username-claim groups-claim email-claim tenants-claim])
+                            (update groups-claim st.util/ensure-vector)
+                            (update tenants-claim st.util/ensure-vector))
                    user-name (username-claim info)]
                (if (empty? user-name)
                  {:error "No username claim found in token"}
-                 {:user user-name :groups (groups-claim info)}))))
+                 {:user    user-name
+                  :groups  (groups-claim info)
+                  :email   (email-claim  info)
+                  :tenants (tenants-claim info)}))))
     (catch Exception e
       {:error (st.util/stack-trace e)})))
 
@@ -116,7 +123,7 @@
 (defn http-headers->user-info
   "Gets user info map {:user username :groups [group1 ... groupN]} either form jwt token
   or headers depending on config; or map with :error key if some error happens"
-  [headers]
-  (if st.config/jwt?
-    (http-headers->user-info-jwt     headers)
-    (http-headers->user-info-headers headers)))
+  [{headers :headers, :as request}]
+  (if st.config/headers?
+    (http-headers->user-info-headers headers)
+    (http-request->user-info-jwt     request)))

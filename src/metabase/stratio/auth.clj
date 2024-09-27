@@ -29,6 +29,13 @@
       ;; a set can act as a predicate!
       (some whitelist groups)))
 
+(defn- tenant-allowed?
+  [user-tenants]
+  (let [app-tenant (st.config/config-str :tenant)]
+    (or (not (seq user-tenants))
+        (not app-tenant)
+        (contains? (set user-tenants) app-tenant))))
+
 (defn- admin?
   [groups]
   (contains? (set groups) admin-group))
@@ -41,14 +48,16 @@
     superuser?         (conj perms-group/admin-group-name)))
 
 (defn- allowed-user
-  [{:keys [user groups error]}]
+  [{:keys [user groups email tenants error]}]
   (if error
     {:error error}
-    (if (allowed? groups)
+    (if (and (allowed? groups) (tenant-allowed? tenants))
       {:first_name user
        :last_name ""
        :is_superuser (admin? groups)
-       :email (if (u/email? user) user (u/lower-case-en (str user dummy-email-domain)))
+       :email (cond email email
+                    (u/email? user) user
+                    :else (u/lower-case-en (str user dummy-email-domain)))
        :login_attributes {:groups groups}}
       {:error (str "User " user " not allowed")})))
 
@@ -100,8 +109,8 @@
   "Reads the SSO user info in the request (either as jwt or as plain headers) and returs a 'user' (a map with some
   user-related keys, including a valid Metbase session in :session. If the user does not exists in the Metabse DB,
   it is created, and optionally, their groups are also created and synced."
-  [{headers :headers, :as request}]
-  (let [user-info    (http-headers->user-info headers)
+  [request]
+  (let [user-info    (http-headers->user-info request)
         allowed-user (allowed-user user-info)]
     (log/debug "received user info " user-info)
     (if (:error allowed-user)
