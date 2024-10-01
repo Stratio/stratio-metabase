@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.50.21-0.1.0 (upcoming)
+## 0.50.21-0.1.0 (2024-10-01)
 
 * [ROCK-11848] Update metabase to 0.50
 * [ROCK-12171] SSO via KEOS oauth2proxy
