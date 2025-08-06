@@ -452,6 +452,10 @@ interface PublicSettings {
   "version-info-last-checked": string | null;
   "airgap-enabled": boolean;
   "non-table-chart-generated": boolean;
+  // < STRATIO - auto login from headers/jwt
+  "gosec-sso-enabled": boolean;
+  "stratio-logout-url": string;
+  // STRATIO >
 }
 
 export type UserSettings = {

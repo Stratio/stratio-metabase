@@ -3,6 +3,10 @@
 ## 0.50.21-0.1.0 (upcoming)
 
 * [ROCK-11848] Update metabase to 0.50
+* [ROCK-12171] SSO via KEOS oauth2proxy
+* [ROCK-12227] Fix: X-ray suggestions do not appear on first app load
+* [ROCK-11267] Fix: Improper tenant validation
+* [ROCK-11122] Fix: Failure to invalidate session on logout
 
 ## 0.43.4-0.2.0 (2024-02-01)
 

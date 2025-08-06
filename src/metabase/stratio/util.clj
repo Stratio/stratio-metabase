@@ -13,6 +13,14 @@
          (mapv str/trim)
          (filterv seq))))
 
+
+(defn ensure-vector
+  [string-or-coll]
+  (if (instance? java.lang.String string-or-coll)
+    (make-vector string-or-coll)
+    (vec string-or-coll)))
+
+
 (defn stack-trace
   "returns the stack trace of the exception as a string"
   [e]

@@ -122,10 +122,11 @@ export const logout = createAsyncThunk(
         dispatch(clearCurrentUser());
         await dispatch(refreshLocale()).unwrap();
 
-        // < STRATIO - auto login from headers info (sso proxy integration)
+        // < STRATIO - auto login from headers/jwt
         // we must redirect to the sso proxy logout
-        if (MetabaseSettings.get("gosec-sso-enabled", false)) {
-          dispatch(push("logout"));
+        if (getSetting(state, "gosec-sso-enabled")) {
+          window.location.href = getSetting(state, "stratio-logout-url");
+          return;
         } else {
           // We use old react-router-redux which references old redux, which does not require
           // action type to be a string - unlike RTK v2+
