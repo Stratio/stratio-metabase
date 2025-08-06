@@ -122,9 +122,16 @@ export const logout = createAsyncThunk(
         dispatch(clearCurrentUser());
         await dispatch(refreshLocale()).unwrap();
 
-        // We use old react-router-redux which references old redux, which does not require
-        // action type to be a string - unlike RTK v2+
-        dispatch(push(Urls.login()) as unknown as UnknownAction);
+        // < STRATIO - auto login from headers info (sso proxy integration)
+        // we must redirect to the sso proxy logout
+        if (MetabaseSettings.get("gosec-sso-enabled", false)) {
+          dispatch(push("logout"));
+        } else {
+          // We use old react-router-redux which references old redux, which does not require
+          // action type to be a string - unlike RTK v2+
+          dispatch(push(Urls.login()) as unknown as UnknownAction);
+        }
+        // STRATIO />
         reload(); // clears redux state and browser caches
       }
     } catch (error) {
