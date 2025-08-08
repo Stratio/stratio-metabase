@@ -1,10 +1,10 @@
 (ns metabase.stratio.auth
   (:require
    [clojure.set :as set]
-   [metabase.api.session :as api.session]
-   [metabase.integrations.common :as integrations]
-   [metabase.models.permissions-group :as perms-group]
-   [metabase.server.request.util :as req.util]
+   [metabase.permissions.models.permissions-group :as perms-group]
+   [metabase.request.core :as request]
+   [metabase.session.models.session :as session]
+   [metabase.sso.core :as sso]
    [metabase.stratio.config :as st.config]
    [metabase.stratio.header-user-info :refer [http-headers->user-info]]
    [metabase.stratio.util :as st.util]
@@ -44,8 +44,8 @@
   [groups superuser?]
   (cond-> (set groups)
     whitelist-enabled? (set/intersection whitelist)
-    true               (disj perms-group/admin-group-name)  ;; prevent a SSO "Administrators" group to trigger admin status
-    superuser?         (conj perms-group/admin-group-name)))
+    true               (disj (:name (perms-group/admin)))  ;; prevent a SSO "Administrators: group to trigger admin status
+    superuser?         (conj (:name (perms-group/admin)))))
 
 (defn- allowed-user
   [{:keys [user groups email tenants error]}]
@@ -55,7 +55,7 @@
       {:first_name user
        :last_name ""
        :is_superuser (admin? groups)
-       :email (cond email email
+       :email (cond (u/email? email) email
                     (u/email? user) user
                     :else (u/lower-case-en (str user dummy-email-domain)))
        :login_attributes {:groups groups}}
@@ -68,8 +68,6 @@
 
 (defn- group-name->group-id []
   (t2/select-fn->pk :name :model/PermissionsGroup))
-
-(map (fn [x] {:a x}) [1 2 3])
 
 (defn- insert-groups! [group-names]
   (t2/insert-returning-pks! :model/PermissionsGroup (map (fn [name] {:name name}) group-names)))
@@ -85,39 +83,51 @@
                                     (filter some?))
           user-group-ids       (concat existing-group-ids created-group-ids)
           all-metabase-groups  (t2/select-pks-set :model/PermissionsGroup)]
-      (integrations/sync-group-memberships! user-id user-group-ids all-metabase-groups))
+      (sso/sync-group-memberships! user-id user-group-ids all-metabase-groups))
     (catch Exception e
-      (log/error "Could not create and sync groups. Error:" (st.util/stack-trace e)))))
+      ;; if race condition reraise so it is catched later and handled correctly
+      (if (re-find #"duplicate key|unique constraint" (.getMessage e))
+        (throw e)
+        (log/error "Could not create and sync groups. Error:" (st.util/stack-trace e))))))
 
 (defn- fetch-or-create-user!
   [{first_name :first_name {groups :groups} :login_attributes superuser? :is_superuser, :as allowed-user}]
-  (or (when-let [user-in-db (t2/select-one :model/User :first_name first_name)]
-        ;; Check if superuser status has changed and update if necessary
-        (when (or (apply not= (map :is_superuser [user-in-db allowed-user]))
-                  (apply not= (map :login_attributes [user-in-db allowed-user])))
-          (t2/update! :model/User (:id user-in-db) {:is_superuser superuser?
-                                                    :login_attributes (:login_attributes allowed-user)}))
-        (when create-and-sync-groups?
-          (create-and-sync-groups! (:id user-in-db) (effective-groups groups superuser?)))
-        user-in-db)
-      (let [user-inserted (insert-new-user! allowed-user)]
-        (when create-and-sync-groups?
-          (create-and-sync-groups! (:id user-inserted) (effective-groups groups superuser?)))
-        user-inserted)))
+  (try
+    (or (when-let [user-in-db (t2/select-one :model/User :first_name first_name)]
+          ;; Check if superuser status has changed and update if necessary
+          (when (or (apply not= (map :is_superuser [user-in-db allowed-user]))
+                    (apply not= (map :login_attributes [user-in-db allowed-user])))
+            (t2/update! :model/User (:id user-in-db) {:is_superuser superuser?
+                                                      :login_attributes (:login_attributes allowed-user)}))
+          (when create-and-sync-groups?
+            (create-and-sync-groups! (:id user-in-db) (effective-groups groups superuser?)))
+          user-in-db)
+        (let [user-inserted (insert-new-user! allowed-user)]
+          (when create-and-sync-groups?
+            (create-and-sync-groups! (:id user-inserted) (effective-groups groups superuser?)))
+          user-inserted))
+    (catch Exception e
+      ;; if we have run into a race condition between the two autologin endpoints, and we have tried to
+      ;; insert something that has just been inserted by the other autologin (detected by the error
+      ;; message) just fetch the user that the other endpoint has just created, otherwise raise the error
+      (if (re-find #"duplicate key|unique constraint" (.getMessage e))
+        (t2/select-one :model/User :first_name first_name)
+        (throw e))
+      )))
 
 (defn create-session-from-headers!
   "Reads the SSO user info in the request (either as jwt or as plain headers) and returs a 'user' (a map with some
   user-related keys, including a valid Metbase session in :session. If the user does not exists in the Metabse DB,
   it is created, and optionally, their groups are also created and synced."
   [request]
-  (let [user-info    (http-headers->user-info request)
+  (log/debug "No user info found associated to request, trying to auto-login...")
+  (let [user-info (http-headers->user-info request)
         allowed-user (allowed-user user-info)]
     (log/debug "received user info " user-info)
     (if (:error allowed-user)
       allowed-user
       (try
-        (let [session (api.session/create-session! :sso (fetch-or-create-user! allowed-user) (req.util/device-info request))]
+        (let [session (session/create-session! :sso (fetch-or-create-user! allowed-user) (request/device-info request))]
           (assoc allowed-user :session session))
         (catch Exception e
           {:error (st.util/stack-trace e)})))))
-

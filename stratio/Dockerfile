@@ -2,63 +2,63 @@
 # STAGE 1: builder
 ###################
 
-# < STRATIO - changing base image to one found in our nexus
-FROM openjdk:11.0.12-jdk-slim as builder
-# STRATIO />
+# < STRATIO - recicly the jdk and clojure installation between builder and light builder
+# FROM node:22-bullseye AS builder
+FROM node:22-bullseye AS base
+# STRATIO >
 
-WORKDIR /app/source
+ARG MB_EDITION=oss
+ARG VERSION
 
-ENV DEBIAN_FRONTEND=noninteractive
+WORKDIR /home/node
 
-# installing Clojure and Clojure CLI
-RUN apt-get update && apt-get upgrade -y && apt-get install -y wget curl \
-    && curl -O https://download.clojure.org/install/linux-install-1.11.1.1262.sh \
-    && chmod +x linux-install-1.11.1.1262.sh \
-    && ./linux-install-1.11.1.1262.sh \
-    # install Node LTS and Yarn from their repos
-    && curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
-    && wget https://dl.yarnpkg.com/debian/pubkey.gpg && cat pubkey.gpg | apt-key add - \
-    && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
-    && apt-get update && apt-get install --no-install-recommends -y git nodejs yarn \
+RUN apt-get update && apt-get upgrade -y && apt-get install wget apt-transport-https gpg curl git -y \
+    && wget -qO - https://packages.adoptium.net/artifactory/api/gpg/key/public | gpg --dearmor | tee /etc/apt/trusted.gpg.d/adoptium.gpg > /dev/null \
+    && echo "deb https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list \
+    && apt-get update \
+    && apt install temurin-21-jdk -y \
+    && curl -O https://download.clojure.org/install/linux-install-1.12.0.1488.sh \
+    && chmod +x linux-install-1.12.0.1488.sh \
+    && ./linux-install-1.12.0.1488.sh \
+    # < STRATIO
     && apt-get clean
+    # STRATIO >
 
-# add the the source
+# < STRATIO - recicly the jdk and clojure installation between builder and light builder
+FROM base as builder
+# STRATIO >
+
 COPY . .
+
+# version is pulled from git, but git doesn't trust the directory due to different owners
+RUN git config --global --add safe.directory /home/node
 
 # install frontend dependencies
 RUN yarn --frozen-lockfile
 
-# delete the sparksql and sqlite drivers that we do not include due to vulnerabilities
-RUN rm -rf modules/drivers/sparksql modules/drivers/sqlite
-
-# build the app
-RUN INTERACTIVE=false MB_EDITION=oss bin/build.sh
+# < STRATIO - we need the "v" before the version since metabase expects it that
+# way but our Jenkins pass it without the v
+RUN INTERACTIVE=false CI=true MB_EDITION=$MB_EDITION bin/build.sh :version v${VERSION}
+# STRATIO >
 
 # < STRATIO - light builder
 
 # ######################################
 # # STAGE 2: light builder
 # ######################################
-FROM openjdk:11.0.12-jdk-slim as lightbuilder
+FROM base as lightbuilder
 
-# installing Clojure and Clojure CLI
-RUN apt-get update && apt-get upgrade -y && apt-get install -y curl git \
-    && curl -O https://download.clojure.org/install/linux-install-1.10.3.1040.sh \
-    && chmod +x linux-install-1.10.3.1040.sh \
-    && ./linux-install-1.10.3.1040.sh \
-    && apt-get clean
-
-# Starting from version 0.43.x it is not required to add metabase java source code /app/source/java
+# Starting from version 0.43.x it is not required to add metabase java source code /home/node/java
 # because drivers build scripts now do not seem to need it
 
 # Copy metabase build and start scripts
-COPY --from=builder /app/source/bin  /app/source/bin
+COPY --from=builder /home/node/bin  /home/node/bin
 
 # Copy metabase source code
-COPY --from=builder /app/source/src       /app/source/src
-COPY --from=builder /app/source/deps.edn  /app/source/deps.edn
+COPY --from=builder /home/node/src       /home/node/src
+COPY --from=builder /home/node/deps.edn  /home/node/deps.edn
 
 # add metabase uberjar
-COPY --from=builder /app/source/target/uberjar/metabase.jar /app/source/target/uberjar/metabase.jar
+COPY --from=builder /home/node/target/uberjar/metabase.jar /home/node/target/uberjar/metabase.jar
 
 # STRATIO />

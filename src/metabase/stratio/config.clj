@@ -2,8 +2,8 @@
   (:require
    [buddy.core.keys :as keys]
    [clj-http.client :as http]
-   [metabase.config :as config]
-   [metabase.models.setting :refer [defsetting]]
+   [metabase.config.core :as config]
+   [metabase.settings.core :refer [defsetting]]
    [metabase.stratio.util :as st.util]))
 
 (set! *warn-on-reflection* true)
@@ -70,7 +70,7 @@
 (defsetting gosec-sso-enabled
   "flag to tell the front end if we are behind the sso proxy so when logout redirect to proxy logout"
   :type        :boolean
-  :default     gosec-sso?
+  :default     (or gosec-sso? headers?)
   :visibility  :public
   :setter      :none
   :export?     false)

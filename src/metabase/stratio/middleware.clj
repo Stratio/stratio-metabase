@@ -3,6 +3,7 @@
    [clojure.string :as str]
    [java-time.api :as t]
    [metabase.api.common :as api]
+   [metabase.request.core :as request]
    [metabase.server.middleware.session :as mw.session]
    [metabase.stratio.auth :as st.auth]
    [metabase.stratio.config :as st.config]
@@ -46,8 +47,8 @@
 (defn- add-session-to-request-and-response
   [handler session]
   (fn [request respond raise]
-    (handler (assoc request :metabase-session-id (-> session :id str) :metabase-session-type :normal)
-             #(respond (mw.session/set-session-cookies request % session (t/zoned-date-time (t/zone-id "GMT"))))
+    (handler (assoc request :metabase-session-key (-> session :key str) :metabase-session-type :normal)
+             #(respond (request/set-session-cookies request % session (t/zoned-date-time (t/zone-id "GMT"))))
              raise)))
 
 (defn- forbid-email-login
@@ -75,11 +76,10 @@
   calling the metabase middleware. "
   [handler]
   (fn [{uri :uri :as request} respond raise]
-    (if (or (:metabse-user-id request)
+    (if (or (:metabase-user-id request)
              (not (autologin-endpoint? uri)))
       (handler request respond raise)
       (let [{:keys [session first_name error]} (st.auth/create-session-from-headers! request)]
-        (log/debug "No user info found associated to session, trying to auto-login...")
         (if error
           (do
             (log/error "Could not perform auto-login. Error: " error)
@@ -87,10 +87,7 @@
           (let [wrapped-handler (-> handler
                                     mw.session/wrap-current-user-info
                                     (add-session-to-request-and-response session))]
-            (log/info "User" first_name "auto-logged-in through headers")
-            (log/debug "Request triggering the auto-login:"
-                       (u/upper-case-en (name (:request-method request)))
-                       (:uri request))
+            (log/info "User" first_name "auto-loged-in through endpoint " uri)
             (wrapped-handler request respond raise)))))))
 
 (defn- wrap-with-username-header

@@ -7,7 +7,7 @@
    [cheshire.core :as json]
    [clj-http.client :as http]
    [clojure.string :as str]
-   [metabase.config :as config]
+   [metabase.config.core :as config]
    [metabase.stratio.config :as st.config]
    [metabase.stratio.util :as st.util]
    [metabase.util :as u]
