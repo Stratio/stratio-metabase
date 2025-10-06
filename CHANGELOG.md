@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.56.4-0.1.0 (upcoming)
+## 0.56.4-0.1.0 (2025-10-06)
 
 * [ROCK-13979] Update Metabase to 0.56.4
 
