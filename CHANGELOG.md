@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.56.4-0.1.1 (upcoming)
+
+* [ROCK-14826] Fix security vulnerabilities: tika-core (GHSA-f58c-gq56-vjjf), aircompressor (GHSA-vx9q-rhv9-3jvg), jetty-http (GHSA-355h-qmc2-wpwf), jetty-server (GHSA-xxh7-fcf3-rj7f)
+
 ## 0.56.4-0.1.0 (2025-10-06)
 
 * [ROCK-13979] Update Metabase to 0.56.4
