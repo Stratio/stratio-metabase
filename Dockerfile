@@ -4,6 +4,7 @@
 
 FROM node:18-bullseye as builder
 
+
 ARG MB_EDITION=oss
 ARG VERSION
 
