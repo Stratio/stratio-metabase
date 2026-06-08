@@ -10,6 +10,8 @@ FROM node:22-bullseye AS base
 ARG MB_EDITION=oss
 ARG VERSION
 
+ENV NODE_OPTIONS="--max-old-space-size=4096"
+
 WORKDIR /home/node
 
 RUN apt-get update && apt-get upgrade -y && apt-get install wget apt-transport-https gpg curl git -y \

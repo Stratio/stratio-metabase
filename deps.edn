@@ -40,6 +40,15 @@
   com.clojure-goes-fast/jvm-hiccup-meter    {:mvn/version "0.1.1"}              ; Monitor GC pauses and other system-induced pauses.
   com.draines/postal                        {:mvn/version "2.0.5"               ; SMTP library
                                              :exclusions [com.sun.mail/jakarta.mail]}
+  ;; < STRATIO - fix medium vulnerabilities
+  ;; Pinned to override transitive versions requested by:
+  ;;   net.thisptr/jackson-jq (2.19.2), martian-clj-http (2.18.3), poi-ooxml (2.16.2),
+  ;;   docjure (2.16.2), clj-yaml (2.13.3), cheshire (2.12.7), snowplow-java-tracker (2.12.7)
+  ;; jackson-annotations uses a slower release cycle since 2.21 (no patch versions)
+  com.fasterxml.jackson.core/jackson-annotations {:mvn/version "2.21"}             ; jackson core annotation support
+  com.fasterxml.jackson.core/jackson-core        {:mvn/version "2.21.4"}           ; jackson core streaming API
+  com.fasterxml.jackson.core/jackson-databind    {:mvn/version "2.21.4"}           ; jackson data-binding
+  ;; STRATIO >
   com.fasterxml.woodstox/woodstox-core      {:mvn/version "7.1.0"}              ; trans dep of commons-codec
                                                                                 ; Detect the charset in uploaded CSV files
   com.github.albfernandez/juniversalchardet {:mvn/version "2.5.0"}
@@ -124,15 +133,26 @@
   net.thisptr/jackson-jq                    {:mvn/version "1.4.0"}              ; Java implementation of the JQ json query language
   org.apache.commons/commons-compress       {:mvn/version "1.27.1"}             ; compression utils
   org.apache.commons/commons-lang3          {:mvn/version "3.18.0"}             ; helper methods for working with java.lang stuff
-  org.apache.logging.log4j/log4j-1.2-api    {:mvn/version "2.24.3"}             ; apache logging framework
-  org.apache.logging.log4j/log4j-api        {:mvn/version "2.24.3"}             ; add compatibility with log4j 1.2
-  org.apache.logging.log4j/log4j-core       {:mvn/version "2.24.3"}             ; apache logging framework
-  org.apache.logging.log4j/log4j-jcl        {:mvn/version "2.25.1"}             ; allows the commons-logging API to work with log4j 2
-  org.apache.logging.log4j/log4j-jul        {:mvn/version "2.24.3"}             ; java.util.logging (JUL) -> Log4j2 adapter
+  ;; < STRATIO - fix medium vulnerabilities
+  ;; org.apache.logging.log4j/log4j-1.2-api    {:mvn/version "2.24.3"}             ; apache logging framework
+  ;; org.apache.logging.log4j/log4j-api        {:mvn/version "2.24.3"}             ; add compatibility with log4j 1.2
+  ;; org.apache.logging.log4j/log4j-core       {:mvn/version "2.24.3"}             ; apache logging framework
+  ;; org.apache.logging.log4j/log4j-jcl        {:mvn/version "2.25.1"}             ; allows the commons-logging API to work with log4j 2
+  ;; org.apache.logging.log4j/log4j-jul        {:mvn/version "2.24.3"}             ; java.util.logging (JUL) -> Log4j2 adapter
+  ;; org.apache.logging.log4j/log4j-layout-template-json
+  ;; {:mvn/version "2.24.3"}             ; allows the custom json logging format
+  ;; org.apache.logging.log4j/log4j-slf4j2-impl
+  ;; {:mvn/version "2.24.3"}             ; allows the slf4j2 API to work with log4j 2
+  org.apache.logging.log4j/log4j-1.2-api    {:mvn/version "2.25.4"}             ; apache logging framework
+  org.apache.logging.log4j/log4j-api        {:mvn/version "2.25.4"}             ; add compatibility with log4j 1.2
+  org.apache.logging.log4j/log4j-core       {:mvn/version "2.25.4"}             ; apache logging framework
+  org.apache.logging.log4j/log4j-jcl        {:mvn/version "2.25.4"}             ; allows the commons-logging API to work with log4j 2
+  org.apache.logging.log4j/log4j-jul        {:mvn/version "2.25.4"}             ; java.util.logging (JUL) -> Log4j2 adapter
   org.apache.logging.log4j/log4j-layout-template-json
-  {:mvn/version "2.24.3"}             ; allows the custom json logging format
+  {:mvn/version "2.25.4"}             ; allows the custom json logging format
   org.apache.logging.log4j/log4j-slf4j2-impl
-  {:mvn/version "2.24.3"}             ; allows the slf4j2 API to work with log4j 2
+  {:mvn/version "2.25.4"}             ; allows the slf4j2 API to work with log4j 2
+  ;; STRATIO >
   org.apache.poi/poi                        {:mvn/version "5.4.1"}              ; Work with Office documents (e.g. Excel spreadsheets) -- newer version than one specified by Docjure
   org.apache.poi/poi-ooxml                  {:mvn/version "5.4.1"
                                              :exclusions  [org.bouncycastle/bcpkix-jdk15on
