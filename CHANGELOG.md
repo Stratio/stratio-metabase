@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.56.4-0.1.2 (upcoming)
+## 0.56.4-0.1.2 (2026-06-08)
 
 * [ROCK-14826] Fix medium security vulnerabilities: jackson, log4j
 
