@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.56.4-0.1.2 (upcoming)
+
+* [ROCK-14826] Fix medium security vulnerabilities: jackson, log4j
+
 ## 0.56.4-0.1.1 (2026-05-20)
 
 * [ROCK-14826] Fix security vulnerabilities: tika-core (GHSA-f58c-gq56-vjjf), aircompressor (GHSA-vx9q-rhv9-3jvg), jetty-http (GHSA-355h-qmc2-wpwf), jetty-server (GHSA-xxh7-fcf3-rj7f)
