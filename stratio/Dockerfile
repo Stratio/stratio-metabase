@@ -4,7 +4,7 @@
 
 # < STRATIO - recicly the jdk and clojure installation between builder and light builder
 # FROM node:22-bullseye AS builder
-FROM node:22-bullseye AS base
+FROM node:22-bookworm AS base
 # STRATIO >
 
 ARG MB_EDITION=oss
