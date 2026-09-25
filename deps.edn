@@ -198,7 +198,10 @@
   org.flatland/ordered                      {:mvn/version "1.15.12"}            ; ordered maps & sets
   org.graalvm.polyglot/js-community         {:mvn/version "24.2.1" :extension "pom"} ; JavaScript engine
   org.graalvm.polyglot/polyglot             {:mvn/version "24.2.1"}             ; GraalVM platform, required by JS engine
-  org.jsoup/jsoup                           {:mvn/version "1.21.1"}             ; required by hickory
+  ;; < STRATIO - fix medium vulnerabilities
+  ;; org.jsoup/jsoup                           {:mvn/version "1.21.1"}             ; required by hickory
+  org.jsoup/jsoup                           {:mvn/version "1.23.2"}             ; required by hickory
+  ;; STRATIO >
   org.liquibase/liquibase-core              {:mvn/version "4.33.0"              ; migration management (Java lib)
                                              :exclusions  [ch.qos.logback/logback-classic]}
   ;; < STRATIO - fix medium vulnerabilities
