@@ -133,6 +133,15 @@
   net.thisptr/jackson-jq                    {:mvn/version "1.4.0"}              ; Java implementation of the JQ json query language
   org.apache.commons/commons-compress       {:mvn/version "1.27.1"}             ; compression utils
   org.apache.commons/commons-lang3          {:mvn/version "3.18.0"}             ; helper methods for working with java.lang stuff
+  ;; < STRATIO - fix high vulnerabilities
+  ;; Pinned to override the transitive versions requested by metabase/saml20-clj (opensaml, shibboleth).
+  ;; httpclient5 5.6 must pair with httpcore5 5.4.x, httpcore5-h2 must match httpcore5 and httpclient5-cache must
+  ;; match httpclient5
+  org.apache.httpcomponents.client5/httpclient5 {:mvn/version "5.6.4"}
+  org.apache.httpcomponents.client5/httpclient5-cache {:mvn/version "5.6.4"}
+  org.apache.httpcomponents.core5/httpcore5     {:mvn/version "5.4.3"}
+  org.apache.httpcomponents.core5/httpcore5-h2  {:mvn/version "5.4.3"}
+  ;; STRATIO >
   ;; < STRATIO - fix medium vulnerabilities
   ;; org.apache.logging.log4j/log4j-1.2-api    {:mvn/version "2.24.3"}             ; apache logging framework
   ;; org.apache.logging.log4j/log4j-api        {:mvn/version "2.24.3"}             ; add compatibility with log4j 1.2
