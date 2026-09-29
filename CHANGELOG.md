@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.56.25-0.1.2 (upcoming)
+## 0.56.25-0.1.2 (2026-09-29)
 
 * Update metabase to 0.56.25
 
