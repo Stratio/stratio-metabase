@@ -7,10 +7,14 @@
   "redshift" {:url "https://s3.amazonaws.com/redshift-maven-repository/release"}}
 
  :deps
- {metabase/athena             {:local/root "athena"}
+ {;; < STRATIO - remove athena and databricks drivers, they have dependencies with vulnerabilities
+  ;; metabase/athena             {:local/root "athena"}
+  ;; STRATIO >
   metabase/bigquery-cloud-sdk {:local/root "bigquery-cloud-sdk"}
   metabase/clickhouse         {:local/root "clickhouse"}
-  metabase/databricks         {:local/root "databricks"}
+  ;; < STRATIO - remove athena and databricks drivers, they have dependencies with vulnerabilities
+  ;; metabase/databricks         {:local/root "databricks"}
+  ;; STRATIO >
   metabase/druid              {:local/root "druid"}
   metabase/druid-jdbc         {:local/root "druid-jdbc"}
   metabase/hive-like          {:local/root "hive-like"}

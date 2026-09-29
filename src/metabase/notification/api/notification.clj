@@ -19,6 +19,17 @@
 
 (set! *warn-on-reflection* true)
 
+;; < STRATIO - backport of the check of upstream #70261 (CVE-2026-55760, handlebars path traversal)
+(defn- check-no-resource-templates!
+  "Validate that no handler uses handlebars-resource templates. That type is internal only."
+  [handlers]
+  (doseq [{:keys [template]} handlers
+          :when template
+          :let [template-type (some-> template :details :type keyword)]]
+    (when (= :email/handlebars-resource template-type)
+      (throw (ex-info "invalid template" {:status-code 400})))))
+;; STRATIO >
+
 (defn get-notification
   "Get a notification by id."
   [id]
@@ -137,6 +148,9 @@
 (api.macros/defendpoint :post "/"
   "Create a new notification, return the created notification."
   [_route _query body :- ::models.notification/FullyHydratedNotification]
+  ;; < STRATIO
+  (check-no-resource-templates! (:handlers body))
+  ;; STRATIO >
   (api/create-check :model/Notification body)
   (let [notification (models.notification/hydrate-notification
                       (models.notification/create-notification!
@@ -183,6 +197,9 @@
   [{:keys [id]} :- [:map [:id ms/PositiveInt]]
    _query
    body :- ::models.notification/FullyHydratedNotification]
+  ;; < STRATIO
+  (check-no-resource-templates! (:handlers body))
+  ;; STRATIO >
   (let [existing-notification (get-notification id)]
     (api/update-check existing-notification body)
     (models.notification/update-notification! existing-notification body)
@@ -221,6 +238,9 @@
 (api.macros/defendpoint :post "/send"
   "Send an unsaved notification."
   [_route _query body :- ::models.notification/FullyHydratedNotification]
+  ;; < STRATIO
+  (check-no-resource-templates! (:handlers body))
+  ;; STRATIO >
   (api/create-check :model/Notification body)
   (models.notification/validate-email-handlers! (:handlers body))
   (-> body

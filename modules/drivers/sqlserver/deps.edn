@@ -2,4 +2,8 @@
  ["src" "resources"]
 
  :deps
- {com.microsoft.sqlserver/mssql-jdbc {:mvn/version "12.10.0.jre11"}}}
+ ;; < STRATIO - fix high vulnerability
+ ;; {com.microsoft.sqlserver/mssql-jdbc {:mvn/version "12.10.0.jre11"}}
+ {com.microsoft.sqlserver/mssql-jdbc {:mvn/version "12.10.2.jre11"}}
+ ;; STRATIO >
+ }

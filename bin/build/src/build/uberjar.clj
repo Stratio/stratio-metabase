@@ -76,6 +76,11 @@
   driver is present in the plugins directory."
   #{"oracle" "vertica"})
 
+;; < STRATIO - remove athena and databricks drivers to remove vulnerabilities
+(def ^:private drivers-removed-by-stratio
+  #{"athena" "databricks"})
+;; STRATIO >
+
 (defn- all-drivers []
   (->> (.listFiles (io/file (u/filename u/project-root-directory "modules" "drivers")))
        (filter (fn [^File d]
@@ -83,7 +88,11 @@
                   (.isDirectory d)
                   (not (.isHidden d))
                   (.exists (io/file d "deps.edn"))
-                  (not (contains? drivers-excluded-from-aot (.getName d))))))
+                  (not (contains? drivers-excluded-from-aot (.getName d)))
+                  ;; < STRATIO
+                  (not (contains? drivers-removed-by-stratio (.getName d)))
+                  ;; STRATIO >
+                  )))
        (map (comp symbol #(str "metabase.driver." %) #(.getName ^File %)))))
 
 (defn- metabase-namespaces-in-topo-order [basis]
