@@ -1,9 +1,9 @@
 (ns metabase.stratio.auth
   (:require
    [clojure.set :as set]
+   [metabase.auth-identity.core :as auth-identity]
    [metabase.permissions.models.permissions-group :as perms-group]
    [metabase.request.core :as request]
-   [metabase.session.models.session :as session]
    [metabase.sso.core :as sso]
    [metabase.stratio.config :as st.config]
    [metabase.stratio.header-user-info :refer [http-headers->user-info]]
@@ -127,7 +127,8 @@
     (if (:error allowed-user)
       allowed-user
       (try
-        (let [session (session/create-session! :sso (fetch-or-create-user! allowed-user) (request/device-info request))]
+        (let [session (auth-identity/create-session-with-auth-tracking!
+                       (fetch-or-create-user! allowed-user) (request/device-info request) :provider/password)]
           (assoc allowed-user :session session))
         (catch Exception e
           {:error (st.util/stack-trace e)})))))

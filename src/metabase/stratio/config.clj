@@ -81,4 +81,5 @@
   :default    oauth2proxy-logout-url
   :visibility :public
   :setter     :none
+  :encryption :no
   :export?    false)
