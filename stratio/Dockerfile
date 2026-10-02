@@ -63,6 +63,12 @@ COPY --from=builder /home/node/deps.edn  /home/node/deps.edn
 # add metabase uberjar and needed drivers
 COPY --from=builder /home/node/modules/drivers/hive-like /home/node/modules/drivers/hive-like
 COPY --from=builder /home/node/modules/drivers/sparksql /home/node/modules/drivers/sparksql
+
+# these files are needed to build drivers
+COPY --from=builder /home/node/resources/.keep-me                     /home/node/resources/.keep-me
+COPY --from=builder /home/node/.clj-kondo/config/modules/config.edn   /home/node/.clj-kondo/config/modules/config.edn
+
+# add metabase uberjar
 COPY --from=builder /home/node/target/uberjar/metabase.jar /home/node/target/uberjar/metabase.jar
 
 # STRATIO />
