@@ -1,6 +1,9 @@
 {:paths
  ["src" "resources"]
 
- :deps
- {org.apache.hive/hive-jdbc$standalone {:mvn/version "4.2.0"
-                                        :exclusions [org.apache.commons/commons-lang3]}}}
+ ;; < STRATIO - remove hive-jdbc to remove vulnerabilities 
+ ;; :deps
+ ;; {org.apache.hive/hive-jdbc$standalone {:mvn/version "4.2.0"
+ ;;                                        :exclusions [org.apache.commons/commons-lang3]}}
+ ;; STRATIO >
+ }

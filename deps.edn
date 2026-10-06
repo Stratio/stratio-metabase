@@ -114,6 +114,15 @@
   net.thisptr/jackson-jq                    {:mvn/version "1.6.0"}              ; Java implementation of the JQ json query language
   org.apache.commons/commons-compress       {:mvn/version "1.28.0"}             ; compression utils
   org.apache.commons/commons-lang3          {:mvn/version "3.20.0"}             ; helper methods for working with java.lang stuff
+  ;; < STRATIO - fix high vulnerabilities
+  ;; Pinned to override the transitive versions requested by metabase/saml20-clj (opensaml, shibboleth).
+  ;; httpclient5 5.6 must pair with httpcore5 5.4.x, httpcore5-h2 must match httpcore5 and httpclient5-cache must
+  ;; match httpclient5
+  org.apache.httpcomponents.client5/httpclient5 {:mvn/version "5.6.4"}
+  org.apache.httpcomponents.client5/httpclient5-cache {:mvn/version "5.6.4"}
+  org.apache.httpcomponents.core5/httpcore5     {:mvn/version "5.4.3"}
+  org.apache.httpcomponents.core5/httpcore5-h2  {:mvn/version "5.4.3"}
+  ;; STRATIO >
   org.apache.logging.log4j/log4j-1.2-api    {:mvn/version "2.26.1"}             ; apache logging framework
   org.apache.logging.log4j/log4j-api        {:mvn/version "2.26.1"}             ; add compatibility with log4j 1.2
   org.apache.logging.log4j/log4j-core       {:mvn/version "2.26.1"}             ; apache logging framework
@@ -157,10 +166,16 @@
   org.clojure/tools.namespace               {:mvn/version "1.5.0"}
   org.clojure/tools.reader                  {:mvn/version "1.5.2"}
   org.clojure/tools.trace                   {:mvn/version "0.8.0"}              ; function tracing
-  org.eclipse.jetty/jetty-server            {:mvn/version "12.1.11"}
-  org.eclipse.jetty/jetty-unixdomain-server {:mvn/version "12.1.11"}
-  org.eclipse.jetty.ee9/jetty-ee9-servlet   {:mvn/version "12.1.11"}
-  org.eclipse.jetty.ee9.websocket/jetty-ee9-websocket-jetty-server {:mvn/version "12.1.11"}
+  ;; < STRATIO - bump to fix CVE-2026-19204 (High) in jetty-websocket-core-common
+  ;; org.eclipse.jetty/jetty-server            {:mvn/version "12.1.11"}
+  ;; org.eclipse.jetty/jetty-unixdomain-server {:mvn/version "12.1.11"}
+  ;; org.eclipse.jetty.ee9/jetty-ee9-servlet   {:mvn/version "12.1.11"}
+  ;; org.eclipse.jetty.ee9.websocket/jetty-ee9-websocket-jetty-server {:mvn/version "12.1.11"}
+  org.eclipse.jetty/jetty-server            {:mvn/version "12.1.12"}
+  org.eclipse.jetty/jetty-unixdomain-server {:mvn/version "12.1.12"}
+  org.eclipse.jetty.ee9/jetty-ee9-servlet   {:mvn/version "12.1.12"}
+  org.eclipse.jetty.ee9.websocket/jetty-ee9-websocket-jetty-server {:mvn/version "12.1.12"}
+  ;; STRATIO >
   org.eclipse.jgit/org.eclipse.jgit        {:mvn/version "7.3.0.202506031305-r"}; Java implementation of Git version control system
   org.flatland/ordered                      {:mvn/version "1.15.12"}            ; ordered maps & sets
   org.graalvm.polyglot/js-community         {:mvn/version "25.0.1" :extension "pom"} ; JavaScript engine
