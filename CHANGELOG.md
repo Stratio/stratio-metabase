@@ -3,6 +3,7 @@
 ## 0.58.35-0.1.0 (upcoming)
 
 * Update metabase to 0.58.35
+* Fix vulnerabilities: remove hive-jdbc from the bundled hive-like driver (fixes CVE-2026-24308, CVE-2026-24281 and CVE-2026-59969 in zookeeper, CVE-2025-48924 in commons-lang, CVE-2026-45205 in commons-configuration2 and CVE-2025-3588 in jsonschema2pojo), bump httpclient5 to 5.6.4 and httpcore5/httpcore5-h2 to 5.4.3 (fixes CVE-2026-64607, CVE-2026-54399 and CVE-2026-54428) and bump jetty to 12.1.12 (fixes CVE-2026-19204)
 
 ## 0.56.25-0.1.2 (2026-09-29)
 
