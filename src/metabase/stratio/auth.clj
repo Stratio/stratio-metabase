@@ -49,16 +49,24 @@
 
 (defn- allowed-user
   [{:keys [user groups email tenants error]}]
-  (if error
+  (cond
+    error
     {:error error}
+
+    (and st.config/identify-user-by-email? (not (u/email? email)))
+    {:error (str "User " user " has no valid email")}
+
+    :else
     (if (and (allowed? groups) (tenant-allowed? tenants))
       {:first_name user
        :last_name ""
        :is_superuser (admin? groups)
-       :email (cond (u/email? email) email
-                    (u/email? user) user
-                    :else (u/lower-case-en (str user dummy-email-domain)))
-       :login_attributes {:groups groups}}
+       ;; lower-cased because :model/User stores emails lower-cased, and users may be looked up by email
+       :email (u/lower-case-en (cond (u/email? email) email
+                                     (u/email? user)  user
+                                     :else            (str user dummy-email-domain)))
+       ;; string keys, as :model/User returns them, so they can be compared with the stored ones
+       :login_attributes {"groups" groups "uid" user}}
       {:error (str "User " user " not allowed")})))
 
 (defn- insert-new-user!
@@ -91,9 +99,9 @@
         (log/error "Could not create and sync groups. Error:" (st.util/stack-trace e))))))
 
 (defn- fetch-or-create-user!
-  [{first_name :first_name {groups :groups} :login_attributes superuser? :is_superuser, :as allowed-user}]
+  [{{groups "groups"} :login_attributes superuser? :is_superuser, :as allowed-user}]
   (try
-    (or (when-let [user-in-db (t2/select-one :model/User :first_name first_name)]
+    (or (when-let [user-in-db (t2/select-one :model/User st.config/user-identifier (st.config/user-identifier allowed-user))]
           ;; Check if superuser status has changed and update if necessary
           (when (or (apply not= (map :is_superuser [user-in-db allowed-user]))
                     (apply not= (map :login_attributes [user-in-db allowed-user])))
@@ -111,9 +119,8 @@
       ;; insert something that has just been inserted by the other autologin (detected by the error
       ;; message) just fetch the user that the other endpoint has just created, otherwise raise the error
       (if (re-find #"duplicate key|unique constraint" (.getMessage e))
-        (t2/select-one :model/User :first_name first_name)
-        (throw e))
-      )))
+        (t2/select-one :model/User st.config/user-identifier (st.config/user-identifier allowed-user))
+        (throw e)))))
 
 (defn create-session-from-headers!
   "Reads the SSO user info in the request (either as jwt or as plain headers) and returs a 'user' (a map with some

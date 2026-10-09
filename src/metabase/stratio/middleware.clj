@@ -36,13 +36,15 @@
         (re-matches #"/api/database/[0-9]+/rescan_values" uri)))))
 
 (defn- editing-user-name?
-  "The username of an existing user should never be edited"
+  "The field used to identify an existing user (first name or email) should never be edited"
   [{:keys [uri request-method body]}]
   (when (and (re-matches #"/api/user/[0-9]+/?" uri) (= request-method :put))
     (let [user-id (Integer/parseInt (last (str/split uri #"/")))
-          old-username (t2/select-one-fn :first_name :model/User :id user-id)
-          new-username (:first_name body)]
-      (and old-username (not= old-username new-username)))))
+          old-identifier (t2/select-one-fn st.config/user-identifier :model/User :id user-id)
+          new-identifier (st.config/user-identifier body)]
+      (and old-identifier
+           (contains? body st.config/user-identifier)
+           (not= old-identifier new-identifier)))))
 
 (defn- add-session-to-request-and-response
   [handler session]
@@ -77,7 +79,7 @@
   [handler]
   (fn [{uri :uri :as request} respond raise]
     (if (or (:metabase-user-id request)
-             (not (autologin-endpoint? uri)))
+            (not (autologin-endpoint? uri)))
       (handler request respond raise)
       (let [{:keys [session first_name error]} (st.auth/create-session-from-headers! request)]
         (if error
@@ -94,7 +96,9 @@
   "Middleware to add a reponse header with the current user name (to be used by the nginx access log)"
   [handler]
   (letfn [(add-username-response-header [response]
-            (update response :headers merge {"Metabase-User" (get @api/*current-user* :first_name "-")}))]
+            ;; users without "uid" were created when first_name could not be edited, so it still holds their uid
+            (update response :headers merge {"Metabase-User" (or (get-in @api/*current-user* [:login_attributes "uid"])
+                                                                 (get @api/*current-user* :first_name "-"))}))]
     (fn [request respond raise]
       (handler request (comp respond add-username-response-header) raise))))
 
@@ -134,5 +138,5 @@
     handler
     (fn [request respond raise]
       (if (editing-user-name? request)
-        (respond {:status 403 :body "Editing user first name is forbidden"})
+        (respond {:status 403 :body (str "Editing user " (name st.config/user-identifier) " is forbidden")})
         (handler request respond raise)))))

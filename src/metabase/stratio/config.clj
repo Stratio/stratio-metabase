@@ -27,7 +27,11 @@
    ;; settings for authentication via headers
    :mb-user-header ""
    :mb-group-header ""
+   :mb-email-header ""
    :dummy-email-domain "@example.com"
+
+   ;; identify users by email instead of first_name
+   :identify-user-by-email "true"
 
    ;; Authorization based on groups
    :use-group-whitelist "true"
@@ -56,6 +60,8 @@
 (def oauth2proxy-logout-url    (config-str :oauth2proxy-logout-url))
 (def headers?                  (= authenticator :headers))
 (def jwt-cookie-name           (config-str :jwt-cookie-name))
+(def identify-user-by-email?   (config-bool :identify-user-by-email))
+(def user-identifier           (if identify-user-by-email? :email :first_name))
 (def jwt-public-key            (delay
                                  (if (= jwt-public-key-location :file)
                                    (-> (config-str :jwt-public-key-file)
