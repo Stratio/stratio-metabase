@@ -198,11 +198,15 @@
   org.clojure/tools.namespace               {:mvn/version "1.5.0"}
   org.clojure/tools.reader                  {:mvn/version "1.5.2"}
   org.clojure/tools.trace                   {:mvn/version "0.8.0"}              ; function tracing
-  ;; < STRATIO - bump to fix GHSA-355h-qmc2-wpwf and GHSA-xxh7-fcf3-rj7f (High) [ROCK-14826]
-  org.eclipse.jetty/jetty-server            {:mvn/version "12.0.36"}
-  org.eclipse.jetty/jetty-unixdomain-server {:mvn/version "12.0.36"}
-  org.eclipse.jetty.ee9/jetty-ee9-servlet   {:mvn/version "12.0.36"}
-  org.eclipse.jetty.ee9.websocket/jetty-ee9-websocket-jetty-server {:mvn/version "12.0.36"}
+  ;; < STRATIO - bump to fix GHSA-355h-qmc2-wpwf, GHSA-xxh7-fcf3-rj7f and CVE-2026-19204
+  ;; org.eclipse.jetty/jetty-server            {:mvn/version "12.0.22"}
+  ;; org.eclipse.jetty/jetty-unixdomain-server {:mvn/version "12.0.22"}
+  ;; org.eclipse.jetty.ee9/jetty-ee9-servlet   {:mvn/version "12.0.22"}
+  ;; org.eclipse.jetty.ee9.websocket/jetty-ee9-websocket-jetty-server {:mvn/version "12.0.21"}
+  org.eclipse.jetty/jetty-server            {:mvn/version "12.0.40"}
+  org.eclipse.jetty/jetty-unixdomain-server {:mvn/version "12.0.40"}
+  org.eclipse.jetty.ee9/jetty-ee9-servlet   {:mvn/version "12.0.40"}
+  org.eclipse.jetty.ee9.websocket/jetty-ee9-websocket-jetty-server {:mvn/version "12.0.40"}
   ;; STRATIO >
   org.flatland/ordered                      {:mvn/version "1.15.12"}            ; ordered maps & sets
   org.graalvm.polyglot/js-community         {:mvn/version "24.2.1" :extension "pom"} ; JavaScript engine
