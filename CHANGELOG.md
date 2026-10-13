@@ -3,6 +3,7 @@
 ## 0.56.25-0.1.2 (2026-09-29)
 
 * Update metabase to 0.56.25
+* Fix vulnerability (CVE-2026-19204): bump jetty to 12.0.40
 
 ## 0.56.4-0.1.2 (2026-06-08)
 
