@@ -4,6 +4,9 @@
 
 * Update metabase to 0.56.25
 * Fix vulnerability (CVE-2026-19204): bump jetty to 12.0.40
+* Fix vulnerabilities: jackson-core and jackson-databind (2.21.7), log4j (2.25.5), httpclient5/httpclient5-cache (5.6.4) and httpcore5/httpcore5-h2 (5.4.3), jsoup (1.23.2), mariadb-java-client (2.7.15), mssql-jdbc (12.10.2.jre11)
+* Fix vulnerabilities: Remove athena and databricks drivers and the hive-jdbc dependency because their dependencies have vulnerabilities (Hive/Spark SQL connections no longer work)
+* Fix vulnerability (CVE-2026-55760): backport of the upstream fix (#70261) that rejects handlebars-resource templates in the notification API
 
 ## 0.56.4-0.1.2 (2026-06-08)
 
