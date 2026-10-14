@@ -17,13 +17,11 @@
   [token]
   (str/split token #"\." 3))
 
-
 (defn- parse-data
   [^String data]
   (-> (b64/decode data)
       (codecs/bytes->str)
       (json/parse-string true)))
-
 
 (defn- parse-header
   [token]
@@ -35,13 +33,11 @@
         alg (assoc :alg (keyword (u/lower-case-en alg)))))
     (catch com.fasterxml.jackson.core.JsonParseException _
       (throw (ex-info "Message seems corrupt or manipulated."
-               {:type :validation :cause :header})))))
-
+                      {:type :validation :cause :header})))))
 
 (defn- get-alg
   [token]
   (:alg (parse-header token)))
-
 
 (defn- http-headers->jwt-token
   [headers]
@@ -52,12 +48,10 @@
       (contains? headers header-name-lower) (get headers header-name-lower)
       :else                                 (throw (Exception. "Could not find Authorization header")))))
 
-
 (defn- http-cookies->jwt-token
   [cookies]
   (or (get-in cookies [st.config/jwt-cookie-name :value])
       (throw (Exception. (str "Could not find cookie '" st.config/jwt-cookie-name "'")))))
-
 
 (defn- http-request->jwt-token
   [{:keys [headers cookies]}]
@@ -65,12 +59,10 @@
     st.config/gosec-sso? (http-cookies->jwt-token cookies)
     st.config/jwt?       (http-headers->jwt-token headers)))
 
-
 (defn- verify-token
   [token pkey]
   (let [alg (get-alg token)]
     (jwt/unsign token pkey {:alg alg})))
-
 
 (defn- http-request->user-info-jwt
   "Gets user info map {:user username, :groups [group1 ... groupN], :email email, :tenants [tenant1 ... tenantN]}
@@ -103,22 +95,21 @@
     (catch Exception e
       {:error (st.util/stack-trace e)})))
 
-
 (defn- http-headers->user-info-headers
-  "Gets user info map {:user username :groups [group1 ... groupN]} from user/groups http headers
-  or map with :error key if some error happens"
+  "Gets user info map {:user username :groups [group1 ... groupN] :email email} from user/groups/email http headers
+  or map with :error key if some error happens. The :email key may be nil."
   [headers]
-  (log/debug "Getting user info from user/group HTTP headers")
+  (log/debug "Getting user info from user/group/email HTTP headers")
   (try
     (let [user-name  (get headers (st.config/config-str :mb-user-header))
           groups-str (get headers (st.config/config-str :mb-group-header) "")
-          groups     (st.util/make-vector groups-str)]
+          groups     (st.util/make-vector groups-str)
+          email      (get headers (st.config/config-str :mb-email-header))]
       (if (empty? user-name)
         {:error "No user header found"}
-        {:user user-name :groups groups}))
+        {:user user-name :groups groups :email email}))
     (catch Exception e
       {:error (st.util/stack-trace e)})))
-
 
 (defn http-headers->user-info
   "Gets user info map {:user username :groups [group1 ... groupN]} either form jwt token
