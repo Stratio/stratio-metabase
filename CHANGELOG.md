@@ -2,7 +2,7 @@
 
 ## 0.64.1-0.1.0 (upcoming)
 
-* Update metabase to 0.64.1-0.1
+* Update metabase to 0.64.1-0.1.0
 
 ## 0.56.25-0.1.2 (2026-09-29)
 

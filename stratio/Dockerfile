@@ -29,7 +29,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install wget apt-transport-h
 
 ENV PATH="/root/.local/bin:$PATH"
 
-# < STRATIO - recicly the jdk and clojure installation between builder and light builder
+# < STRATIO - recicle the jdk and clojure installation between builder and light builder
 FROM base as builder
 # STRATIO >
 
