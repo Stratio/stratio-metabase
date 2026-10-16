@@ -22,9 +22,12 @@ RUN apt-get update && apt-get upgrade -y && apt-get install wget apt-transport-h
     && curl -O https://download.clojure.org/install/linux-install-1.12.0.1488.sh \
     && chmod +x linux-install-1.12.0.1488.sh \
     && ./linux-install-1.12.0.1488.sh \
+    && curl -LsSf https://astral.sh/uv/install.sh | sh \
     # < STRATIO
     && apt-get clean
     # STRATIO >
+
+ENV PATH="/root/.local/bin:$PATH"
 
 # < STRATIO - recicly the jdk and clojure installation between builder and light builder
 FROM base as builder
@@ -35,8 +38,11 @@ COPY . .
 # version is pulled from git, but git doesn't trust the directory due to different owners
 RUN git config --global --add safe.directory /home/node
 
+# install bun for frontend dependencies
+RUN npm install -g bun
+
 # install frontend dependencies
-RUN yarn --frozen-lockfile
+RUN bun install --frozen-lockfile
 
 # < STRATIO - we need the "v" before the version since metabase expects it that
 # way but our Jenkins pass it without the v

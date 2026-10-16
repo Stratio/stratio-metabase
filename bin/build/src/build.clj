@@ -35,9 +35,6 @@
                :env {"PATH"       (env/env :path)
                      "HOME"       (env/env :user-home)
                      "WEBPACK_BUNDLE"   "production"
-                     ;; < STRATIO - fix frontend build
-                     "NODE_OPTIONS"     "--openssl-legacy-provider"
-                     ;; STRATIO >
                      "MB_EDITION" mb-edition
                      "EMIT_BUNDLE_STATS" (or (env/env :emit-bundle-stats) "false")
                      "INSTRUMENT_COVERAGE" (or (env/env :instrument-coverage) "false")}}
@@ -47,9 +44,6 @@
                :env {"PATH"       (env/env :path)
                      "HOME"       (env/env :user-home)
                      "WEBPACK_BUNDLE"   "production"
-                     ;; < STRATIO - fix frontend build
-                     "NODE_OPTIONS"      "--openssl-legacy-provider"
-                     ;; STRATIO >
                      "MB_EDITION" mb-edition}}
               "bun" "run" "build-release:static-viz"))
       (u/announce "Frontend built successfully."))))
