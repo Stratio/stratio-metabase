@@ -35,4 +35,9 @@
   ;; (SNYK-JAVA-IONETTY-16438930, SNYK-JAVA-IONETTY-16438322). Pin the full family to avoid mixed-version classpath.
   io.netty/netty-codec                    {:mvn/version "4.1.137.Final"}
   io.netty/netty-handler                  {:mvn/version "4.1.137.Final"}
-  io.netty/netty-transport-classes-epoll  {:mvn/version "4.1.137.Final"}}}
+  io.netty/netty-transport-classes-epoll  {:mvn/version "4.1.137.Final"}
+  ;; < STRATIO - reactor-netty-core (transitive via snowflake-jdbc-thin) pulls netty-codec-dns 4.1.135.Final (CVE-2026-73508)
+  io.netty/netty-codec-dns                {:mvn/version "4.1.137.Final"}
+  io.netty/netty-resolver-dns             {:mvn/version "4.1.137.Final"}
+  ;; STRATIO >
+  }}

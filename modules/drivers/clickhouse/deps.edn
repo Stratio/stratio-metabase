@@ -8,4 +8,8 @@
                                                org.apache.httpcomponents.core5/httpcore5
                                                org.apache.httpcomponents.core5/httpcore5-h2]}
   ;; original org.lz4:lz4-java project is discontinued, this is the maintained fork
-  at.yawk.lz4/lz4-java {:mvn/version "1.11.1"}}}
+  ;; < STRATIO - 1.11.1 has vulnerabilities (CVE-2026-106450, CVE-2026-106451, CVE-2026-106452, CVE-2026-106453)
+  ;; at.yawk.lz4/lz4-java {:mvn/version "1.11.1"}
+  at.yawk.lz4/lz4-java {:mvn/version "1.11.4"}
+  ;; STRATIO >
+  }}

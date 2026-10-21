@@ -3,6 +3,7 @@
 ## 0.64.1-0.1.0 (upcoming)
 
 * Update metabase to 0.64.1-0.1
+* Fix security vulnerabilities: lz4-java (CVE-2026-106450, CVE-2026-106451, CVE-2026-106452, CVE-2026-106453), netty-codec-dns (CVE-2026-73508)
 
 ## 0.56.25-0.1.2 (2026-09-29)
 
