@@ -3,6 +3,7 @@
    [clojure.string :as str]
    [java-time.api :as t]
    [metabase.api.common :as api]
+   [metabase.mcp.core :as mcp]
    [metabase.request.core :as request]
    [metabase.server.middleware.session :as mw.session]
    [metabase.stratio.auth :as st.auth]
@@ -110,10 +111,53 @@
     (binding [*is-sync-request?* (sync-db-request? request)]
       (handler request respond raise))))
 
+(def ^:private mcp-endpoints
+  ["/api/mcp" "/api/metabase-mcp"])
+
+;; Placeholder user for the calls the trusted MCP client makes without impersonating anyone, such as LiteLLM
+;; registering the server or listing its tools. The MCP transport serves initialize and tools/list without
+;; loading the user, so the id does not need to exist in the database.
+(def ^:private mcp-service-user-id Integer/MAX_VALUE)
+
+(defn- mcp-impersonated-user-info
+  "Request user info for the active user with `uid` in its login attributes. Nil unless exactly one user matches."
+  [uid]
+  (let [;; login_attributes is a JSON text column, so LIKE only narrows the candidates down
+        users (filter #(= uid (get-in % [:login_attributes "uid"]))
+                      (t2/select [:model/User :id :is_superuser :is_data_analyst :locale :login_attributes]
+                                 {:where [:and
+                                          [:= :is_active true]
+                                          [:like :login_attributes (str "%" uid "%")]]}))]
+    (when (= 1 (count users))
+      (let [{:keys [id is_superuser is_data_analyst locale]} (first users)]
+        {:metabase-user-id  id
+         :is-superuser?     is_superuser
+         :is-data-analyst?  is_data_analyst
+         :user-locale       locale}))))
+
+(defn- wrap-with-mcp-impersonation
+  "Middleware that lets the MCP client trusted by the proxy (a verified client cert with a whitelisted CN) act as the
+  user named in the X-Mcp-Impersonate header, or as a placeholder user for the calls it makes without one. Requests
+  already authenticated (session, API key...) are left untouched. Must run before the current user is bound."
+  [handler]
+  (fn [{:keys [uri headers] :as request} respond raise]
+    (if-not (and st.config/mcp-impersonation-enabled?
+                 (not (:metabase-user-id request))
+                 (= "true" (get headers "x-mcp-trusted-client"))
+                 (some (partial str/starts-with? uri) mcp-endpoints)
+                 (mcp/mcp-enabled?))
+      (handler request respond raise)
+      (if-let [uid (get headers "x-mcp-impersonate")]
+        (if-let [user-info (mcp-impersonated-user-info uid)]
+          (handler (merge request user-info) respond raise)
+          (respond {:status 401 :body (str "Cannot impersonate user " uid)}))
+        (handler (assoc request :metabase-user-id mcp-service-user-id) respond raise)))))
+
 (defn- default-middleware
   "Middleware to be always added"
   [handler]
   (-> handler
+      wrap-with-mcp-impersonation
       bind-is-sync-db-request-info
       wrap-with-username-header))
 

@@ -37,7 +37,10 @@
    :use-group-whitelist "true"
    :allowed-groups ""
    :admin-group ""
-   :create-and-sync-groups "true"})
+   :create-and-sync-groups "true"
+
+   ;; let the MCP client trusted by the proxy impersonate users (see `metabase.stratio.middleware`)
+   :mcp-impersonation-enabled "false"})
 
 (defn config-str  [k] (or (config/config-str k) ((keyword k) stratio-defaults)))
 (defn config-int  [k] (some-> k config-str Integer/parseInt))
@@ -51,26 +54,27 @@
     {:trust-store      (config-str :mb-jetty-ssl-truststore)
      :trust-store-pass (config-str :mb-jetty-ssl-truststore-password)}))
 
-(def auto-login-authenticators #{:jwt :headers :gosec-sso})
-(def authenticator             (config-kw :authenticator))
-(def jwt-public-key-location   (config-kw :jwt-public-key-location))
-(def should-auto-login?        (contains? auto-login-authenticators authenticator))
-(def jwt?                      (= authenticator :jwt))
-(def gosec-sso?                (= authenticator :gosec-sso))
-(def oauth2proxy-logout-url    (config-str :oauth2proxy-logout-url))
-(def headers?                  (= authenticator :headers))
-(def jwt-cookie-name           (config-str :jwt-cookie-name))
-(def identify-user-by-email?   (config-bool :identify-user-by-email))
-(def user-identifier           (if identify-user-by-email? :email :first_name))
-(def jwt-public-key            (delay
-                                 (if (= jwt-public-key-location :file)
-                                   (-> (config-str :jwt-public-key-file)
-                                       (slurp)
-                                       (keys/str->public-key))
-                                   (-> (config-str :jwt-public-key-endpoint)
-                                       (http/get (ssl-config))
-                                       (:body)
-                                       (keys/str->public-key)))))
+(def auto-login-authenticators  #{:jwt :headers :gosec-sso})
+(def authenticator              (config-kw :authenticator))
+(def jwt-public-key-location    (config-kw :jwt-public-key-location))
+(def should-auto-login?         (contains? auto-login-authenticators authenticator))
+(def jwt?                       (= authenticator :jwt))
+(def gosec-sso?                 (= authenticator :gosec-sso))
+(def oauth2proxy-logout-url     (config-str :oauth2proxy-logout-url))
+(def headers?                   (= authenticator :headers))
+(def jwt-cookie-name            (config-str :jwt-cookie-name))
+(def identify-user-by-email?    (config-bool :identify-user-by-email))
+(def user-identifier            (if identify-user-by-email? :email :first_name))
+(def mcp-impersonation-enabled? (config-bool :mcp-impersonation-enabled))
+(def jwt-public-key             (delay
+                                  (if (= jwt-public-key-location :file)
+                                    (-> (config-str :jwt-public-key-file)
+                                        (slurp)
+                                        (keys/str->public-key))
+                                    (-> (config-str :jwt-public-key-endpoint)
+                                        (http/get (ssl-config))
+                                        (:body)
+                                        (keys/str->public-key)))))
 
 ;; We need to define these as settings so they can reach frontend via MetabaseSettings object
 (defsetting gosec-sso-enabled
