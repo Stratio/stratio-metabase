@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.64.1-0.1.0 (upcoming)
+## 0.64.1-0.1.0 (2026-10-30)
 
 * Update metabase to 0.64.1-0.1
 * Add impersonation to MCP endpoints
